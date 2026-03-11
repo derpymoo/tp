@@ -2,9 +2,14 @@ package cms.testutil;
 
 import static cms.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static cms.logic.parser.CliSyntax.PREFIX_EMAIL;
+import static cms.logic.parser.CliSyntax.PREFIX_GITHUBUSERNAME;
 import static cms.logic.parser.CliSyntax.PREFIX_NAME;
+import static cms.logic.parser.CliSyntax.PREFIX_NUSID;
 import static cms.logic.parser.CliSyntax.PREFIX_PHONE;
+import static cms.logic.parser.CliSyntax.PREFIX_ROLE;
+import static cms.logic.parser.CliSyntax.PREFIX_SOCUSERNAME;
 import static cms.logic.parser.CliSyntax.PREFIX_TAG;
+import static cms.logic.parser.CliSyntax.PREFIX_TUTORIALGROUP;
 
 import java.util.Set;
 
@@ -31,9 +36,14 @@ public class PersonUtil {
     public static String getPersonDetails(Person person) {
         StringBuilder sb = new StringBuilder();
         sb.append(PREFIX_NAME + person.getName().fullName + " ");
+        sb.append(PREFIX_NUSID + person.getNusId().value + " ");
+        sb.append(PREFIX_ROLE + person.getRole().value + " ");
+        sb.append(PREFIX_SOCUSERNAME + person.getSocUsername().value + " ");
+        sb.append(PREFIX_GITHUBUSERNAME + person.getGithubUsername().value + " ");
         sb.append(PREFIX_PHONE + person.getPhone().value + " ");
         sb.append(PREFIX_EMAIL + person.getEmail().value + " ");
         sb.append(PREFIX_ADDRESS + person.getAddress().value + " ");
+        sb.append(PREFIX_TUTORIALGROUP + person.getTutorialGroup().value + " ");
         person.getTags().stream().forEach(
             s -> sb.append(PREFIX_TAG + s.tagName + " ")
         );

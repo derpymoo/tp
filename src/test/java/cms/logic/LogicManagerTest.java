@@ -4,8 +4,13 @@ import static cms.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 import static cms.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static cms.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static cms.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
+import static cms.logic.commands.CommandTestUtil.GITHUBUSERNAME_DESC_AMY;
 import static cms.logic.commands.CommandTestUtil.NAME_DESC_AMY;
+import static cms.logic.commands.CommandTestUtil.NUSID_DESC_AMY;
 import static cms.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
+import static cms.logic.commands.CommandTestUtil.ROLE_DESC_AMY;
+import static cms.logic.commands.CommandTestUtil.SOCUSERNAME_DESC_AMY;
+import static cms.logic.commands.CommandTestUtil.TUTORIALGROUP_DESC_AMY;
 import static cms.testutil.Assert.assertThrows;
 import static cms.testutil.TypicalPersons.AMY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -165,8 +170,9 @@ public class LogicManagerTest {
         logic = new LogicManager(model, storage);
 
         // Triggers the saveAddressBook method by executing an add command
-        String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY
-                + EMAIL_DESC_AMY + ADDRESS_DESC_AMY;
+        String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + NUSID_DESC_AMY + ROLE_DESC_AMY
+                + SOCUSERNAME_DESC_AMY + GITHUBUSERNAME_DESC_AMY + PHONE_DESC_AMY
+                + EMAIL_DESC_AMY + ADDRESS_DESC_AMY + TUTORIALGROUP_DESC_AMY;
         Person expectedPerson = new PersonBuilder(AMY).withTags().build();
         ModelManager expectedModel = new ModelManager();
         expectedModel.addPerson(expectedPerson);
