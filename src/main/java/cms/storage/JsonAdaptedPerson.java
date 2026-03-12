@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import cms.commons.exceptions.IllegalValueException;
-import cms.model.person.Address;
 import cms.model.person.Email;
 import cms.model.person.GithubUsername;
 import cms.model.person.Name;
@@ -35,7 +34,6 @@ class JsonAdaptedPerson {
     private final String nusId;
     private final String socUsername;
     private final String githubUsername;
-    private final String address;
     private final String role;
     private final String tutorialGroup;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
@@ -50,7 +48,6 @@ class JsonAdaptedPerson {
                              @JsonProperty("nusId") String nusId,
                              @JsonProperty("socUsername") String socUsername,
                              @JsonProperty("githubUsername") String githubUsername,
-                             @JsonProperty("address") String address,
                              @JsonProperty("role") String role,
                              @JsonProperty("tutorialGroup") String tutorialGroup,
                              @JsonProperty("tags") List<JsonAdaptedTag> tags) {
@@ -60,7 +57,6 @@ class JsonAdaptedPerson {
         this.nusId = nusId;
         this.socUsername = socUsername;
         this.githubUsername = githubUsername;
-        this.address = address;
         this.role = role;
         this.tutorialGroup = tutorialGroup;
         if (tags != null) {
@@ -78,7 +74,6 @@ class JsonAdaptedPerson {
         nusId = source.getNusId().value;
         socUsername = source.getSocUsername().value;
         githubUsername = source.getGithubUsername().value;
-        address = source.getAddress().value;
         role = source.getRole().value;
         tutorialGroup = source.getTutorialGroup().value;
         tags.addAll(source.getTags().stream()
@@ -121,13 +116,6 @@ class JsonAdaptedPerson {
         }
         final Email modelEmail = new Email(email);
 
-        if (address == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName()));
-        }
-        if (!Address.isValidAddress(address)) {
-            throw new IllegalValueException(Address.MESSAGE_CONSTRAINTS);
-        }
-
         if (nusId == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, NusId.class.getSimpleName()));
         }
@@ -154,8 +142,6 @@ class JsonAdaptedPerson {
         }
         final GithubUsername modelGithubUsername = new GithubUsername(githubUsername);
 
-        final Address modelAddress = new Address(address);
-
         if (role == null) {
             throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Role.class.getSimpleName()));
         }
@@ -175,7 +161,7 @@ class JsonAdaptedPerson {
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
         return new Person(modelName, modelPhone, modelEmail, modelNusId,
-                modelSocUsername, modelGithubUsername, modelAddress,
+                modelSocUsername, modelGithubUsername,
                 modelRole, modelTutorialGroup, modelTags);
     }
 

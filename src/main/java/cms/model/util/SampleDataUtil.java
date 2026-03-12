@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import cms.model.AddressBook;
 import cms.model.ReadOnlyAddressBook;
-import cms.model.person.Address;
 import cms.model.person.Email;
 import cms.model.person.GithubUsername;
 import cms.model.person.Name;
@@ -30,7 +29,6 @@ public class SampleDataUtil {
                        new NusId("A0123456B"),
                        new SocUsername("alexyeoh"),
                        new GithubUsername("alexyeoh"),
-                       new Address("Blk 30 Geylang Street 29, #06-40"),
                        Role.STUDENT,
                        new TutorialGroup("T01"),
                        getTagSet("friends")),
@@ -40,7 +38,6 @@ public class SampleDataUtil {
                        new NusId("A0123457B"),
                        new SocUsername("bernice"),
                        new GithubUsername("berniceyu"),
-                       new Address("Blk 30 Lorong 3 Serangoon Gardens, #07-18"),
                        Role.STUDENT,
                        new TutorialGroup("T10"),
                        getTagSet("colleagues", "friends")),
@@ -50,7 +47,6 @@ public class SampleDataUtil {
                        new NusId("A0123458B"),
                        new SocUsername("charlote"),
                        new GithubUsername("charlotte"),
-                       new Address("Blk 11 Ang Mo Kio Street 74, #11-04"),
                        Role.STUDENT,
                        new TutorialGroup("T02"),
                        getTagSet("neighbours")),
@@ -60,7 +56,6 @@ public class SampleDataUtil {
                        new NusId("A0123459B"),
                        new SocUsername("davidli"),
                        new GithubUsername("davidli"),
-                       new Address("Blk 436 Serangoon Gardens Street 26, #16-43"),
                        Role.STUDENT,
                        new TutorialGroup("T01"),
                        getTagSet("family")),
@@ -70,7 +65,6 @@ public class SampleDataUtil {
                        new NusId("A0123460B"),
                        new SocUsername("irfan"),
                        new GithubUsername("irfan"),
-                       new Address("Blk 47 Tampines Street 20, #17-35"),
                        Role.STUDENT,
                        new TutorialGroup("T01"),
                        getTagSet("classmates")),
@@ -80,7 +74,6 @@ public class SampleDataUtil {
                        new NusId("A0123461B"),
                        new SocUsername("roybal"),
                        new GithubUsername("royb"),
-                       new Address("Blk 45 Aljunied Street 85, #11-31"),
                        Role.STUDENT,
                        new TutorialGroup("T01"),
                        getTagSet("colleagues"))

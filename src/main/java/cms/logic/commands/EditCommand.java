@@ -1,6 +1,5 @@
 package cms.logic.commands;
 
-import static cms.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static cms.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static cms.logic.parser.CliSyntax.PREFIX_NAME;
 import static cms.logic.parser.CliSyntax.PREFIX_PHONE;
@@ -21,7 +20,6 @@ import cms.commons.util.ToStringBuilder;
 import cms.logic.Messages;
 import cms.logic.commands.exceptions.CommandException;
 import cms.model.Model;
-import cms.model.person.Address;
 import cms.model.person.Email;
 import cms.model.person.GithubUsername;
 import cms.model.person.Name;
@@ -47,7 +45,6 @@ public class EditCommand extends Command {
             + "[" + PREFIX_NAME + "NAME] "
             + "[" + PREFIX_PHONE + "PHONE] "
             + "[" + PREFIX_EMAIL + "EMAIL] "
-            + "[" + PREFIX_ADDRESS + "ADDRESS] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_PHONE + "91234567 "
@@ -106,14 +103,12 @@ public class EditCommand extends Command {
         NusId updatedNusId = personToEdit.getNusId();
         SocUsername updatedSocUsername = personToEdit.getSocUsername();
         GithubUsername updatedGithubUsername = personToEdit.getGithubUsername();
-        Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Role updatedRole = personToEdit.getRole();
         TutorialGroup updatedTutorialGroup = personToEdit.getTutorialGroup();
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
         return new Person(updatedName, updatedPhone, updatedEmail, updatedNusId,
-                updatedSocUsername, updatedGithubUsername, updatedAddress,
-                updatedRole, updatedTutorialGroup, updatedTags);
+                updatedSocUsername, updatedGithubUsername, updatedRole, updatedTutorialGroup, updatedTags);
     }
 
     @Override
@@ -148,7 +143,6 @@ public class EditCommand extends Command {
         private Name name;
         private Phone phone;
         private Email email;
-        private Address address;
         private Set<Tag> tags;
 
         public EditPersonDescriptor() {
@@ -162,7 +156,6 @@ public class EditCommand extends Command {
             setName(toCopy.name);
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
-            setAddress(toCopy.address);
             setTags(toCopy.tags);
         }
 
@@ -170,7 +163,7 @@ public class EditCommand extends Command {
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, address, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, email, tags);
         }
 
         public void setName(Name name) {
@@ -195,14 +188,6 @@ public class EditCommand extends Command {
 
         public Optional<Email> getEmail() {
             return Optional.ofNullable(email);
-        }
-
-        public void setAddress(Address address) {
-            this.address = address;
-        }
-
-        public Optional<Address> getAddress() {
-            return Optional.ofNullable(address);
         }
 
         /**
@@ -237,7 +222,6 @@ public class EditCommand extends Command {
             return Objects.equals(name, otherEditPersonDescriptor.name)
                     && Objects.equals(phone, otherEditPersonDescriptor.phone)
                     && Objects.equals(email, otherEditPersonDescriptor.email)
-                    && Objects.equals(address, otherEditPersonDescriptor.address)
                     && Objects.equals(tags, otherEditPersonDescriptor.tags);
         }
 
@@ -247,7 +231,6 @@ public class EditCommand extends Command {
                     .add("name", name)
                     .add("phone", phone)
                     .add("email", email)
-                    .add("address", address)
                     .add("tags", tags)
                     .toString();
         }

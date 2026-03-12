@@ -1,7 +1,6 @@
 package cms.logic.parser;
 
 import static cms.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static cms.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static cms.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static cms.logic.parser.CliSyntax.PREFIX_GITHUBUSERNAME;
 import static cms.logic.parser.CliSyntax.PREFIX_NAME;
@@ -17,7 +16,6 @@ import java.util.stream.Stream;
 
 import cms.logic.commands.AddCommand;
 import cms.logic.parser.exceptions.ParseException;
-import cms.model.person.Address;
 import cms.model.person.Email;
 import cms.model.person.GithubUsername;
 import cms.model.person.Name;
@@ -44,18 +42,18 @@ public class AddCommandParser implements Parser<AddCommand> {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_NUSID, PREFIX_ROLE,
                         PREFIX_SOCUSERNAME, PREFIX_GITHUBUSERNAME, PREFIX_EMAIL,
-                        PREFIX_PHONE, PREFIX_ADDRESS, PREFIX_TUTORIALGROUP, PREFIX_TAG);
+                        PREFIX_PHONE, PREFIX_TUTORIALGROUP, PREFIX_TAG);
 
         if (!arePrefixesPresent(argMultimap, PREFIX_NAME, PREFIX_NUSID, PREFIX_ROLE,
                 PREFIX_SOCUSERNAME, PREFIX_GITHUBUSERNAME, PREFIX_EMAIL,
-                PREFIX_PHONE, PREFIX_ADDRESS, PREFIX_TUTORIALGROUP)
+                PREFIX_PHONE, PREFIX_TUTORIALGROUP)
                 || !argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddCommand.MESSAGE_USAGE));
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME, PREFIX_NUSID, PREFIX_ROLE,
                 PREFIX_SOCUSERNAME, PREFIX_GITHUBUSERNAME, PREFIX_EMAIL,
-                PREFIX_PHONE, PREFIX_ADDRESS, PREFIX_TUTORIALGROUP);
+                PREFIX_PHONE, PREFIX_TUTORIALGROUP);
         Name name = ParserUtil.parseName(argMultimap.getValue(PREFIX_NAME).get());
         NusId nusId = ParserUtil.parseNusId(argMultimap.getValue(PREFIX_NUSID).get());
         Role role = ParserUtil.parseRole(argMultimap.getValue(PREFIX_ROLE).get());
@@ -64,12 +62,11 @@ public class AddCommandParser implements Parser<AddCommand> {
                 argMultimap.getValue(PREFIX_GITHUBUSERNAME).get());
         Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
-        Address address = ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get());
         TutorialGroup tutorialGroup = ParserUtil.parseTutorialGroup(argMultimap.getValue(PREFIX_TUTORIALGROUP).get());
         Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
         Person person = new Person(name, phone, email, nusId, socUsername,
-                githubUsername, address, role, tutorialGroup, tagList);
+                githubUsername, role, tutorialGroup, tagList);
 
         return new AddCommand(person);
     }

@@ -13,7 +13,6 @@ public class CliSyntax {
     public static final Prefix PREFIX_GITHUBUSERNAME = new Prefix("gh/");
     public static final Prefix PREFIX_PHONE = new Prefix("p/");
     public static final Prefix PREFIX_EMAIL = new Prefix("e/");
-    public static final Prefix PREFIX_ADDRESS = new Prefix("a/");
     public static final Prefix PREFIX_TUTORIALGROUP = new Prefix("t/");
     public static final Prefix PREFIX_TAG = new Prefix("tag/");
 
