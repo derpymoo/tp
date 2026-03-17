@@ -20,7 +20,8 @@ import cms.model.person.Person;
 class JsonSerializableAddressBook {
 
     public static final String MESSAGE_DUPLICATE_PERSON = "Persons list contains duplicate person(s).";
-    public static final String MESSAGE_DUPLICATE_FIELD = "Persons list contains a person with a duplicate field as another person.";
+    public static final String MESSAGE_DUPLICATE_FIELD =
+            "Persons list contains a person with a duplicate field as another person.";
 
     private final List<JsonAdaptedPerson> persons = new ArrayList<>();
 
