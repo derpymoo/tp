@@ -19,6 +19,7 @@ import cms.model.ModelManager;
 import cms.model.UserPrefs;
 import cms.model.person.NameContainsKeywordsPredicate;
 import cms.model.person.NusIdContainsKeywordsPredicate;
+import cms.model.person.NameOrNusIdContainsKeywordsPredicate;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
@@ -103,6 +104,18 @@ public class FindCommandTest {
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Collections.emptyList(), model.getFilteredPersonList());
+    }
+
+    @Test
+    public void execute_unprefixedLowercaseNusId_singlePersonFound() {
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        // lowercase nus id token (no prefix) should match ELLE whose nusId is A0234504F
+        NameOrNusIdContainsKeywordsPredicate predicate =
+                new NameOrNusIdContainsKeywordsPredicate(Collections.emptyList(), Collections.singletonList("a0234504f"));
+        FindCommand command = new FindCommand(predicate);
+        expectedModel.updateFilteredPersonList(predicate);
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        assertEquals(Collections.singletonList(ELLE), model.getFilteredPersonList());
     }
 
     @Test

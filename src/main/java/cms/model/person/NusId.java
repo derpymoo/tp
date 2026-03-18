@@ -10,8 +10,10 @@ import static java.util.Objects.requireNonNull;
 public class NusId {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "NUS ID must be in the format A#######X where # is a digit and X is an uppercase letter (e.g., A0234567B).";
-    public static final String VALIDATION_REGEX = "A\\d{7}[A-Z]";
+            "NUS ID must be in the format A#######X where # is a digit and X is a letter (case-insensitive), "
+                    + "for example A0234567B or a0234567b.";
+    // Allow letters in either case for validation; use case-insensitive flag
+    public static final String VALIDATION_REGEX = "(?i)A\\d{7}[A-Z]";
     public final String value;
 
     /**
@@ -22,7 +24,8 @@ public class NusId {
     public NusId(String nusId) {
         requireNonNull(nusId);
         checkArgument(isValidNusId(nusId), MESSAGE_CONSTRAINTS);
-        value = nusId;
+        // store a canonical uppercase representation for consistency
+        value = nusId.toUpperCase();
     }
 
     /**

@@ -12,6 +12,8 @@ import cms.logic.commands.FindCommand;
 import cms.logic.parser.exceptions.ParseException;
 import cms.model.person.NameContainsKeywordsPredicate;
 import cms.model.person.NusIdContainsKeywordsPredicate;
+import cms.model.person.NameOrNusIdContainsKeywordsPredicate;
+import cms.model.person.NusId;
 
 /**
  * Parses input arguments and creates a new FindCommand object
@@ -57,13 +59,25 @@ public class FindCommandParser implements Parser<FindCommand> {
                 throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
             }
             List<String> idKeywords = Arrays.stream(idArg.split("\\s+"))
+                    .map(String::toUpperCase)
                     .collect(Collectors.toList());
             return new FindCommand(new NusIdContainsKeywordsPredicate(idKeywords));
         }
 
-        // Legacy behavior: no prefixes -> treat entire trimmedArgs as name keywords
-        String[] nameKeywords = trimmedArgs.split("\\s+");
-        return new FindCommand(new NameContainsKeywordsPredicate(Arrays.asList(nameKeywords)));
+        // New behavior: no prefixes -> split tokens and classify each as name or NUS ID
+        List<String> tokens = Arrays.stream(trimmedArgs.split("\\s+"))
+                .collect(Collectors.toList());
+
+        List<String> nameKeywords = tokens.stream()
+                .filter(token -> !NusId.isValidNusId(token))
+                .collect(Collectors.toList());
+
+        List<String> idKeywords = tokens.stream()
+                .filter(token -> NusId.isValidNusId(token))
+                .map(String::toUpperCase)
+                .collect(Collectors.toList());
+
+        return new FindCommand(new NameOrNusIdContainsKeywordsPredicate(nameKeywords, idKeywords));
     }
 
 }
