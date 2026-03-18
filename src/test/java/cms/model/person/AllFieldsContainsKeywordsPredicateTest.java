@@ -1,8 +1,8 @@
 package cms.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,7 +58,8 @@ public class AllFieldsContainsKeywordsPredicateTest {
         assertTrue(pPhone.test(person));
 
         // email contains
-        AllFieldsContainsKeywordsPredicate pEmail = new AllFieldsContainsKeywordsPredicate(Arrays.asList("example.com"));
+        AllFieldsContainsKeywordsPredicate pEmail =
+                new AllFieldsContainsKeywordsPredicate(Collections.singletonList("example.com"));
         assertTrue(pEmail.test(person));
 
         // soc contains
