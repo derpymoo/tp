@@ -18,8 +18,8 @@ import cms.model.Model;
 import cms.model.ModelManager;
 import cms.model.UserPrefs;
 import cms.model.person.NameContainsKeywordsPredicate;
-import cms.model.person.NusIdContainsKeywordsPredicate;
 import cms.model.person.NameOrNusIdContainsKeywordsPredicate;
+import cms.model.person.NusIdContainsKeywordsPredicate;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
@@ -111,7 +111,8 @@ public class FindCommandTest {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
         // lowercase nus id token (no prefix) should match ELLE whose nusId is A0234504F
         NameOrNusIdContainsKeywordsPredicate predicate =
-                new NameOrNusIdContainsKeywordsPredicate(Collections.emptyList(), Collections.singletonList("a0234504f"));
+                new NameOrNusIdContainsKeywordsPredicate(
+                        Collections.emptyList(), Collections.singletonList("a0234504f"));
         FindCommand command = new FindCommand(predicate);
         expectedModel.updateFilteredPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);

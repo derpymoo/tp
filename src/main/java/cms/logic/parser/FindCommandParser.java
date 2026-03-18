@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 import cms.logic.commands.FindCommand;
 import cms.logic.parser.exceptions.ParseException;
 import cms.model.person.NameContainsKeywordsPredicate;
-import cms.model.person.NusIdContainsKeywordsPredicate;
 import cms.model.person.NameOrNusIdContainsKeywordsPredicate;
 import cms.model.person.NusId;
+import cms.model.person.NusIdContainsKeywordsPredicate;
 
 /**
  * Parses input arguments and creates a new FindCommand object

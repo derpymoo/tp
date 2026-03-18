@@ -2,7 +2,6 @@ package cms.model.person;
 
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import cms.commons.util.StringUtil;
 import cms.commons.util.ToStringBuilder;
@@ -14,6 +13,12 @@ public class NameOrNusIdContainsKeywordsPredicate implements Predicate<Person> {
     private final List<String> nameKeywords;
     private final List<String> idKeywords;
 
+    /**
+     * Constructs a {@code NameOrNusIdContainsKeywordsPredicate}.
+     *
+     * @param nameKeywords list of name keywords (case-insensitive match)
+     * @param idKeywords list of NUS ID keywords (case-insensitive match)
+     */
     public NameOrNusIdContainsKeywordsPredicate(List<String> nameKeywords, List<String> idKeywords) {
         this.nameKeywords = (nameKeywords == null) ? List.of() : nameKeywords;
         this.idKeywords = (idKeywords == null) ? List.of() : idKeywords;
