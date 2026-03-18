@@ -99,6 +99,28 @@ public class FindCommandParserTest {
                         new NusIdContainsKeywordsPredicate(Collections.emptyList())));
         assertParseSuccess(parser, " a/  john   david  ", expected);
     }
+
+    @Test
+    public void parse_namePrefix_multipleWhitespaceSplits() {
+        // ensure name splitting filters out empty tokens
+        FindCommand expected = new FindCommand(
+                new CombinedFindPredicate(
+                        new AllFieldsContainsKeywordsPredicate(Collections.emptyList()),
+                        new NameContainsKeywordsPredicate(Arrays.asList("john", "david")),
+                        new NusIdContainsKeywordsPredicate(Collections.emptyList())));
+        assertParseSuccess(parser, " n/  john   david  ", expected);
+    }
+
+    @Test
+    public void parse_idPrefix_uppercasesIds() {
+        // ensure ids are uppercased by parser
+        FindCommand expected = new FindCommand(
+                new CombinedFindPredicate(
+                        new AllFieldsContainsKeywordsPredicate(Collections.emptyList()),
+                        new NameContainsKeywordsPredicate(Collections.emptyList()),
+                        new NusIdContainsKeywordsPredicate(Arrays.asList("A0234502D", "A0234505G"))));
+        assertParseSuccess(parser, " id/a0234502d a0234505g", expected);
+    }
 }
 
 

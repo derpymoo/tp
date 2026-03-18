@@ -72,5 +72,30 @@ public class CombinedFindPredicateTest {
         String s = a.toString();
         assertTrue(s.contains("allPredicate") && s.contains("namePredicate") && s.contains("idPredicate"));
     }
+
+    @Test
+    public void equals_partialDifferences_behaviour() {
+        // same allPredicate, different namePredicate -> should be false
+        CombinedFindPredicate p1 = new CombinedFindPredicate(
+                new AllFieldsContainsKeywordsPredicate(Arrays.asList("x")),
+                new NameContainsKeywordsPredicate(Arrays.asList("y1")),
+                new NusIdContainsKeywordsPredicate(Arrays.asList("Z")));
+        CombinedFindPredicate p2 = new CombinedFindPredicate(
+                new AllFieldsContainsKeywordsPredicate(Arrays.asList("x")),
+                new NameContainsKeywordsPredicate(Arrays.asList("y2")),
+                new NusIdContainsKeywordsPredicate(Arrays.asList("Z")));
+        assertFalse(p1.equals(p2));
+
+        // same all and name, different id -> should be false
+        CombinedFindPredicate p3 = new CombinedFindPredicate(
+                new AllFieldsContainsKeywordsPredicate(Arrays.asList("x")),
+                new NameContainsKeywordsPredicate(Arrays.asList("y1")),
+                new NusIdContainsKeywordsPredicate(Arrays.asList("Z1")));
+        CombinedFindPredicate p4 = new CombinedFindPredicate(
+                new AllFieldsContainsKeywordsPredicate(Arrays.asList("x")),
+                new NameContainsKeywordsPredicate(Arrays.asList("y1")),
+                new NusIdContainsKeywordsPredicate(Arrays.asList("Z2")));
+        assertFalse(p3.equals(p4));
+    }
 }
 

@@ -84,6 +84,70 @@ public class AllFieldsContainsKeywordsPredicateTest {
     }
 
     @Test
+    public void onlyNusIdMatches_returnsTrue() {
+        Person person = new PersonBuilder().withNusId("A0123456X").build();
+        AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("a0123456x"));
+        assertTrue(p.test(person));
+    }
+
+    @Test
+    public void onlyPhoneMatches_returnsTrue() {
+        Person person = new PersonBuilder().withPhone("91234567").build();
+        AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("9123"));
+        assertTrue(p.test(person));
+    }
+
+    @Test
+    public void onlyEmailMatches_returnsTrue() {
+        Person person = new PersonBuilder().withEmail("alice@example.com").build();
+        AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("example.com"));
+        assertTrue(p.test(person));
+    }
+
+    @Test
+    public void onlySocMatches_returnsTrue() {
+        Person person = new PersonBuilder().withSocUsername("alice").build();
+        AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("alice"));
+        assertTrue(p.test(person));
+    }
+
+    @Test
+    public void onlyGithubMatches_returnsTrue() {
+        Person person = new PersonBuilder().withGithubUsername("alicegit").build();
+        AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("alicegit"));
+        assertTrue(p.test(person));
+    }
+
+    @Test
+    public void onlyRoleMatches_returnsTrue() {
+        Person person = new PersonBuilder().withRole("student").build();
+        AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("STUDENT"));
+        assertTrue(p.test(person));
+    }
+
+    @Test
+    public void onlyTutorialMatches_returnsTrue() {
+        Person person = new PersonBuilder().withTutorialGroup("T10").build();
+        AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("t10"));
+        assertTrue(p.test(person));
+    }
+
+    @Test
+    public void multipleKeywords_laterKeywordMatches_returnsTrue() {
+        Person person = new PersonBuilder().withName("Alice Pauline").build();
+        AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
+                Arrays.asList("nomatch", "alice"));
+        assertTrue(p.test(person));
+    }
+
+    @Test
     public void noFieldMatches_returnsFalse() {
         Person person = new PersonBuilder().withName("Bob").withPhone("88888888").withTags("classmate").build();
         AllFieldsContainsKeywordsPredicate predicate = new AllFieldsContainsKeywordsPredicate(Arrays.asList("nomatch"));
