@@ -49,7 +49,8 @@ public class AddCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the system";
-    public static final String MESSAGE_CONFLICT_FIELD = "This person has conflicting field(s) with an existing person in the system: %1$s";
+    public static final String MESSAGE_DUPLICATE_FIELDS = "A person with the same fields already exists in the system";
+
     private final Person toAdd;
 
     /**
@@ -66,6 +67,10 @@ public class AddCommand extends Command {
 
         if (model.hasPerson(toAdd)) {
             throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+        }
+
+        if (model.hasPersonWithConflictingField(toAdd)) {
+            throw new CommandException(MESSAGE_DUPLICATE_FIELDS);
         }
 
         model.addPerson(toAdd);

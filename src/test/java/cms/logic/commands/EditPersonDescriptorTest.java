@@ -3,9 +3,14 @@ package cms.logic.commands;
 import static cms.logic.commands.CommandTestUtil.DESC_AMY;
 import static cms.logic.commands.CommandTestUtil.DESC_BOB;
 import static cms.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
+import static cms.logic.commands.CommandTestUtil.VALID_GITHUBUSERNAME_BOB;
 import static cms.logic.commands.CommandTestUtil.VALID_NAME_BOB;
+import static cms.logic.commands.CommandTestUtil.VALID_NUSID_BOB;
 import static cms.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
+import static cms.logic.commands.CommandTestUtil.VALID_ROLE_BOB;
+import static cms.logic.commands.CommandTestUtil.VALID_SOCUSERNAME_BOB;
 import static cms.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
+import static cms.logic.commands.CommandTestUtil.VALID_TUTORIALGROUP_BOB;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,6 +52,26 @@ public class EditPersonDescriptorTest {
         editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withEmail(VALID_EMAIL_BOB).build();
         assertFalse(DESC_AMY.equals(editedAmy));
 
+        // different nusId -> returns false
+        editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withNusId(VALID_NUSID_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different role -> returns false
+        editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withRole(VALID_ROLE_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different socUsername -> returns false
+        editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withSocUsername(VALID_SOCUSERNAME_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different githubUsername -> returns false
+        editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withGithubUsername(VALID_GITHUBUSERNAME_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
+        // different tutorialGroup -> returns false
+        editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withTutorialGroup(VALID_TUTORIALGROUP_BOB).build();
+        assertFalse(DESC_AMY.equals(editedAmy));
+
         // different tags -> returns false
         editedAmy = new EditPersonDescriptorBuilder(DESC_AMY).withTags(VALID_TAG_HUSBAND).build();
         assertFalse(DESC_AMY.equals(editedAmy));
@@ -58,7 +83,12 @@ public class EditPersonDescriptorTest {
         String expected = EditPersonDescriptor.class.getCanonicalName() + "{name="
                 + editPersonDescriptor.getName().orElse(null) + ", phone="
                 + editPersonDescriptor.getPhone().orElse(null) + ", email="
-                + editPersonDescriptor.getEmail().orElse(null) + ", tags="
+                + editPersonDescriptor.getEmail().orElse(null) + ", nusId="
+                + editPersonDescriptor.getNusId().orElse(null) + ", role="
+                + editPersonDescriptor.getRole().orElse(null) + ", socUsername="
+                + editPersonDescriptor.getSocUsername().orElse(null) + ", githubUsername="
+                + editPersonDescriptor.getGithubUsername().orElse(null) + ", tutorialGroup="
+                + editPersonDescriptor.getTutorialGroup().orElse(null) + ", tags="
                 + editPersonDescriptor.getTags().orElse(null) + "}";
         assertEquals(expected, editPersonDescriptor.toString());
     }
