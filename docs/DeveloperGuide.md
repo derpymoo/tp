@@ -423,13 +423,25 @@ testers are expected to do more *exploratory* testing.
    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
 
    1. Test case: `delete 1`<br>
-      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message. Timestamp in the status bar is updated.
+      Expected: First contact is deleted from the list. Details of the deleted contact shown in the status message.
 
-   1. Test case: `delete 0`<br>
-      Expected: No person is deleted. Error details shown in the status message. Status bar remains the same.
+   1. Test case: `delete 1 3`<br>
+      Expected: First and third contacts are deleted from the list. Details of the deleted contacts shown in the status message.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
+   1. Test case: `delete id/A0000001B`<br>
+      Expected: The contact with NUS ID `A0000001B` is deleted from the list. Details of the deleted contact shown in the status message.
+
+   1. Test case: `delete id/A0000001B A0000003D`<br>
+      Expected: The contacts with NUS IDs `A0000001B` and `A0000003D` are deleted from the list. Details of the deleted contacts shown in the status message.
+
+   1. Test case: `delete 1 1`<br>
+      Expected: First contact is deleted only once. Details of the deleted contact shown in the status message.
+
+   1. Test case: `delete id/A0000001B A0000001B`<br>
+      Expected: The contact with NUS ID `A0000001B` is deleted only once. Details of the deleted contact shown in the status message.
+
+   1. Other incorrect delete commands to try: `delete`, `delete 0`, `delete x`, `delete 999`, `delete id/A9999999Z`<br>
+      Expected: Error messages are shown describing the invalid command format or invalid target person(s).
 
 1. _{ more test cases …​ }_
 
