@@ -414,7 +414,6 @@ testers are expected to do more *exploratory* testing.
    1. Re-launch the app by double-clicking the jar file.<br>
        Expected: The most recent window size and location is retained.
 
-
 ### Adding a student / tutor
 
 1. Adding a person while all persons are being shown
@@ -433,7 +432,6 @@ testers are expected to do more *exploratory* testing.
 
    1. Other incorrect add commands to try: `add`, `add n/`<br>
       Expected: Validation errors are shown describing the missing required fields or incorrect format.
-
 
 ### Deleting a person
 
