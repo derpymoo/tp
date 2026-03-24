@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -228,6 +229,51 @@ public class UniquePersonListTest {
     }
 
     @Test
+    public void sortByTutorialGroup_numericTutorialGroups_sortsByGroupNumber() {
+        Person firstPerson = new PersonBuilder(ALICE).build();
+        Person secondPerson = new PersonBuilder(BOB).build();
+        uniquePersonList.add(firstPerson);
+        uniquePersonList.add(secondPerson);
+
+        setTutorialGroupValue(firstPerson, "T10");
+        setTutorialGroupValue(secondPerson, "T02");
+
+        uniquePersonList.sortByTutorialGroup();
+
+        assertEquals(Arrays.asList(secondPerson, firstPerson), uniquePersonList.asUnmodifiableObservableList());
+    }
+
+    @Test
+    public void sortByTutorialGroup_unparseableTutorialGroups_fallsBackToStringComparison() {
+        Person firstPerson = new PersonBuilder(ALICE).build();
+        Person secondPerson = new PersonBuilder(BOB).build();
+        uniquePersonList.add(firstPerson);
+        uniquePersonList.add(secondPerson);
+
+        setTutorialGroupValue(firstPerson, "TA");
+        setTutorialGroupValue(secondPerson, "T9");
+
+        uniquePersonList.sortByTutorialGroup();
+
+        assertEquals(Arrays.asList(secondPerson, firstPerson), uniquePersonList.asUnmodifiableObservableList());
+    }
+
+    @Test
+    public void sort_resortsListByTutorialGroup() {
+        Person firstPerson = new PersonBuilder(ALICE).build();
+        Person secondPerson = new PersonBuilder(BOB).build();
+        uniquePersonList.add(firstPerson);
+        uniquePersonList.add(secondPerson);
+
+        setTutorialGroupValue(firstPerson, "T10");
+        setTutorialGroupValue(secondPerson, "T02");
+
+        uniquePersonList.sort();
+
+        assertEquals(Arrays.asList(secondPerson, firstPerson), uniquePersonList.asUnmodifiableObservableList());
+    }
+
+    @Test
     public void asUnmodifiableObservableList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, ()
                 -> uniquePersonList.asUnmodifiableObservableList().remove(0));
@@ -236,5 +282,15 @@ public class UniquePersonListTest {
     @Test
     public void toStringMethod() {
         assertEquals(uniquePersonList.asUnmodifiableObservableList().toString(), uniquePersonList.toString());
+    }
+
+    private static void setTutorialGroupValue(Person person, String tutorialGroupValue) {
+        try {
+            Field tutorialGroupValueField = TutorialGroup.class.getDeclaredField("value");
+            tutorialGroupValueField.setAccessible(true);
+            tutorialGroupValueField.set(person.getTutorialGroup(), tutorialGroupValue);
+        } catch (ReflectiveOperationException e) {
+            throw new AssertionError("Unable to set tutorial group value for test setup", e);
+        }
     }
 }
