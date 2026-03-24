@@ -10,9 +10,24 @@ public class FieldConflict {
      * The unique field types that can conflict between persons.
      */
     public enum Type {
-        EMAIL("email"),
-        SOC_USERNAME("SOC username"),
-        GITHUB_USERNAME("GitHub username");
+        EMAIL("email") {
+            @Override
+            public String getValue(Person person) {
+                return person.getEmail().toString();
+            }
+        },
+        SOC_USERNAME("SOC username") {
+            @Override
+            public String getValue(Person person) {
+                return person.getSocUsername().toString();
+            }
+        },
+        GITHUB_USERNAME("GitHub username") {
+            @Override
+            public String getValue(Person person) {
+                return person.getGithubUsername().toString();
+            }
+        };
 
         private final String displayName;
 
@@ -23,6 +38,11 @@ public class FieldConflict {
         public String getDisplayName() {
             return displayName;
         }
+
+        /**
+         * Returns the value of this conflict type from the given person.
+         */
+        public abstract String getValue(Person person);
     }
 
     private final Type fieldType;
@@ -54,10 +74,6 @@ public class FieldConflict {
      * Returns the conflicting field value from the conflicting person.
      */
     public String getFieldValue() {
-        return switch (fieldType) {
-        case EMAIL -> conflictingPerson.getEmail().toString();
-        case SOC_USERNAME -> conflictingPerson.getSocUsername().toString();
-        case GITHUB_USERNAME -> conflictingPerson.getGithubUsername().toString();
-        };
+        return fieldType.getValue(conflictingPerson);
     }
 }

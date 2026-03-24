@@ -32,18 +32,25 @@ public class FieldConflictTest {
     }
 
     @Test
-    public void socUsernameConflict_getFieldValue_returnsSocUsername() {
+    public void socUsernameConflict_accessors_returnExpectedValues() {
         Person conflictingPerson = new PersonBuilder(ALICE).withSocUsername("alice1").build();
         FieldConflict conflict = new FieldConflict(FieldConflict.Type.SOC_USERNAME, conflictingPerson);
 
+        assertEquals("SOC username", conflict.getFieldName());
+        assertEquals(FieldConflict.Type.SOC_USERNAME, conflict.getFieldType());
+        assertEquals(conflictingPerson, conflict.getConflictingPerson());
         assertEquals(conflictingPerson.getSocUsername().toString(), conflict.getFieldValue());
     }
 
     @Test
-    public void githubUsernameConflict_getFieldValue_returnsGithubUsername() {
+    public void githubUsernameConflict_accessors_returnExpectedValues() {
         Person conflictingPerson = new PersonBuilder(ALICE).withGithubUsername("alice-gh").build();
         FieldConflict conflict = new FieldConflict(FieldConflict.Type.GITHUB_USERNAME, conflictingPerson);
 
+        assertEquals("GitHub username", conflict.getFieldName());
+        assertEquals(FieldConflict.Type.GITHUB_USERNAME, conflict.getFieldType());
+        assertEquals(conflictingPerson, conflict.getConflictingPerson());
         assertEquals(conflictingPerson.getGithubUsername().toString(), conflict.getFieldValue());
     }
+
 }
