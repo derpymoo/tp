@@ -95,7 +95,7 @@ public class AddressBookParserTest {
                 FilterCommand.COMMAND_WORD + " tag/friends t/01");
         assertEquals(new FilterCommand(
                 new TagTutorialGroupMatchesPredicate(java.util.Set.of(new Tag("friends")),
-                        java.util.Set.of(new TutorialGroup("T01")))),
+                        java.util.Set.of(new TutorialGroup("01")))),
                 command);
     }
 

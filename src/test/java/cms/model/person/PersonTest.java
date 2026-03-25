@@ -98,7 +98,7 @@ public class PersonTest {
         assertFalse(ALICE.equals(editedAlice));
 
         // different tutorial group -> returns false
-        editedAlice = new PersonBuilder(ALICE).withTutorialGroup("T02").build();
+        editedAlice = new PersonBuilder(ALICE).withTutorialGroup("02").build();
         assertFalse(ALICE.equals(editedAlice));
 
         // different tags -> returns false

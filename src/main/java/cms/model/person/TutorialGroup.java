@@ -10,8 +10,8 @@ import static java.util.Objects.requireNonNull;
 public class TutorialGroup {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Tutorial group should be in the format of 'Txx' where xx is a number between 01 and 99.";
-    public static final String VALIDATION_REGEX = "T(0[1-9]|[1-9][0-9])";
+            "Tutorial group should be a number between 01 and 99.";
+    public static final String VALIDATION_REGEX = "0[1-9]|[1-9][0-9]";
     public final String value;
 
     /**

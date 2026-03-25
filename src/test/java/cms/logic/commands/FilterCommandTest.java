@@ -34,9 +34,9 @@ public class FilterCommandTest {
     @Test
     public void equals() {
         TagTutorialGroupMatchesPredicate firstPredicate =
-                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friends")), Set.of(new TutorialGroup("T01")));
+                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friends")), Set.of(new TutorialGroup("01")));
         TagTutorialGroupMatchesPredicate secondPredicate =
-                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("owesMoney")), Set.of(new TutorialGroup("T02")));
+                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("owesMoney")), Set.of(new TutorialGroup("02")));
 
         FilterCommand filterFirstCommand = new FilterCommand(firstPredicate);
         FilterCommand filterSecondCommand = new FilterCommand(secondPredicate);
@@ -62,7 +62,7 @@ public class FilterCommandTest {
     @Test
     public void execute_tutorialGroupOnly_success() {
         TagTutorialGroupMatchesPredicate predicate =
-                new TagTutorialGroupMatchesPredicate(Set.of(), Set.of(new TutorialGroup("T01")));
+                new TagTutorialGroupMatchesPredicate(Set.of(), Set.of(new TutorialGroup("01")));
         FilterCommand command = new FilterCommand(predicate);
 
         expectedModel.updateFilteredPersonList(predicate);
@@ -73,7 +73,7 @@ public class FilterCommandTest {
     @Test
     public void execute_tagAndTutorialGroup_success() {
         TagTutorialGroupMatchesPredicate predicate =
-                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friends")), Set.of(new TutorialGroup("T01")));
+                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friends")), Set.of(new TutorialGroup("01")));
         FilterCommand command = new FilterCommand(predicate);
 
         expectedModel.updateFilteredPersonList(predicate);
@@ -84,7 +84,7 @@ public class FilterCommandTest {
     @Test
     public void execute_caseInsensitiveMatching_success() {
         TagTutorialGroupMatchesPredicate predicate =
-                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("FRIENDS")), Set.of(new TutorialGroup("T01")));
+                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("FRIENDS")), Set.of(new TutorialGroup("01")));
         FilterCommand command = new FilterCommand(predicate);
 
         expectedModel.updateFilteredPersonList(predicate);
@@ -99,7 +99,7 @@ public class FilterCommandTest {
         Person dualTaggedPerson = new PersonBuilder().withName("Hannah Dualtag")
                 .withNusId("A1234567B").withSocUsername("hannah1").withGithubUsername("hannah-dual")
                 .withEmail("hannah@example.com").withPhone("81234567")
-                .withTutorialGroup("T01").withTags("friends", "owesMoney").build();
+                .withTutorialGroup("01").withTags("friends", "owesMoney").build();
         localModel.addPerson(dualTaggedPerson);
         localExpectedModel.addPerson(dualTaggedPerson);
 
@@ -118,7 +118,7 @@ public class FilterCommandTest {
     public void execute_repeatedTutorialGroupsRejected_success() {
         TagTutorialGroupMatchesPredicate predicate =
                 new TagTutorialGroupMatchesPredicate(Set.of(),
-                        Set.of(new TutorialGroup("T01"), new TutorialGroup("T02")));
+                        Set.of(new TutorialGroup("01"), new TutorialGroup("02")));
         FilterCommand command = new FilterCommand(predicate);
 
         expectedModel.updateFilteredPersonList(predicate);
@@ -130,7 +130,7 @@ public class FilterCommandTest {
     public void execute_noMatches_success() {
         TagTutorialGroupMatchesPredicate predicate =
                 new TagTutorialGroupMatchesPredicate(Collections.singleton(new Tag("mentor")),
-                        Collections.singleton(new TutorialGroup("T99")));
+                        Collections.singleton(new TutorialGroup("99")));
         FilterCommand command = new FilterCommand(predicate);
 
         expectedModel.updateFilteredPersonList(predicate);
@@ -141,7 +141,7 @@ public class FilterCommandTest {
     @Test
     public void toStringMethod() {
         TagTutorialGroupMatchesPredicate predicate =
-                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friends")), Set.of(new TutorialGroup("T01")));
+                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friends")), Set.of(new TutorialGroup("01")));
         FilterCommand filterCommand = new FilterCommand(predicate);
         String expected = FilterCommand.class.getCanonicalName()
                 + "{predicate=" + predicate + "}";

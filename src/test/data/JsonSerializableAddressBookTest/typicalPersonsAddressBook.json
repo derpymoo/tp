@@ -10,7 +10,7 @@
       "githubUsername": "amybee",
       "address": "123, Jurong West Ave 6, #08-111",
       "role": "student",
-      "tutorialGroup": "T01",
+      "tutorialGroup": "01",
       "tags": [
         "friends"
       ]
@@ -24,7 +24,7 @@
       "githubUsername": "benson-m",
       "address": "311, Clementi Ave 2, #02-25",
       "role": "student",
-      "tutorialGroup": "T01",
+      "tutorialGroup": "01",
       "tags": [
         "owesMoney",
         "friends"
@@ -39,7 +39,7 @@
       "githubUsername": "carl-kurz",
       "address": "wall street",
       "role": "student",
-      "tutorialGroup": "T01",
+      "tutorialGroup": "01",
       "tags": []
     },
     {
@@ -51,7 +51,7 @@
       "githubUsername": "daniel-m",
       "address": "10th street",
       "role": "student",
-      "tutorialGroup": "T01",
+      "tutorialGroup": "01",
       "tags": [
         "friends"
       ]
@@ -65,7 +65,7 @@
       "githubUsername": "elle-m",
       "address": "michegan ave",
       "role": "student",
-      "tutorialGroup": "T01",
+      "tutorialGroup": "01",
       "tags": []
     },
     {
@@ -77,7 +77,7 @@
       "githubUsername": "fiona-k",
       "address": "little tokyo",
       "role": "student",
-      "tutorialGroup": "T01",
+      "tutorialGroup": "01",
       "tags": []
     },
     {
@@ -89,7 +89,7 @@
       "githubUsername": "george-b",
       "address": "4th street",
       "role": "student",
-      "tutorialGroup": "T01",
+      "tutorialGroup": "01",
       "tags": []
     }
   ]

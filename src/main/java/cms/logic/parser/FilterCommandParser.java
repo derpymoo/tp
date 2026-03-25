@@ -62,13 +62,13 @@ public class FilterCommandParser implements Parser<FilterCommand> {
 
     /**
      * Parses tutorial group input for the filter command.
-     * Filter users enter groups as 01-99, which map to stored values such as T01-T99.
+     * Filter users enter groups as 01-99.
      */
     private TutorialGroup parseFilterTutorialGroup(String rawTutorialGroup) throws ParseException {
         String trimmedTutorialGroup = rawTutorialGroup.trim();
         if (!trimmedTutorialGroup.matches(FILTER_TUTORIAL_GROUP_REGEX)) {
             throw new ParseException(MESSAGE_FILTER_TUTORIAL_GROUP_CONSTRAINTS);
         }
-        return ParserUtil.parseTutorialGroup("T" + trimmedTutorialGroup);
+        return ParserUtil.parseTutorialGroup(trimmedTutorialGroup);
     }
 }

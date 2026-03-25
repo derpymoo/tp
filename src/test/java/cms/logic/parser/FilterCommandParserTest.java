@@ -39,7 +39,7 @@ public class FilterCommandParserTest {
     @Test
     public void parse_tutorialGroupOnly_success() {
         FilterCommand expectedCommand =
-                new FilterCommand(new TagTutorialGroupMatchesPredicate(Set.of(), Set.of(new TutorialGroup("T01"))));
+                new FilterCommand(new TagTutorialGroupMatchesPredicate(Set.of(), Set.of(new TutorialGroup("01"))));
         assertParseSuccess(parser, " t/01", expectedCommand);
     }
 
@@ -47,7 +47,7 @@ public class FilterCommandParserTest {
     public void parse_tagThenTutorialGroup_success() {
         FilterCommand expectedCommand =
                 new FilterCommand(new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friend")),
-                        Set.of(new TutorialGroup("T01"))));
+                        Set.of(new TutorialGroup("01"))));
         assertParseSuccess(parser, " tag/friend t/01", expectedCommand);
     }
 
@@ -55,7 +55,7 @@ public class FilterCommandParserTest {
     public void parse_tutorialGroupThenTag_success() {
         FilterCommand expectedCommand =
                 new FilterCommand(new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friend")),
-                        Set.of(new TutorialGroup("T01"))));
+                        Set.of(new TutorialGroup("01"))));
         assertParseSuccess(parser, " t/01 tag/friend", expectedCommand);
     }
 
@@ -63,7 +63,7 @@ public class FilterCommandParserTest {
     public void parse_repeatedPrefixes_success() {
         FilterCommand expectedCommand =
                 new FilterCommand(new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friend"), new Tag("husband")),
-                        Set.of(new TutorialGroup("T01"))));
+                        Set.of(new TutorialGroup("01"))));
         assertParseSuccess(parser, " tag/friend tag/husband t/01", expectedCommand);
     }
 
@@ -76,7 +76,7 @@ public class FilterCommandParserTest {
     @Test
     public void parse_upperBoundTutorialGroup_success() {
         FilterCommand expectedCommand =
-                new FilterCommand(new TagTutorialGroupMatchesPredicate(Set.of(), Set.of(new TutorialGroup("T99"))));
+                new FilterCommand(new TagTutorialGroupMatchesPredicate(Set.of(), Set.of(new TutorialGroup("99"))));
         assertParseSuccess(parser, " t/99", expectedCommand);
     }
 
