@@ -43,11 +43,11 @@ public class Messages {
      * Formats the {@code person} for display to the user, optionally masking sensitive fields.
      */
     public static String format(Person person, boolean isMasked) {
-        String phone = isMasked ? MaskingUtil.maskPhone(person.getPhone().toString()) : person.getPhone().toString();
-        String email = isMasked ? MaskingUtil.maskEmail(person.getEmail().toString()) : person.getEmail().toString();
-        String socUsername = isMasked ? MaskingUtil.maskUsername(person.getSocUsername().toString())
+        String phone = isMasked ? MaskingUtil.maskPhone(person.getPhone()) : person.getPhone().toString();
+        String email = isMasked ? MaskingUtil.maskEmail(person.getEmail()) : person.getEmail().toString();
+        String socUsername = isMasked ? MaskingUtil.maskSocUsername(person.getSocUsername())
                 : person.getSocUsername().toString();
-        String githubUsername = isMasked ? MaskingUtil.maskUsername(person.getGithubUsername().toString())
+        String githubUsername = isMasked ? MaskingUtil.maskGithubUsername(person.getGithubUsername())
                 : person.getGithubUsername().toString();
         final StringBuilder builder = new StringBuilder();
         builder.append(person.getName())

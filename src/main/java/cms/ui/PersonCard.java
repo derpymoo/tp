@@ -60,14 +60,14 @@ public class PersonCard extends UiPart<Region> {
         this.person = person;
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
-        phone.setText(isMasked ? MaskingUtil.maskPhone(person.getPhone().value) : person.getPhone().value);
-        email.setText(isMasked ? MaskingUtil.maskEmail(person.getEmail().value) : person.getEmail().value);
+        phone.setText(isMasked ? MaskingUtil.maskPhone(person.getPhone()) : person.getPhone().value);
+        email.setText(isMasked ? MaskingUtil.maskEmail(person.getEmail()) : person.getEmail().value);
         nusId.setText(person.getNusId().value);
         socUsername.setText(isMasked
-                ? MaskingUtil.maskUsername(person.getSocUsername().value)
+                ? MaskingUtil.maskSocUsername(person.getSocUsername())
                 : person.getSocUsername().value);
         githubUsername.setText(isMasked
-                ? MaskingUtil.maskUsername(person.getGithubUsername().value)
+                ? MaskingUtil.maskGithubUsername(person.getGithubUsername())
                 : person.getGithubUsername().value);
         role.setText(person.getRole().value);
         tutorialGroup.setText(person.getTutorialGroup().value);

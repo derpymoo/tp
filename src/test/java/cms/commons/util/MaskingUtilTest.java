@@ -5,6 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 
+import cms.model.person.Email;
+import cms.model.person.GithubUsername;
+import cms.model.person.Phone;
+import cms.model.person.SocUsername;
+
 public class MaskingUtilTest {
 
     @Test
@@ -15,27 +20,31 @@ public class MaskingUtilTest {
     @Test
     public void maskPhone() {
         assertNull(MaskingUtil.maskPhone(null));
-        assertEquals("", MaskingUtil.maskPhone(""));
-        assertEquals("***", MaskingUtil.maskPhone("123"));
-        assertEquals("****", MaskingUtil.maskPhone("1234"));
-        assertEquals("****5678", MaskingUtil.maskPhone("12345678"));
+        assertEquals("***", MaskingUtil.maskPhone(new Phone("123")));
+        assertEquals("****", MaskingUtil.maskPhone(new Phone("1234")));
+        assertEquals("****5678", MaskingUtil.maskPhone(new Phone("12345678")));
     }
 
     @Test
     public void maskEmail() {
         assertNull(MaskingUtil.maskEmail(null));
-        assertEquals("", MaskingUtil.maskEmail(""));
-        assertEquals("abc@u.nus.edu", MaskingUtil.maskEmail("abc@u.nus.edu"));
-        assertEquals("abc****@u.nus.edu", MaskingUtil.maskEmail("abcdefg@u.nus.edu"));
-        assertEquals("abc*", MaskingUtil.maskEmail("abc@"));
-        assertEquals("abc***", MaskingUtil.maskEmail("abcdef"));
+        assertEquals("********@u.nus.edu", MaskingUtil.maskEmail(new Email("abc@u.nus.edu")));
+        assertEquals("********@u.nus.edu", MaskingUtil.maskEmail(new Email("abcdefg@u.nus.edu")));
+        assertEquals("********@u.nus.edu", MaskingUtil.maskEmail(new Email("ab@u.nus.edu")));
     }
 
     @Test
-    public void maskUsername() {
-        assertNull(MaskingUtil.maskUsername(null));
-        assertEquals("", MaskingUtil.maskUsername(""));
-        assertEquals("abc", MaskingUtil.maskUsername("abc"));
-        assertEquals("abc****", MaskingUtil.maskUsername("abcdefg"));
+    public void maskSocUsername() {
+        assertNull(MaskingUtil.maskSocUsername(null));
+        assertEquals("********", MaskingUtil.maskSocUsername(new SocUsername("abcde")));
+        assertEquals("********", MaskingUtil.maskSocUsername(new SocUsername("abcdefgh")));
+    }
+
+    @Test
+    public void maskGithubUsername() {
+        assertNull(MaskingUtil.maskGithubUsername(null));
+        assertEquals("********", MaskingUtil.maskGithubUsername(new GithubUsername("abc")));
+        assertEquals("********", MaskingUtil.maskGithubUsername(new GithubUsername("abcdefg")));
+        assertEquals("********", MaskingUtil.maskGithubUsername(new GithubUsername("ab")));
     }
 }

@@ -39,14 +39,26 @@ public class MessagesTest {
         String formatted = Messages.format(person, true);
 
         assertTrue(formatted.contains("Phone: ****5678"));
-        assertTrue(formatted.contains("Email: abc****@u.nus.edu"));
-        assertTrue(formatted.contains("SoC Username: soc****"));
-        assertTrue(formatted.contains("GitHub Username: git****"));
+        assertTrue(formatted.contains("Email: ********@u.nus.edu"));
+        assertTrue(formatted.contains("SoC Username: ********"));
+        assertTrue(formatted.contains("GitHub Username: ********"));
     }
 
     @Test
     public void format_defaultOverload_isUnmasked() {
         Person person = new PersonBuilder().build();
         assertEquals(Messages.format(person, false), Messages.format(person));
+    }
+
+    @Test
+    public void format_maskedHidesShortValues() {
+        Person person = new PersonBuilder()
+                .withEmail("ab@u.nus.edu")
+                .withGithubUsername("ab")
+                .build();
+
+        String formatted = Messages.format(person, true);
+        assertTrue(formatted.contains("Email: ********@u.nus.edu"));
+        assertTrue(formatted.contains("GitHub Username: ********"));
     }
 }
