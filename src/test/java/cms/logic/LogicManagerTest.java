@@ -220,7 +220,7 @@ public class LogicManagerTest {
                 .build());
 
         Path normalizedImportPath = importPath.toAbsolutePath().normalize();
-        String importCommand = ImportCommand.COMMAND_WORD + " \"" + normalizedImportPath + "\"";
+        String importCommand = buildImportCommand(normalizedImportPath, null);
         assertCommandFailure(importCommand, CommandException.class, LogicManager.IMPORT_KEEP_REQUIRED_NON_EMPTY);
         assertEquals(1, model.getFilteredPersonList().size());
         assertEquals(expectedCurrentPerson, model.getFilteredPersonList().get(0));
@@ -245,7 +245,7 @@ public class LogicManagerTest {
         Path importPath = createImportFileWithSinglePerson(incomingPerson);
         Path normalizedImportPath = importPath.toAbsolutePath().normalize();
 
-        String importCommand = ImportCommand.COMMAND_WORD + " \"" + normalizedImportPath + "\" keep/current";
+        String importCommand = buildImportCommand(normalizedImportPath, "keep/current");
         CommandResult result = logic.execute(importCommand);
 
         assertEquals(String.format(ImportCommand.MESSAGE_KEEP_CURRENT_SUCCESS, normalizedImportPath),
@@ -272,7 +272,7 @@ public class LogicManagerTest {
         Path importPath = createImportFileWithSinglePerson(incomingPerson);
         Path normalizedImportPath = importPath.toAbsolutePath().normalize();
 
-        String importCommand = ImportCommand.COMMAND_WORD + " \"" + normalizedImportPath + "\" keep/incoming";
+        String importCommand = buildImportCommand(normalizedImportPath, "keep/incoming");
         CommandResult result = logic.execute(importCommand);
 
         assertEquals(String.format(ImportCommand.MESSAGE_SUCCESS, normalizedImportPath), result.getFeedbackToUser());
@@ -384,5 +384,15 @@ public class LogicManagerTest {
         Path importPath = temporaryFolder.resolve("imports").resolve(person.getNusId() + ".json");
         new JsonAddressBookStorage(importPath).saveAddressBook(incomingAddressBook, importPath);
         return importPath;
+    }
+
+    private String buildImportCommand(Path importPath, String keepOption) {
+        String pathText = importPath.toAbsolutePath().normalize().toString();
+        String pathArg = pathText.contains(" ") ? "\"" + pathText + "\"" : pathText;
+        String command = ImportCommand.COMMAND_WORD + " " + pathArg;
+        if (keepOption != null) {
+            command += " " + keepOption;
+        }
+        return command;
     }
 }
