@@ -29,4 +29,22 @@ public class UserPrefsTest {
         assertTrue(userPrefs.isMasked());
     }
 
+    @Test
+    public void equalsAndHashCode_withDifferentMaskValue_notEqual() {
+        UserPrefs unmasked = new UserPrefs();
+        UserPrefs masked = new UserPrefs();
+        masked.setMasked(true);
+
+        assertFalse(unmasked.equals(masked));
+        assertFalse(masked.equals(unmasked));
+        assertFalse(unmasked.hashCode() == masked.hashCode());
+    }
+
+    @Test
+    public void toString_withMaskedTrue_containsMaskingEnabled() {
+        UserPrefs userPrefs = new UserPrefs();
+        userPrefs.setMasked(true);
+        assertTrue(userPrefs.toString().contains("Masking enabled : true"));
+    }
+
 }

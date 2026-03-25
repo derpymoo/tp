@@ -22,6 +22,7 @@ public class MaskingUtilTest {
         assertEquals("", MaskingUtil.maskEmail(""));
         assertEquals("abc@u.nus.edu", MaskingUtil.maskEmail("abc@u.nus.edu"));
         assertEquals("abc****@u.nus.edu", MaskingUtil.maskEmail("abcdefg@u.nus.edu"));
+        assertEquals("abc*", MaskingUtil.maskEmail("abc@"));
         assertEquals("abc***", MaskingUtil.maskEmail("abcdef"));
     }
 
