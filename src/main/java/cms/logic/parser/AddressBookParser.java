@@ -17,6 +17,7 @@ import cms.logic.commands.ExitCommand;
 import cms.logic.commands.ExportCommand;
 import cms.logic.commands.FindCommand;
 import cms.logic.commands.HelpCommand;
+import cms.logic.commands.ImportCommand;
 import cms.logic.commands.ListCommand;
 import cms.logic.parser.exceptions.ParseException;
 
@@ -77,6 +78,9 @@ public class AddressBookParser {
 
         case ExportCommand.COMMAND_WORD:
             return new ExportCommandParser().parse(arguments);
+
+        case ImportCommand.COMMAND_WORD:
+            return new ImportCommandParser().parse(arguments);
 
         case HelpCommand.COMMAND_WORD:
             return new HelpCommand();

@@ -7,9 +7,11 @@ import java.util.logging.Logger;
 
 import cms.commons.core.GuiSettings;
 import cms.commons.core.LogsCenter;
+import cms.commons.exceptions.DataLoadingException;
 import cms.logic.commands.Command;
 import cms.logic.commands.CommandResult;
 import cms.logic.commands.ExportCommand;
+import cms.logic.commands.ImportCommand;
 import cms.logic.commands.exceptions.CommandException;
 import cms.logic.parser.AddressBookParser;
 import cms.logic.parser.exceptions.ParseException;
@@ -73,6 +75,19 @@ public class LogicManager implements Logic {
             } catch (IOException ioe) {
                 throw new CommandException(String.format(FILE_OPS_EXPORT_ERROR_FORMAT,
                         exportFilePath, ioe.getMessage()), ioe);
+            }
+        }
+
+        if (command instanceof ImportCommand) {
+            Path importFilePath = ((ImportCommand) command).getImportFilePath();
+            try {
+                ReadOnlyAddressBook importedAddressBook = storage.readAddressBook(importFilePath)
+                        .orElseThrow(() -> new CommandException(
+                                "Import file is empty or not a valid address book data file."));
+                model.setAddressBook(importedAddressBook);
+                model.updateFilteredPersonList(model.PREDICATE_SHOW_ALL_PERSONS);
+            } catch (DataLoadingException dle) {
+                throw new CommandException("Import file contains invalid address book data.", dle);
             }
         }
 
