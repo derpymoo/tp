@@ -73,7 +73,7 @@ public class AddCommand extends Command {
             throw new CommandException(e.getMessage());
         }
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd)));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, Messages.format(toAdd, model.isMasked())));
     }
 
     @Override
