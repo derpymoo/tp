@@ -8,6 +8,11 @@ import org.junit.jupiter.api.Test;
 public class MaskingUtilTest {
 
     @Test
+    public void constructor() {
+        new MaskingUtil();
+    }
+
+    @Test
     public void maskPhone() {
         assertNull(MaskingUtil.maskPhone(null));
         assertEquals("", MaskingUtil.maskPhone(""));
