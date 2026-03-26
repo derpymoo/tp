@@ -7,6 +7,7 @@ import static cms.testutil.TypicalPersons.BENSON;
 import static cms.testutil.TypicalPersons.DANIEL;
 import static cms.testutil.TypicalPersons.getTypicalAddressBook;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.Arrays;
@@ -45,6 +46,7 @@ public class FilterCommandTest {
 
         FilterCommand filterFirstCommandCopy = new FilterCommand(firstPredicate);
         assertEquals(filterFirstCommand, filterFirstCommandCopy);
+        assertFalse(filterFirstCommand.equals(new Object()));
         assertNotEquals(new Object(), filterFirstCommand);
         assertNotEquals(null, filterFirstCommand);
         assertNotEquals(filterSecondCommand, filterFirstCommand);
