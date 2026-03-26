@@ -25,6 +25,7 @@ import org.junit.jupiter.api.io.TempDir;
 import cms.logic.commands.AddCommand;
 import cms.logic.commands.CommandResult;
 import cms.logic.commands.ListCommand;
+import cms.logic.commands.SortCommand;
 import cms.logic.commands.exceptions.CommandException;
 import cms.logic.parser.exceptions.ParseException;
 import cms.model.Model;
@@ -72,6 +73,64 @@ public class LogicManagerTest {
     public void execute_validCommand_success() throws Exception {
         String listCommand = ListCommand.COMMAND_WORD;
         assertCommandSuccess(listCommand, ListCommand.MESSAGE_SUCCESS, model);
+    }
+
+    @Test
+    public void execute_sortCommandByTutorialGroup_success() throws Exception {
+        Person tutorialGroupTen = new PersonBuilder()
+                .withName("Logic Sort Alpha")
+                .withNusId("A1999991B")
+                .withEmail("logic-sort-a@test.com")
+                .withSocUsername("logic1")
+                .withGithubUsername("logic-gh-1")
+                .withTutorialGroup("10")
+                .build();
+        Person tutorialGroupTwo = new PersonBuilder()
+                .withName("Logic Sort Beta")
+                .withNusId("A1999992C")
+                .withEmail("logic-sort-b@test.com")
+                .withSocUsername("logic2")
+                .withGithubUsername("logic-gh-2")
+                .withTutorialGroup("02")
+                .build();
+
+        model.addPerson(tutorialGroupTen);
+        model.addPerson(tutorialGroupTwo);
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.sortPersonsByTutorialGroup();
+
+        assertCommandSuccess(SortCommand.COMMAND_WORD + " " + SortCommand.SORT_BY_TUTORIAL_GROUP,
+                SortCommand.MESSAGE_SUCCESS_TUTORIAL_GROUP, expectedModel);
+    }
+
+    @Test
+    public void execute_sortCommandByName_success() throws Exception {
+        Person zed = new PersonBuilder()
+                .withName("Zed Logic")
+                .withNusId("A1999993D")
+                .withEmail("logic-sort-c@test.com")
+                .withSocUsername("logic3")
+                .withGithubUsername("logic-gh-3")
+                .withTutorialGroup("03")
+                .build();
+        Person amy = new PersonBuilder()
+                .withName("Amy Logic")
+                .withNusId("A1999994E")
+                .withEmail("logic-sort-d@test.com")
+                .withSocUsername("logic4")
+                .withGithubUsername("logic-gh-4")
+                .withTutorialGroup("04")
+                .build();
+
+        model.addPerson(zed);
+        model.addPerson(amy);
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.sortPersonsByName();
+
+        assertCommandSuccess(SortCommand.COMMAND_WORD + " " + SortCommand.SORT_BY_NAME,
+                SortCommand.MESSAGE_SUCCESS_NAME, expectedModel);
     }
 
     @Test

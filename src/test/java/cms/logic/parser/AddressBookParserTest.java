@@ -24,6 +24,7 @@ import cms.logic.commands.FindCommand;
 import cms.logic.commands.HelpCommand;
 import cms.logic.commands.ListCommand;
 import cms.logic.commands.MaskCommand;
+import cms.logic.commands.SortCommand;
 import cms.logic.commands.UnmaskCommand;
 import cms.logic.parser.exceptions.ParseException;
 import cms.model.person.AllFieldsContainsKeywordsPredicate;
@@ -97,6 +98,31 @@ public class AddressBookParserTest {
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+    }
+
+    @Test
+    public void parseCommand_sortTutorialGroup() throws Exception {
+        assertEquals(new SortCommand(SortCommand.SORT_BY_TUTORIAL_GROUP),
+                parser.parseCommand(SortCommand.COMMAND_WORD + " " + SortCommand.SORT_BY_TUTORIAL_GROUP));
+    }
+
+    @Test
+    public void parseCommand_sortName() throws Exception {
+        assertEquals(new SortCommand(SortCommand.SORT_BY_NAME),
+                parser.parseCommand(SortCommand.COMMAND_WORD + " " + SortCommand.SORT_BY_NAME));
+    }
+
+    @Test
+    public void parseCommand_sortInvalidArgument_throwsParseException() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE);
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(SortCommand.COMMAND_WORD
+                + " invalid"));
+    }
+
+    @Test
+    public void parseCommand_sortMissingArgument_throwsParseException() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE);
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(SortCommand.COMMAND_WORD));
     }
 
     @Test

@@ -146,6 +146,16 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void sortPersonsByTutorialGroup() {
+        addressBook.sortPersonsByTutorialGroup();
+    }
+
+    @Override
+    public void sortPersonsByName() {
+        addressBook.sortPersonsByName();
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (other == this) {
             return true;

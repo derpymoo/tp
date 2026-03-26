@@ -110,4 +110,14 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Sorts the underlying person list by tutorial group in ascending order.
+     */
+    void sortPersonsByTutorialGroup();
+
+    /**
+     * Sorts the underlying person list by name in ascending order.
+     */
+    void sortPersonsByName();
 }
