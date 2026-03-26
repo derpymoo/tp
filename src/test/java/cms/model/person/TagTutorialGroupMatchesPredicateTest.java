@@ -20,6 +20,8 @@ public class TagTutorialGroupMatchesPredicateTest {
                 new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friends")), Set.of(new TutorialGroup("01")));
         TagTutorialGroupMatchesPredicate secondPredicate =
                 new TagTutorialGroupMatchesPredicate(Set.of(new Tag("owesMoney")), Set.of(new TutorialGroup("02")));
+        TagTutorialGroupMatchesPredicate sameTagsDifferentTutorialGroupsPredicate =
+                new TagTutorialGroupMatchesPredicate(Set.of(new Tag("friends")), Set.of(new TutorialGroup("02")));
 
         assertTrue(firstPredicate.equals(firstPredicate));
 
@@ -29,6 +31,7 @@ public class TagTutorialGroupMatchesPredicateTest {
 
         assertFalse(firstPredicate.equals(1));
         assertFalse(firstPredicate.equals(null));
+        assertFalse(firstPredicate.equals(sameTagsDifferentTutorialGroupsPredicate));
         assertFalse(firstPredicate.equals(secondPredicate));
     }
 
