@@ -76,6 +76,13 @@ public class AddCommandParserTest {
                         + PHONE_DESC_BOB + EMAIL_DESC_BOB + TUTORIALGROUP_DESC_BOB
                         + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
                 new AddCommand(expectedPersonMultipleTags));
+
+        // multiple tags after a single tag/ prefix - all accepted
+        assertParseSuccess(parser,
+                NAME_DESC_BOB + NUSID_DESC_BOB + ROLE_DESC_BOB + SOCUSERNAME_DESC_BOB + GITHUBUSERNAME_DESC_BOB
+                        + PHONE_DESC_BOB + EMAIL_DESC_BOB + TUTORIALGROUP_DESC_BOB
+                        + " tag/" + VALID_TAG_HUSBAND + " " + VALID_TAG_FRIEND,
+                new AddCommand(expectedPersonMultipleTags));
     }
 
     @Test
@@ -186,6 +193,11 @@ public class AddCommandParserTest {
         assertParseFailure(parser, NAME_DESC_BOB + NUSID_DESC_BOB + ROLE_DESC_BOB + SOCUSERNAME_DESC_BOB
                 + GITHUBUSERNAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
                 + TUTORIALGROUP_DESC_BOB + INVALID_TAG_DESC + VALID_TAG_FRIEND, Tag.MESSAGE_CONSTRAINTS);
+
+        // invalid tag in a space-separated tag/ value
+        assertParseFailure(parser, NAME_DESC_BOB + NUSID_DESC_BOB + ROLE_DESC_BOB + SOCUSERNAME_DESC_BOB
+                + GITHUBUSERNAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
+                + TUTORIALGROUP_DESC_BOB + " tag/" + VALID_TAG_HUSBAND + " hubby*", Tag.MESSAGE_CONSTRAINTS);
 
         // two invalid values, only first invalid value reported
         assertParseFailure(parser, INVALID_NAME_DESC + NUSID_DESC_BOB + ROLE_DESC_BOB + SOCUSERNAME_DESC_BOB
