@@ -40,13 +40,14 @@ public class PersonCard extends UiPart<Region> {
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
      */
-    public PersonCard(Person person, int displayedIndex) {
+    public PersonCard(Person person, int displayedIndex, boolean isMasked) {
         super(FXML);
         this.person = person;
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
+        // The current list-card layout only surfaces summary fields, so masking has no effect here.
         role.setText(person.getRole().value.toUpperCase());
-        tutorialGroup.setText(person.getTutorialGroup().value);
+        tutorialGroup.setText(String.valueOf(person.getTutorialGroup().value));
         nusIdValue.setText(person.getNusId().value);
     }
 }

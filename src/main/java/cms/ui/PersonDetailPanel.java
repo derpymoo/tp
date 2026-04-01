@@ -69,7 +69,7 @@ public class PersonDetailPanel extends UiPart<Region> {
 
         name.setText(person.getName().fullName);
         role.setText(person.getRole().value.toUpperCase());
-        tutorialGroup.setText(person.getTutorialGroup().value);
+        tutorialGroup.setText(String.valueOf(person.getTutorialGroup().value));
         nusId.setText(person.getNusId().value);
         socUsername.setText(person.getSocUsername().value);
         String githubUrl = "https://github.com/" + person.getGithubUsername().value;

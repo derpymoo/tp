@@ -81,6 +81,32 @@ public class AddressBookTest {
     }
 
     @Test
+    public void sortPersonsByName_unsortedList_sortsByName() {
+        Person zed = new PersonBuilder(ALICE)
+                .withName("Zed Address")
+                .withNusId("A1888881B")
+                .withEmail("address-z@test.com")
+                .withSocUsername("addressz")
+                .withGithubUsername("address-z-gh")
+                .withTutorialGroup("09")
+                .build();
+        Person amy = new PersonBuilder(ALICE)
+                .withName("Amy Address")
+                .withNusId("A1888882C")
+                .withEmail("address-a@test.com")
+                .withSocUsername("addressa")
+                .withGithubUsername("address-a-gh")
+                .withTutorialGroup("01")
+                .build();
+
+        addressBook.addPerson(zed);
+        addressBook.addPerson(amy);
+        addressBook.sortPersonsByName();
+
+        assertEquals(Arrays.asList(amy, zed), addressBook.getPersonList());
+    }
+
+    @Test
     public void toStringMethod() {
         String expected = AddressBook.class.getCanonicalName() + "{persons=" + addressBook.getPersonList() + "}";
         assertEquals(expected, addressBook.toString());

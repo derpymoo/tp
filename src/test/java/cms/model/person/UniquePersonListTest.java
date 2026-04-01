@@ -75,10 +75,25 @@ public class UniquePersonListTest {
     }
 
     @Test
+    public void add_personsRemainInInsertionOrderUntilExplicitSort() {
+        Person tutorialGroupTen = createSortTestPerson("Alice Sort", "A1234567B", "alice-sort@test.com",
+                "asort1", "alice-sort-gh", "10");
+        Person tutorialGroupTwo = createSortTestPerson("Bob Sort", "A1234568C", "bob-sort@test.com",
+                "bsort1", "bob-sort-gh", "02");
+
+        uniquePersonList.add(tutorialGroupTen);
+        uniquePersonList.add(tutorialGroupTwo);
+
+        assertEquals(Arrays.asList(tutorialGroupTen, tutorialGroupTwo),
+                uniquePersonList.asUnmodifiableObservableList());
+    }
+
+    @Test
     public void add_personWithConflictingEmail_throwsDuplicatePersonFieldException() {
         uniquePersonList.add(ALICE);
         Person editedAlice = new PersonBuilder(ALICE).withNusId("A1234567C").build();
-        String expectedErrorMessage = "A person with email [" + ALICE.getEmail() + "] already exists in the system.";
+        FieldConflict conflict = new FieldConflict(FieldConflict.Type.EMAIL, ALICE);
+        String expectedErrorMessage = DuplicatePersonFieldException.buildMessage(conflict);
 
         assertThrows(DuplicatePersonFieldException.class,
             expectedErrorMessage, () -> uniquePersonList.add(editedAlice));
@@ -128,6 +143,24 @@ public class UniquePersonListTest {
     }
 
     @Test
+    public void setPerson_editedPersonDoesNotTriggerAutomaticSort() {
+        Person tutorialGroupTen = createSortTestPerson("Set Sort Alpha", "A1234571F", "set-sort-a@test.com",
+                "ssort1", "set-sort-a-gh", "10");
+        Person tutorialGroupTwo = createSortTestPerson("Set Sort Beta", "A1234572G", "set-sort-b@test.com",
+                "ssort2", "set-sort-b-gh", "02");
+        Person editedTutorialGroupTen = new PersonBuilder(tutorialGroupTen)
+                .withName("Set Sort Alpha Edited")
+                .build();
+
+        uniquePersonList.add(tutorialGroupTen);
+        uniquePersonList.add(tutorialGroupTwo);
+        uniquePersonList.setPerson(tutorialGroupTen, editedTutorialGroupTen);
+
+        assertEquals(Arrays.asList(editedTutorialGroupTen, tutorialGroupTwo),
+                uniquePersonList.asUnmodifiableObservableList());
+    }
+
+    @Test
     public void setPerson_editedPersonHasNonUniqueIdentity_throwsDuplicatePersonException() {
         uniquePersonList.add(ALICE);
         uniquePersonList.add(BOB);
@@ -142,8 +175,8 @@ public class UniquePersonListTest {
         Person editedAlice = new PersonBuilder(ALICE)
             .withSocUsername(BOB.getSocUsername().toString())
             .build();
-        String expectedErrorMessage = "A person with SOC username ["
-            + BOB.getSocUsername() + "] already exists in the system.";
+        FieldConflict conflict = new FieldConflict(FieldConflict.Type.SOC_USERNAME, BOB);
+        String expectedErrorMessage = DuplicatePersonFieldException.buildMessage(conflict);
 
         assertThrows(DuplicatePersonFieldException.class,
             expectedErrorMessage, () -> uniquePersonList.setPerson(ALICE, editedAlice));
@@ -157,8 +190,8 @@ public class UniquePersonListTest {
         Person editedAlice = new PersonBuilder(ALICE)
             .withGithubUsername(BOB.getGithubUsername().toString())
             .build();
-        String expectedErrorMessage = "A person with GitHub username ["
-            + BOB.getGithubUsername() + "] already exists in the system.";
+        FieldConflict conflict = new FieldConflict(FieldConflict.Type.GITHUB_USERNAME, BOB);
+        String expectedErrorMessage = DuplicatePersonFieldException.buildMessage(conflict);
 
         assertThrows(DuplicatePersonFieldException.class,
             expectedErrorMessage, () -> uniquePersonList.setPerson(ALICE, editedAlice));
@@ -221,10 +254,82 @@ public class UniquePersonListTest {
     public void setPersons_listWithDuplicateFields_throwsDuplicatePersonFieldException() {
         Person editedAlice = new PersonBuilder(ALICE).withNusId("A1234567C").build();
         List<Person> listWithDuplicateFieldPersons = Arrays.asList(ALICE, editedAlice);
-        String expectedErrorMessage = "A person with email [" + ALICE.getEmail() + "] already exists in the system.";
+        FieldConflict conflict = new FieldConflict(FieldConflict.Type.EMAIL, editedAlice);
+        String expectedErrorMessage = DuplicatePersonFieldException.buildMessage(conflict);
 
         assertThrows(DuplicatePersonFieldException.class,
             expectedErrorMessage, () -> uniquePersonList.setPersons(listWithDuplicateFieldPersons));
+    }
+
+    @Test
+    public void setPersons_listPreservesProvidedOrderUntilExplicitSort() {
+        Person tutorialGroupTen = createSortTestPerson("List Sort Alpha", "A1234573H", "list-sort-a@test.com",
+                "lsort1", "list-sort-a-gh", "10");
+        Person tutorialGroupTwo = createSortTestPerson("List Sort Beta", "A1234574I", "list-sort-b@test.com",
+                "lsort2", "list-sort-b-gh", "02");
+
+        uniquePersonList.setPersons(Arrays.asList(tutorialGroupTen, tutorialGroupTwo));
+
+        assertEquals(Arrays.asList(tutorialGroupTen, tutorialGroupTwo),
+                uniquePersonList.asUnmodifiableObservableList());
+    }
+
+    @Test
+    public void sortByTutorialGroup_validTutorialGroups_sortsByGroupNumber() {
+        Person tutorialGroupTen = createSortTestPerson("Sort Wrapper Alpha", "A1234575J", "sort-wrapper-a@test.com",
+                "swrap1", "sort-wrapper-a-gh", "10");
+        Person tutorialGroupTwo = createSortTestPerson("Sort Wrapper Beta", "A1234576K", "sort-wrapper-b@test.com",
+                "swrap2", "sort-wrapper-b-gh", "02");
+
+        uniquePersonList.add(tutorialGroupTen);
+        uniquePersonList.add(tutorialGroupTwo);
+        uniquePersonList.sortByTutorialGroup();
+
+        assertEquals(Arrays.asList(tutorialGroupTwo, tutorialGroupTen),
+                uniquePersonList.asUnmodifiableObservableList());
+    }
+
+    @Test
+    public void sortByTutorialGroup_sameTutorialGroups_preservesRelativeOrder() {
+        Person firstTutorialGroupTwo = createSortTestPerson("Sort Equal Alpha", "A1234577L", "sort-equal-a@test.com",
+                "sequal1", "sort-equal-a-gh", "02");
+        Person secondTutorialGroupTwo = createSortTestPerson("Sort Equal Beta", "A1234578M", "sort-equal-b@test.com",
+                "sequal2", "sort-equal-b-gh", "2");
+
+        uniquePersonList.add(firstTutorialGroupTwo);
+        uniquePersonList.add(secondTutorialGroupTwo);
+        uniquePersonList.sortByTutorialGroup();
+
+        assertEquals(Arrays.asList(firstTutorialGroupTwo, secondTutorialGroupTwo),
+                uniquePersonList.asUnmodifiableObservableList());
+    }
+
+    @Test
+    public void sortByName_unsortedNames_sortsAlphabeticallyIgnoringCase() {
+        Person zed = createSortTestPerson("zed sort", "A1234579N", "sort-name-z@test.com",
+                "nsort1", "sort-name-z-gh", "05");
+        Person amy = createSortTestPerson("Amy sort", "A1234580P", "sort-name-a@test.com",
+                "nsort2", "sort-name-a-gh", "06");
+
+        uniquePersonList.add(zed);
+        uniquePersonList.add(amy);
+        uniquePersonList.sortByName();
+
+        assertEquals(Arrays.asList(amy, zed), uniquePersonList.asUnmodifiableObservableList());
+    }
+
+    @Test
+    public void sortByName_sameNameIgnoringCase_usesCaseSensitiveTieBreaker() {
+        Person lowercaseAmy = createSortTestPerson("amy sort", "A1234581Q", "sort-name-c@test.com",
+                "nsort3", "sort-name-c-gh", "07");
+        Person uppercaseAmy = createSortTestPerson("Amy sort", "A1234582R", "sort-name-d@test.com",
+                "nsort4", "sort-name-d-gh", "08");
+
+        uniquePersonList.add(lowercaseAmy);
+        uniquePersonList.add(uppercaseAmy);
+        uniquePersonList.sortByName();
+
+        assertEquals(Arrays.asList(uppercaseAmy, lowercaseAmy), uniquePersonList.asUnmodifiableObservableList());
     }
 
     @Test
@@ -236,5 +341,18 @@ public class UniquePersonListTest {
     @Test
     public void toStringMethod() {
         assertEquals(uniquePersonList.asUnmodifiableObservableList().toString(), uniquePersonList.toString());
+    }
+
+    private static Person createSortTestPerson(String name, String nusId, String email,
+                                               String socUsername, String githubUsername,
+                                               String tutorialGroup) {
+        return new PersonBuilder()
+                .withName(name)
+                .withNusId(nusId)
+                .withEmail(email)
+                .withSocUsername(socUsername)
+                .withGithubUsername(githubUsername)
+                .withTutorialGroup(tutorialGroup)
+                .build();
     }
 }

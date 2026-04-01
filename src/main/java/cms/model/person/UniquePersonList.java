@@ -56,8 +56,9 @@ public class UniquePersonList implements Iterable<Person> {
      */
     public void add(Person toAdd) {
         requireNonNull(toAdd);
-        if (contains(toAdd)) {
-            throw new DuplicatePersonException();
+        Person conflictingPerson = findPersonWithSameIdentity(toAdd);
+        if (conflictingPerson != null) {
+            throw new DuplicatePersonException(conflictingPerson);
         }
         ensureNoFieldConflict(toAdd, null);
         internalList.add(toAdd);
@@ -77,8 +78,11 @@ public class UniquePersonList implements Iterable<Person> {
             throw new PersonNotFoundException();
         }
 
-        if (!target.isSamePerson(editedPerson) && contains(editedPerson)) {
-            throw new DuplicatePersonException();
+        if (!target.isSamePerson(editedPerson)) {
+            Person duplicatePerson = findPersonWithSameIdentity(editedPerson);
+            if (duplicatePerson != null) {
+                throw new DuplicatePersonException(duplicatePerson);
+            }
         }
 
         ensureNoFieldConflict(editedPerson, target);
@@ -110,6 +114,30 @@ public class UniquePersonList implements Iterable<Person> {
         ensurePersonsAreUnique(persons);
 
         internalList.setAll(persons);
+    }
+
+    /**
+     * Sorts the internal list by tutorial group number in ascending order.
+     * TutorialGroup values are stored as integers, so numeric ordering is used.
+     */
+    public void sortByTutorialGroup() {
+        FXCollections.sort(internalList, (first, second) ->
+                Integer.compare(first.getTutorialGroup().value, second.getTutorialGroup().value));
+    }
+
+    /**
+     * Sorts the internal list by name in ascending order.
+     * Comparison is case-insensitive first, with a case-sensitive tie-breaker for determinism.
+     */
+    public void sortByName() {
+        FXCollections.sort(internalList, (first, second) -> {
+            int caseInsensitiveComparison = first.getName().fullName.compareToIgnoreCase(second.getName().fullName);
+            if (caseInsensitiveComparison != 0) {
+                return caseInsensitiveComparison;
+            }
+
+            return first.getName().fullName.compareTo(second.getName().fullName);
+        });
     }
 
     /**
@@ -161,8 +189,7 @@ public class UniquePersonList implements Iterable<Person> {
         for (int i = 0; i < persons.size() - 1; i++) {
             for (int j = i + 1; j < persons.size(); j++) {
                 if (persons.get(i).isSamePerson(persons.get(j))) {
-                    throw new DuplicatePersonException(persons.get(i).toString()
-                            + " and " + persons.get(j).toString());
+                    throw new DuplicatePersonException(persons.get(j));
                 }
 
                 FieldConflict conflict = persons.get(i).findConflictingField(persons.get(j));
@@ -195,6 +222,19 @@ public class UniquePersonList implements Iterable<Person> {
                 throw new DuplicatePersonFieldException(conflict);
             }
         }
+    }
+
+    /**
+     * Returns the person in the list with the same identity as {@code personToCheck}, if any.
+     */
+    private Person findPersonWithSameIdentity(Person personToCheck) {
+        for (Person existingPerson : internalList) {
+            if (existingPerson.isSamePerson(personToCheck)) {
+                return existingPerson;
+            }
+        }
+
+        return null;
     }
 
 }

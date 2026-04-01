@@ -1,0 +1,93 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":ImportCommandParser" as ImportCommandParser LOGIC_COLOR
+participant "i:ImportCommand" as ImportCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+box Storage STORAGE_COLOR_T1
+participant ":Storage" as Storage STORAGE_COLOR
+end box
+
+[-> LogicManager : execute("import data/addressbook.json")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("import data/addressbook.json")
+activate AddressBookParser
+
+create ImportCommandParser
+AddressBookParser -> ImportCommandParser
+activate ImportCommandParser
+
+ImportCommandParser --> AddressBookParser
+deactivate ImportCommandParser
+
+AddressBookParser -> ImportCommandParser : parse("data/addressbook.json")
+activate ImportCommandParser
+
+ImportCommandParser -> ImportCommandParser : validatePath()
+note right: Check file extension
+
+ImportCommandParser -> ImportCommandParser : parseKeepPolicy(keepToken)
+note right: Parse keep/current or\nkeep/incoming
+
+create ImportCommand
+ImportCommandParser -> ImportCommand : i
+activate ImportCommand
+
+ImportCommand --> ImportCommandParser
+deactivate ImportCommand
+
+ImportCommandParser --> AddressBookParser : i
+deactivate ImportCommandParser
+
+AddressBookParser --> LogicManager : i
+deactivate AddressBookParser
+
+LogicManager -> Storage : readAddressBook(path)
+activate Storage
+
+Storage --> LogicManager : ReadOnlyAddressBook
+deactivate Storage
+
+LogicManager -> Model : getAddressBook()
+activate Model
+
+Model --> LogicManager : ReadOnlyAddressBook
+deactivate Model
+
+LogicManager -> LogicManager : findConflictingPersons()
+note right: Check for conflicts
+
+LogicManager -> Model : setAddressBook(merged)
+activate Model
+
+Model --> LogicManager
+deactivate Model
+
+LogicManager -> Model : updateFilteredPersonList()
+activate Model
+
+Model --> LogicManager
+deactivate Model
+
+create CommandResult
+LogicManager -> CommandResult : r
+activate CommandResult
+
+CommandResult --> LogicManager
+deactivate CommandResult
+
+[<-- LogicManager : r
+deactivate LogicManager
+
+@enduml

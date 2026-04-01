@@ -20,15 +20,25 @@ import cms.logic.commands.DeleteCommand;
 import cms.logic.commands.EditCommand;
 import cms.logic.commands.EditCommand.EditPersonDescriptor;
 import cms.logic.commands.ExitCommand;
+import cms.logic.commands.ExportCommand;
+import cms.logic.commands.FilterCommand;
 import cms.logic.commands.FindCommand;
 import cms.logic.commands.HelpCommand;
+import cms.logic.commands.ImportCommand;
+import cms.logic.commands.ImportCommand.KeepPolicy;
 import cms.logic.commands.ListCommand;
+import cms.logic.commands.MaskCommand;
+import cms.logic.commands.SortCommand;
+import cms.logic.commands.UnmaskCommand;
 import cms.logic.parser.exceptions.ParseException;
 import cms.model.person.AllFieldsContainsKeywordsPredicate;
 import cms.model.person.CombinedFindPredicate;
 import cms.model.person.NameContainsKeywordsPredicate;
 import cms.model.person.NusIdContainsKeywordsPredicate;
 import cms.model.person.Person;
+import cms.model.person.TagTutorialGroupMatchesPredicate;
+import cms.model.person.TutorialGroup;
+import cms.model.tag.Tag;
 import cms.testutil.EditPersonDescriptorBuilder;
 import cms.testutil.PersonBuilder;
 import cms.testutil.PersonUtil;
@@ -73,6 +83,38 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_export() throws Exception {
+        String path = "data/export.json";
+        ExportCommand command = (ExportCommand) parser.parseCommand(ExportCommand.COMMAND_WORD + " " + path);
+        assertEquals(new ExportCommand(java.nio.file.Path.of(path)), command);
+
+        String quotedPathWithWhitespace = "C:/Users/Josh/My Documents/export.json";
+        ExportCommand commandQuoted = (ExportCommand) parser.parseCommand(
+            ExportCommand.COMMAND_WORD + " \"" + quotedPathWithWhitespace + "\"");
+        assertEquals(new ExportCommand(java.nio.file.Path.of(quotedPathWithWhitespace)), commandQuoted);
+    }
+
+    @Test
+    public void parseCommand_import() throws Exception {
+        String path = "data/import.json";
+        ImportCommand command = (ImportCommand) parser.parseCommand(ImportCommand.COMMAND_WORD + " " + path);
+        assertEquals(new ImportCommand(java.nio.file.Path.of(path)), command);
+
+        ImportCommand keepIncomingCommand = (ImportCommand) parser.parseCommand(
+                ImportCommand.COMMAND_WORD + " " + path + " keep/incoming");
+        assertEquals(new ImportCommand(java.nio.file.Path.of(path), KeepPolicy.INCOMING), keepIncomingCommand);
+
+        ImportCommand keepCurrentCommand = (ImportCommand) parser.parseCommand(
+                ImportCommand.COMMAND_WORD + " " + path + " keep/current");
+        assertEquals(new ImportCommand(java.nio.file.Path.of(path), KeepPolicy.CURRENT), keepCurrentCommand);
+
+        String quotedPathWithWhitespace = "C:/Users/Josh/My Documents/import.json";
+        ImportCommand commandQuoted = (ImportCommand) parser.parseCommand(
+                ImportCommand.COMMAND_WORD + " \"" + quotedPathWithWhitespace + "\"");
+        assertEquals(new ImportCommand(java.nio.file.Path.of(quotedPathWithWhitespace)), commandQuoted);
+    }
+
+    @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
         FindCommand command = (FindCommand) parser.parseCommand(
@@ -86,6 +128,16 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_filter() throws Exception {
+        FilterCommand command = (FilterCommand) parser.parseCommand(
+                FilterCommand.COMMAND_WORD + " tag/friends t/01");
+        assertEquals(new FilterCommand(
+                new TagTutorialGroupMatchesPredicate(java.util.Set.of(new Tag("friends")),
+                        java.util.Set.of(new TutorialGroup("01")))),
+                command);
+    }
+
+    @Test
     public void parseCommand_help() throws Exception {
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + " 3") instanceof HelpCommand);
@@ -95,6 +147,43 @@ public class AddressBookParserTest {
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+    }
+
+    @Test
+    public void parseCommand_sortTutorialGroup() throws Exception {
+        assertEquals(new SortCommand(SortCommand.SORT_BY_TUTORIAL_GROUP),
+                parser.parseCommand(SortCommand.COMMAND_WORD + " " + SortCommand.SORT_BY_TUTORIAL_GROUP));
+    }
+
+    @Test
+    public void parseCommand_sortName() throws Exception {
+        assertEquals(new SortCommand(SortCommand.SORT_BY_NAME),
+                parser.parseCommand(SortCommand.COMMAND_WORD + " " + SortCommand.SORT_BY_NAME));
+    }
+
+    @Test
+    public void parseCommand_sortInvalidArgument_throwsParseException() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE);
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(SortCommand.COMMAND_WORD
+                + " invalid"));
+    }
+
+    @Test
+    public void parseCommand_sortMissingArgument_throwsParseException() {
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE);
+        assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(SortCommand.COMMAND_WORD));
+    }
+
+    @Test
+    public void parseCommand_mask() throws Exception {
+        assertTrue(parser.parseCommand(MaskCommand.COMMAND_WORD) instanceof MaskCommand);
+        assertTrue(parser.parseCommand(MaskCommand.COMMAND_WORD + " 3") instanceof MaskCommand);
+    }
+
+    @Test
+    public void parseCommand_unmask() throws Exception {
+        assertTrue(parser.parseCommand(UnmaskCommand.COMMAND_WORD) instanceof UnmaskCommand);
+        assertTrue(parser.parseCommand(UnmaskCommand.COMMAND_WORD + " 3") instanceof UnmaskCommand);
     }
 
     @Test

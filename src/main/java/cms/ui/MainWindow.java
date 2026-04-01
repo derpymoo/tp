@@ -121,13 +121,8 @@ public class MainWindow extends UiPart<Stage> {
      * Fills up all the placeholders of this window.
      */
     void fillInnerParts() {
-        personListPanel = new PersonListPanel(logic.getFilteredPersonList());
-        personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
-
         personDetailPanel = new PersonDetailPanel();
-        personListPanel.selectedPersonProperty().addListener((observable, oldValue, newValue) ->
-                personDetailPanel.showPerson(newValue));
-        personDetailPanel.showPerson(personListPanel.selectedPersonProperty().get());
+        refreshPersonListPanel();
         personDetailPlaceholder.getChildren().add(personDetailPanel.getRoot());
 
         resultDisplay = new ResultDisplay();
@@ -169,6 +164,18 @@ public class MainWindow extends UiPart<Stage> {
         if (splitWidth > 0) {
             mainContentSplitPane.setDividerPositions(Math.min(0.5, targetWidth / splitWidth));
         }
+    }
+
+    /**
+     * Rebuilds the person list panel and wires its selection to the detail panel.
+     */
+    private void refreshPersonListPanel() {
+        personListPanel = new PersonListPanel(logic.getFilteredPersonList(), logic.isMasked());
+        personListPanel.selectedPersonProperty().addListener((observable, oldValue, newValue) ->
+                personDetailPanel.showPerson(newValue));
+        personDetailPanel.showPerson(personListPanel.selectedPersonProperty().get());
+
+        personListPanelPlaceholder.getChildren().setAll(personListPanel.getRoot());
     }
 
     /**
@@ -233,6 +240,8 @@ public class MainWindow extends UiPart<Stage> {
             if (commandResult.isExit()) {
                 handleExit();
             }
+
+            refreshPersonListPanel();
 
             return commandResult;
         } catch (CommandException | ParseException e) {

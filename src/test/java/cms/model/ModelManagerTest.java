@@ -16,7 +16,9 @@ import org.junit.jupiter.api.Test;
 
 import cms.commons.core.GuiSettings;
 import cms.model.person.NameContainsKeywordsPredicate;
+import cms.model.person.Person;
 import cms.testutil.AddressBookBuilder;
+import cms.testutil.PersonBuilder;
 
 public class ModelManagerTest {
 
@@ -73,6 +75,13 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void setMasked_updatesMaskPreference() {
+        assertFalse(modelManager.isMasked());
+        modelManager.setMasked(true);
+        assertTrue(modelManager.isMasked());
+    }
+
+    @Test
     public void hasPerson_nullPerson_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> modelManager.hasPerson(null));
     }
@@ -91,6 +100,32 @@ public class ModelManagerTest {
     @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
+    }
+
+    @Test
+    public void sortPersonsByName_unsortedList_sortsByName() {
+        Person zed = new PersonBuilder()
+                .withName("Zed Model")
+                .withNusId("A1777771B")
+                .withEmail("model-z@test.com")
+                .withSocUsername("modelz")
+                .withGithubUsername("model-z-gh")
+                .withTutorialGroup("08")
+                .build();
+        Person amy = new PersonBuilder()
+                .withName("Amy Model")
+                .withNusId("A1777772C")
+                .withEmail("model-a@test.com")
+                .withSocUsername("modela")
+                .withGithubUsername("model-a-gh")
+                .withTutorialGroup("01")
+                .build();
+
+        modelManager.addPerson(zed);
+        modelManager.addPerson(amy);
+        modelManager.sortPersonsByName();
+
+        assertEquals(Arrays.asList(amy, zed), modelManager.getFilteredPersonList());
     }
 
     @Test

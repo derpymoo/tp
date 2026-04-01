@@ -14,9 +14,15 @@ import cms.logic.commands.Command;
 import cms.logic.commands.DeleteCommand;
 import cms.logic.commands.EditCommand;
 import cms.logic.commands.ExitCommand;
+import cms.logic.commands.ExportCommand;
+import cms.logic.commands.FilterCommand;
 import cms.logic.commands.FindCommand;
 import cms.logic.commands.HelpCommand;
+import cms.logic.commands.ImportCommand;
 import cms.logic.commands.ListCommand;
+import cms.logic.commands.MaskCommand;
+import cms.logic.commands.SortCommand;
+import cms.logic.commands.UnmaskCommand;
 import cms.logic.parser.exceptions.ParseException;
 
 /**
@@ -68,11 +74,29 @@ public class AddressBookParser {
         case FindCommand.COMMAND_WORD:
             return new FindCommandParser().parse(arguments);
 
+        case FilterCommand.COMMAND_WORD:
+            return new FilterCommandParser().parse(arguments);
+
         case ListCommand.COMMAND_WORD:
             return new ListCommand();
 
+        case SortCommand.COMMAND_WORD:
+            return new SortCommandParser().parse(arguments);
+
+        case MaskCommand.COMMAND_WORD:
+            return new MaskCommand();
+
+        case UnmaskCommand.COMMAND_WORD:
+            return new UnmaskCommand();
+
         case ExitCommand.COMMAND_WORD:
             return new ExitCommand();
+
+        case ExportCommand.COMMAND_WORD:
+            return new ExportCommandParser().parse(arguments);
+
+        case ImportCommand.COMMAND_WORD:
+            return new ImportCommandParser().parse(arguments);
 
         case HelpCommand.COMMAND_WORD:
             return new HelpCommand();

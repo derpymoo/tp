@@ -47,6 +47,16 @@ public interface Model {
     void setAddressBookFilePath(Path addressBookFilePath);
 
     /**
+     * Returns whether sensitive fields should be masked in displays.
+     */
+    boolean isMasked();
+
+    /**
+     * Sets whether sensitive fields should be masked in displays.
+     */
+    void setMasked(boolean isMasked);
+
+    /**
      * Replaces address book data with the data in {@code addressBook}.
      */
     void setAddressBook(ReadOnlyAddressBook addressBook);
@@ -100,4 +110,14 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Sorts the underlying person list by tutorial group in ascending order.
+     */
+    void sortPersonsByTutorialGroup();
+
+    /**
+     * Sorts the underlying person list by name in ascending order.
+     */
+    void sortPersonsByName();
 }
