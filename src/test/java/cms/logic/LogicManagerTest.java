@@ -39,6 +39,7 @@ import cms.logic.commands.ExportCommand;
 import cms.logic.commands.ImportCommand;
 import cms.logic.commands.ListCommand;
 import cms.logic.commands.SortCommand;
+import cms.logic.commands.TagCommand;
 import cms.logic.commands.exceptions.CommandException;
 import cms.logic.parser.exceptions.ParseException;
 import cms.model.AddressBook;
@@ -145,6 +146,39 @@ public class LogicManagerTest {
 
         assertCommandSuccess(SortCommand.COMMAND_WORD + " " + SortCommand.SORT_BY_NAME,
                 SortCommand.MESSAGE_SUCCESS_NAME, expectedModel);
+    }
+
+    @Test
+    public void execute_tagCommandAdd_success() throws Exception {
+        Person firstPerson = new PersonBuilder()
+                .withName("Tag Logic Alpha")
+                .withNusId("A1888881B")
+                .withEmail("tag-logic-a@test.com")
+                .withSocUsername("taglogi1")
+                .withGithubUsername("tag-logic-1")
+                .build();
+        Person secondPerson = new PersonBuilder()
+                .withName("Tag Logic Beta")
+                .withNusId("A1888882C")
+                .withEmail("tag-logic-b@test.com")
+                .withSocUsername("taglogi2")
+                .withGithubUsername("tag-logic-2")
+                .build();
+
+        model.addPerson(firstPerson);
+        model.addPerson(secondPerson);
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        Person updatedFirstPerson = new PersonBuilder(firstPerson).withTags("tag1", "tag2").build();
+        Person updatedSecondPerson = new PersonBuilder(secondPerson).withTags("tag1", "tag2").build();
+        expectedModel.setPerson(firstPerson, updatedFirstPerson);
+        expectedModel.setPerson(secondPerson, updatedSecondPerson);
+
+        String commandText = TagCommand.COMMAND_WORD + " add n/1 2 tag/tag1 tag2";
+        String expectedMessage = "tag1, tag2 has been added to "
+                + "1, Tag Logic Alpha, A1888881B; 2, Tag Logic Beta, A1888882C";
+
+        assertCommandSuccess(commandText, expectedMessage, expectedModel);
     }
 
     @Test

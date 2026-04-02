@@ -29,6 +29,7 @@ import cms.logic.commands.ImportCommand.KeepPolicy;
 import cms.logic.commands.ListCommand;
 import cms.logic.commands.MaskCommand;
 import cms.logic.commands.SortCommand;
+import cms.logic.commands.TagCommand;
 import cms.logic.commands.UnmaskCommand;
 import cms.logic.parser.exceptions.ParseException;
 import cms.model.person.AllFieldsContainsKeywordsPredicate;
@@ -166,6 +167,13 @@ public class AddressBookParserTest {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE);
         assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(SortCommand.COMMAND_WORD
                 + " invalid"));
+    }
+
+    @Test
+    public void parseCommand_tag() throws Exception {
+        assertEquals(new TagCommand(TagCommand.Action.ADD, List.of(INDEX_FIRST_PERSON), List.of(new Tag("friend"))),
+                parser.parseCommand(TagCommand.COMMAND_WORD + " add n/" + INDEX_FIRST_PERSON.getOneBased()
+                        + " tag/friend"));
     }
 
     @Test
