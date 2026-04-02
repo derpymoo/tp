@@ -116,7 +116,7 @@ public class TagCommand extends Command {
                 : executeDelete(model, targetedPersons);
     }
 
-    private CommandResult executeAdd(Model model, List<Person> targetedPersons) {
+    private CommandResult executeAdd(Model model, List<Person> targetedPersons) throws CommandException {
         List<Person> updatedPersons = new ArrayList<>();
 
         for (Person person : targetedPersons) {
@@ -138,7 +138,7 @@ public class TagCommand extends Command {
         return new CommandResult(buildAddSuccessMessage(model, updatedPersons));
     }
 
-    private CommandResult executeDelete(Model model, List<Person> targetedPersons) {
+    private CommandResult executeDelete(Model model, List<Person> targetedPersons) throws CommandException {
         Map<Tag, List<Person>> removedPersonsByTag = new LinkedHashMap<>();
         Map<Person, Set<Tag>> updatedTagsByPerson = new LinkedHashMap<>();
 
@@ -218,10 +218,14 @@ public class TagCommand extends Command {
         return persons;
     }
 
-    private Person createUpdatedPerson(Person personToEdit, Set<Tag> updatedTags) {
-        return new Person(personToEdit.getName(), personToEdit.getPhone(), personToEdit.getEmail(),
-                personToEdit.getNusId(), personToEdit.getSocUsername(), personToEdit.getGithubUsername(),
-                personToEdit.getRole(), personToEdit.getTutorialGroup(), updatedTags);
+    private Person createUpdatedPerson(Person personToEdit, Set<Tag> updatedTags) throws CommandException {
+        try {
+            return Person.create(personToEdit.getName(), personToEdit.getPhone(), personToEdit.getEmail(),
+                    personToEdit.getNusId(), personToEdit.getSocUsername(), personToEdit.getGithubUsername(),
+                    personToEdit.getRole(), personToEdit.getTutorialGroup(), updatedTags);
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(e.getMessage(), e);
+        }
     }
 
     private String buildAddSuccessMessage(Model model, List<Person> updatedPersons) {
