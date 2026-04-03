@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 
 public class CommandResultTest {
@@ -33,6 +35,9 @@ public class CommandResultTest {
 
         // different exit value -> returns false
         assertFalse(commandResult.equals(new CommandResult("feedback", false, true)));
+
+        // different helpContent value -> returns false
+        assertFalse(commandResult.equals(new CommandResult("feedback", false, false, "help")));
     }
 
     @Test
@@ -50,6 +55,9 @@ public class CommandResultTest {
 
         // different exit value -> returns different hashcode
         assertNotEquals(commandResult.hashCode(), new CommandResult("feedback", false, true).hashCode());
+
+        // different helpContent value -> returns different hashcode
+        assertNotEquals(commandResult.hashCode(), new CommandResult("feedback", false, false, "help").hashCode());
     }
 
     @Test
@@ -57,7 +65,13 @@ public class CommandResultTest {
         CommandResult commandResult = new CommandResult("feedback");
         String expected = CommandResult.class.getCanonicalName() + "{feedbackToUser="
                 + commandResult.getFeedbackToUser() + ", showHelp=" + commandResult.isShowHelp()
-                + ", exit=" + commandResult.isExit() + "}";
+                + ", exit=" + commandResult.isExit() + ", helpContent=" + null + "}";
         assertEquals(expected, commandResult.toString());
+    }
+
+    @Test
+    public void getHelpContent() {
+        assertEquals(Optional.empty(), new CommandResult("feedback").getHelpContent());
+        assertEquals(Optional.of("help"), new CommandResult("feedback", true, false, "help").getHelpContent());
     }
 }

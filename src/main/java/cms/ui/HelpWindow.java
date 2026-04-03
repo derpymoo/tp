@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import cms.commons.core.LogsCenter;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.stage.Stage;
@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 public class HelpWindow extends UiPart<Stage> {
 
     public static final String USERGUIDE_URL = "https://ay2526s2-cs2103t-f10-2.github.io/tp/UserGuide.html";
-    public static final String HELP_MESSAGE = "Refer to the user guide: " + USERGUIDE_URL;
+    public static final String DEFAULT_HELP_MESSAGE = "Refer to the user guide for more information: " + USERGUIDE_URL;
 
     private static final Logger logger = LogsCenter.getLogger(HelpWindow.class);
     private static final String FXML = "HelpWindow.fxml";
@@ -25,7 +25,7 @@ public class HelpWindow extends UiPart<Stage> {
     private Button copyButton;
 
     @FXML
-    private Label helpMessage;
+    private TextArea helpMessage;
 
     /**
      * Creates a new HelpWindow.
@@ -34,7 +34,9 @@ public class HelpWindow extends UiPart<Stage> {
      */
     public HelpWindow(Stage root) {
         super(FXML, root);
-        helpMessage.setText(HELP_MESSAGE);
+        helpMessage.setEditable(false);
+        helpMessage.setWrapText(true);
+        resetToDefaultHelpMessage();
     }
 
     /**
@@ -42,6 +44,22 @@ public class HelpWindow extends UiPart<Stage> {
      */
     public HelpWindow() {
         this(new Stage());
+    }
+
+    /**
+     * Sets the text shown in the help window.
+     */
+    public void setHelpMessage(String message) {
+        helpMessage.setText(message + "\n\nRefer to the user guide: " + USERGUIDE_URL);
+        helpMessage.positionCaret(0);
+    }
+
+    /**
+     * Resets help content to the default user guide message.
+     */
+    public void resetToDefaultHelpMessage() {
+        helpMessage.setText(DEFAULT_HELP_MESSAGE);
+        helpMessage.positionCaret(0);
     }
 
     /**

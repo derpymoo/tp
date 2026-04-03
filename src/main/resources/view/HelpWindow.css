@@ -2,6 +2,10 @@
     -fx-text-fill: white;
 }
 
+#helpMessage {
+    -fx-control-inner-background: derive(#1d1d1d, 15%);
+}
+
 #copyButton {
     -fx-background-color: dimgray;
 }

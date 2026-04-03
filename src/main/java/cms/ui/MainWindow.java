@@ -195,6 +195,16 @@ public class MainWindow extends UiPart<Stage> {
      */
     @FXML
     public void handleHelp() {
+        helpWindow.resetToDefaultHelpMessage();
+        showOrFocusHelpWindow();
+    }
+
+    private void handleHelp(String helpContent) {
+        helpWindow.setHelpMessage(helpContent);
+        showOrFocusHelpWindow();
+    }
+
+    private void showOrFocusHelpWindow() {
         if (!helpWindow.isShowing()) {
             helpWindow.show();
         } else {
@@ -234,7 +244,7 @@ public class MainWindow extends UiPart<Stage> {
             resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
 
             if (commandResult.isShowHelp()) {
-                handleHelp();
+                handleHelp(commandResult.getHelpContent().orElse(HelpWindow.DEFAULT_HELP_MESSAGE));
             }
 
             if (commandResult.isExit()) {
