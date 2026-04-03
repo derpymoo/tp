@@ -186,8 +186,8 @@ Exports current CMS data to a `.json` file.
 Format: `export FILE_PATH`
 
 * `FILE_PATH` must end with `.json`.
-* File paths with spaces are supported, e.g. `C:/Users/Test/My Data/import.json`.
-* Quoted file paths are also supported, e.g. `"C:/Users/Test/My Data/import.json"`.
+* File paths with spaces are supported, e.g. `C:/Users/Test/My Data/export.json`.
+* Quoted file paths are also supported, e.g. `"C:/Users/Test/My Data/export.json"`.
 
 Examples:
 * `export data/backup.json`
