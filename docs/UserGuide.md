@@ -43,7 +43,7 @@ Action | Format
 --------|------------------
 **Help** | `help`
 **List** | `list`
-**Add** | `add n/NAME id/NUS_ID role/ROLE soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`<br><br>e.g. `add n/John Doe id/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
+**Add** | `add n/NAME id/NUS_ID [role/ROLE] soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG MORE_TAGS]...`<br><br>e.g. `add n/John Doe id/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
 **Edit** | `edit INDEX [n/NAME] [id/NUS_ID] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`<br><br>e.g. `edit 2 p/98765432 e/johndoe@example.com`
 **Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find id/NUS_ID [MORE_NUS_IDS]...`<br><br>e.g. `find n/jane n/eunice id/A0123456B`
 **Delete** | `delete INDEX`<br>`delete INDEX [MORE_INDEXES]...`<br>`delete id/NUS_ID`<br><br>e.g. `delete 1 3 5`
@@ -60,6 +60,7 @@ Action | Format
 * A command has a command word plus fields.
 * Command word: `add`, `edit`, `find`, ...
 * Prefixes identify each field, e.g. `n/`, `id/`, `e/`.
+* `/` is reserved for prefixes and cannot appear in any field value.
 * Words in `UPPER_CASE` are values to provide.
 * Items in square brackets are optional.
 * `...` means the field can be repeated.
@@ -86,11 +87,11 @@ Adds a student or tutor record to CMS.
 
 All required fields must be valid (See [Fields and accepted formats](#fields-and-accepted-formats)).
 
-Format: `add n/NAME id/NUS_ID role/ROLE soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`
+Format: `add n/NAME id/NUS_ID [role/ROLE] soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG MORE_TAGS]...`
 
 Examples:
 * `add n/David Tan id/A0211111C role/student soc/david1 gh/davidtan99 e/david@u.nus.edu p/97654321 t/05`
-* `add n/John Doe id/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/python-experienced`
+* `add n/John Doe id/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/1 tag/python-experienced needs-help`
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:**
 Add is rejected if unique fields conflict with an existing person (e.g. same NUS ID / SoC username / GitHub username / email).
@@ -190,21 +191,26 @@ Invalid edits can cause CMS to reset your data file on next launch. Back up `CMS
 
 Use this section as a quick checklist for `add` and `edit`.
 
+`/` is reserved for field prefixes (for example `n/`, `id/`, `soc/`) and is invalid in all field values.
+Leading/trailing spaces are trimmed for all field values before validation.
+
 <a id="field-name"></a>
 **`n/NAME`**
-* Letters, numbers, and spaces only.
+* 1 to 128 characters and must include at least one letter.
+* Allowed characters: letters, spaces, hyphens (`-`), apostrophes (`'`), and periods (`.`).
 * Cannot be blank.
-* Case sensitivity: case-sensitive (stored as entered).
+* Consecutive spaces are collapsed. E.g. `n/John   Doe` is treated as `n/John Doe`.
+* Case sensitivity: case-sensitive (stored as entered after space normalization).
 * Valid: `n/John Doe`
-* Invalid: `n/John@Doe`
+* Invalid: `n/Ravi s/o Kumar`
 
 <a id="field-nus-id"></a>
 **`id/NUS_ID`**
-* Must be `A` + 7 digits + uppercase letter (e.g. `A0234567B`).
+* Must be `A` or `U` + 7 digits + a letter (e.g. `A0234567B`, `U1234567Z`).
 * Must be unique in CMS.
-* Case sensitivity: case-sensitive (`A` and trailing letter must be uppercase).
+* Case sensitivity: case-insensitive input (stored in uppercase).
 * Valid: `id/A0234567B`
-* Invalid: `id/a0234567b`
+* Invalid: `id/B0234567B`
 
 <a id="field-role"></a>
 **`role/ROLE`**
@@ -222,7 +228,7 @@ Use this section as a quick checklist for `add` and `edit`.
   * Cannot start or end with a hyphen.
   * No spaces.
 * Must be unique in CMS.
-* Case sensitivity: case-sensitive.
+* Case sensitivity: case-insensitive input (stored in lowercase).
 * Valid: `soc/john1`
 * Invalid: `soc/-john`
 
@@ -230,16 +236,16 @@ Use this section as a quick checklist for `add` and `edit`.
 **`gh/GITHUB_USERNAME`**
 * 1-39 characters.
 * Letters, digits, and hyphens only.
-* Cannot start/end with `-`.
+* Cannot start/end with `-` and cannot contain consecutive hyphens (`--`).
 * Must be unique in CMS.
-* Case sensitivity: case-sensitive.
+* Case sensitivity: case-insensitive input (stored in lowercase).
 * Valid: `gh/jane-lim123`
 * Invalid: `gh/-jane`
 
 <a id="field-email"></a>
 **`e/EMAIL`**
 * Must be a valid email format.
-* Case sensitivity: case-sensitive.
+* Case sensitivity: case-insensitive input (stored in lowercase).
 * Valid: `e/johndoe@u.nus.edu`
 * Invalid: `e/johndoe@u`
 
@@ -253,19 +259,19 @@ Use this section as a quick checklist for `add` and `edit`.
 
 <a id="field-tutorial-group"></a>
 **`t/TUTORIAL_GROUP`**
-* Must be `01` to `99`.
-* Case sensitivity: not applicable (numeric only).
+* Must be a number from `1` to `99`.
+* Leading zeros are allowed in input.
 * Valid: `t/01`
 * Invalid: `t/100`
 
 <a id="field-tag"></a>
 **`tag/TAG`**
 * Optional, repeatable.
-* Alphanumeric characters only.
-* No spaces inside a tag.
+* Alphanumeric characters, with optional single hyphens to replace spaces.
+* No spaces inside a tag as it will be treated as multiple tags. E.g. `tag/needs help` is treated as two tags: `needs` and `help`.
 * Cannot start or end with a hyphen.
 * Repeated tags for the same person are kept only once.
-* Case sensitivity: case-sensitive.
+* Case sensitivity: case-insensitive input (stored in lowercase).
 * Valid: `tag/python`
 * Invalid: `tag/needs help`
 
