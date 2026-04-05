@@ -190,7 +190,7 @@ public class DeleteCommandTest {
         DeleteCommand deleteFirstCommandCopy = new DeleteCommand(INDEX_FIRST_PERSON);
         assertTrue(deleteFirstCommand.equals(deleteFirstCommandCopy));
 
-        // same nus id values -> returns true
+        // same nus matric values -> returns true
         DeleteCommand deleteFirstNusMatricCommand = DeleteCommand.byNusMatric(new NusMatric("A0000001X"));
         DeleteCommand deleteFirstNusMatricCommandCopy = DeleteCommand.byNusMatric(new NusMatric("A0000001X"));
         assertTrue(deleteFirstNusMatricCommand.equals(deleteFirstNusMatricCommandCopy));

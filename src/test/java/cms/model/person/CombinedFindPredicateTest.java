@@ -19,10 +19,10 @@ public class CombinedFindPredicateTest {
                 new AllFieldsContainsKeywordsPredicate(Collections.singletonList("Alice"));
         NameContainsKeywordsPredicate name =
                 new NameContainsKeywordsPredicate(Collections.singletonList("Bob"));
-        NusMatricContainsKeywordsPredicate id =
+        NusMatricContainsKeywordsPredicate matric =
                 new NusMatricContainsKeywordsPredicate(Collections.singletonList("A0000001X"));
 
-        CombinedFindPredicate combined = new CombinedFindPredicate(all, name, id);
+        CombinedFindPredicate combined = new CombinedFindPredicate(all, name, matric);
 
         // Person matching 'all' predicate (name contains Alice)
         Person p1 = new PersonBuilder().withName("Alice Pauline").build();
@@ -32,7 +32,7 @@ public class CombinedFindPredicateTest {
         Person p2 = new PersonBuilder().withName("Bob").build();
         assertTrue(combined.test(p2));
 
-        // Person matching 'id' predicate
+        // Person matching 'matric' predicate
         Person p3 = new PersonBuilder().withNusMatric("A0000001X").build();
         assertTrue(combined.test(p3));
 
@@ -86,7 +86,7 @@ public class CombinedFindPredicateTest {
                 new NusMatricContainsKeywordsPredicate(Arrays.asList("Z")));
         assertFalse(p1.equals(p2));
 
-        // same all and name, different id -> should be false
+        // same all and name, different matric -> should be false
         CombinedFindPredicate p3 = new CombinedFindPredicate(
                 new AllFieldsContainsKeywordsPredicate(Arrays.asList("x")),
                 new NameContainsKeywordsPredicate(Arrays.asList("y1")),
@@ -98,4 +98,3 @@ public class CombinedFindPredicateTest {
         assertFalse(p3.equals(p4));
     }
 }
-

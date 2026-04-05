@@ -67,7 +67,7 @@ public class NameOrNusMatricContainsKeywordsPredicateTest {
 
     @Test
     public void test_idCaseInsensitive_matches() {
-        // predicate has lowercase id keyword, person has uppercase stored NusMatric; should match
+        // predicate has lowercase matric keyword, person has uppercase stored NusMatric; should match
         NameOrNusMatricContainsKeywordsPredicate predicate = new NameOrNusMatricContainsKeywordsPredicate(
                 Collections.emptyList(), Collections.singletonList("a0234504n"));
         assertTrue(predicate.test(new PersonBuilder().withNusMatric("A0234504N").build()));
@@ -109,7 +109,7 @@ public class NameOrNusMatricContainsKeywordsPredicateTest {
                 new NameOrNusMatricContainsKeywordsPredicate(Arrays.asList("Alice"), Arrays.asList("A0123456J"));
         NameOrNusMatricContainsKeywordsPredicate p2 =
                 new NameOrNusMatricContainsKeywordsPredicate(Arrays.asList("Alice"), Arrays.asList("A0123457H"));
-        // name lists equal (true) but id lists different (false) -> overall equals should be false
+        // name lists equal (true) but matric lists different (false) -> overall equals should be false
         assertFalse(p1.equals(p2));
     }
 

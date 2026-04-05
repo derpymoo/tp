@@ -49,7 +49,7 @@ public class AllFieldsContainsKeywordsPredicateTest {
         AllFieldsContainsKeywordsPredicate pName = new AllFieldsContainsKeywordsPredicate(Arrays.asList("alice"));
         assertTrue(pName.test(person));
 
-        // nus id equalsIgnoreCase
+        // nus matric equalsIgnoreCase
         AllFieldsContainsKeywordsPredicate pNus = new AllFieldsContainsKeywordsPredicate(Arrays.asList("a0123456j"));
         assertTrue(pNus.test(person));
 

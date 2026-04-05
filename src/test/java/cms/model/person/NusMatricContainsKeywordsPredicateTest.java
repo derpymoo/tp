@@ -121,7 +121,7 @@ public class NusMatricContainsKeywordsPredicateTest {
         keywordsField.setAccessible(true);
         keywordsField.set(predicate, null);
 
-        // build a person with matching nus id; predicate should return false because keywords field is null
+        // build a person with matching nus matric; predicate should return false because keywords field is null
         assertFalse(predicate.test(new PersonBuilder().withNusMatric("A0123456J").build()));
     }
 }
