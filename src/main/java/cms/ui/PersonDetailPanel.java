@@ -34,7 +34,7 @@ public class PersonDetailPanel extends UiPart<Region> {
     @FXML
     private Label tutorialGroup;
     @FXML
-    private Label nusId;
+    private Label nusMatric;
     @FXML
     private Label socUsername;
     @FXML
@@ -71,7 +71,7 @@ public class PersonDetailPanel extends UiPart<Region> {
         name.setText(person.getName().fullName);
         role.setText(person.getRole().value.toUpperCase());
         tutorialGroup.setText(String.valueOf(person.getTutorialGroup().value));
-        nusId.setText(person.getNusId().value);
+        nusMatric.setText(person.getNusMatric().value);
 
         if (isMasked) {
             socUsername.setText(MaskingUtil.maskSocUsername(person.getSocUsername()));
