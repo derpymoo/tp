@@ -2,6 +2,7 @@ package cms.logic.commands;
 
 import static cms.logic.commands.CommandTestUtil.assertCommandFailure;
 import static cms.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static cms.logic.commands.CommandTestUtil.showPersonAtIndex;
 import static cms.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static cms.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static cms.testutil.TypicalPersons.ALICE;
@@ -58,6 +59,23 @@ public class TagCommandTest {
     }
 
     @Test
+    public void execute_addByIndexFilteredList_usesFilteredIndexInSuccessMessage() {
+        showPersonAtIndex(model, INDEX_SECOND_PERSON);
+
+        TagCommand command = new TagCommand(TagCommand.Action.ADD,
+                List.of(INDEX_FIRST_PERSON),
+                List.of(new Tag("tag1")));
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        showPersonAtIndex(expectedModel, INDEX_SECOND_PERSON);
+        Person updatedBenson = new PersonBuilder(BENSON).withTags("owesMoney", "friends", "tag1").build();
+        expectedModel.setPerson(BENSON, updatedBenson);
+
+        String expectedMessage = "tag1 has been added to 1, Benson Meier, A0234501C";
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void execute_deleteByNusIds_success() {
         TagCommand command = TagCommand.byNusIds(TagCommand.Action.DELETE,
                 List.of(ALICE.getNusId(), BENSON.getNusId()),
@@ -72,6 +90,23 @@ public class TagCommandTest {
         String expectedMessage = "friends has been removed from "
                 + "1, Alice Pauline, A0000001B; 2, Benson Meier, A0234501C\n"
                 + "owesmoney has been removed from 2, Benson Meier, A0234501C";
+        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_deleteByNusIdPersonOutsideFilteredList_usesAddressBookIndexInSuccessMessage() {
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+
+        TagCommand command = TagCommand.byNusIds(TagCommand.Action.DELETE,
+                List.of(BENSON.getNusId()),
+                List.of(new Tag("friends")));
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        showPersonAtIndex(expectedModel, INDEX_FIRST_PERSON);
+        Person updatedBenson = new PersonBuilder(BENSON).withTags("owesMoney").build();
+        expectedModel.setPerson(BENSON, updatedBenson);
+
+        String expectedMessage = "friends has been removed from 2, Benson Meier, A0234501C";
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
@@ -177,11 +212,20 @@ public class TagCommandTest {
                 List.of(new Tag("friend")));
         TagCommand byNusIdCommand = TagCommand.byNusIds(TagCommand.Action.ADD, List.of(ALICE.getNusId()),
                 List.of(new Tag("friend")));
+        TagCommand differentIndexesCommand = new TagCommand(TagCommand.Action.ADD, List.of(INDEX_SECOND_PERSON),
+                List.of(new Tag("friend")));
+        TagCommand differentNusIdsCommand = TagCommand.byNusIds(TagCommand.Action.ADD, List.of(BENSON.getNusId()),
+                List.of(new Tag("friend")));
+        TagCommand differentTagsCommand = new TagCommand(TagCommand.Action.ADD, List.of(INDEX_FIRST_PERSON),
+                List.of(new Tag("teammate")));
 
         assertTrue(addFirstCommand.equals(addFirstCommand));
         assertTrue(addFirstCommand.equals(addFirstCommandCopy));
         assertFalse(addFirstCommand.equals(deleteSecondCommand));
         assertFalse(addFirstCommand.equals(byNusIdCommand));
+        assertFalse(addFirstCommand.equals(differentIndexesCommand));
+        assertFalse(byNusIdCommand.equals(differentNusIdsCommand));
+        assertFalse(addFirstCommand.equals(differentTagsCommand));
         assertFalse(addFirstCommand.equals(null));
         assertFalse(addFirstCommand.equals(1));
     }
@@ -222,13 +266,13 @@ public class TagCommandTest {
     public void findOneBasedIndex_personNotInModel_returnsZero() throws Exception {
         TagCommand command = new TagCommand(TagCommand.Action.ADD, List.of(INDEX_FIRST_PERSON),
                 List.of(new Tag("friend")));
-        Method findOneBasedIndex = TagCommand.class.getDeclaredMethod("findOneBasedIndex", Model.class, Person.class);
+        Method findOneBasedIndex = TagCommand.class.getDeclaredMethod("findOneBasedIndex", List.class, Person.class);
         findOneBasedIndex.setAccessible(true);
 
         Person absentPerson = new PersonBuilder().withNusId("A1234567Z").withSocUsername("absent1")
                 .withGithubUsername("absent-gh").withEmail("absent@example.com").build();
 
-        int result = (int) findOneBasedIndex.invoke(command, model, absentPerson);
+        int result = (int) findOneBasedIndex.invoke(command, model.getAddressBook().getPersonList(), absentPerson);
         assertEquals(0, result);
     }
 

@@ -252,12 +252,14 @@ public class TagCommand extends Command {
     }
 
     private String formatPersonSummary(Model model, Person person) {
-        int oneBasedIndex = findOneBasedIndex(model, person);
+        int oneBasedIndex = findOneBasedIndex(model.getFilteredPersonList(), person);
+        if (oneBasedIndex == 0) {
+            oneBasedIndex = findOneBasedIndex(model.getAddressBook().getPersonList(), person);
+        }
         return oneBasedIndex + ", " + person.getName() + ", " + person.getNusId();
     }
 
-    private int findOneBasedIndex(Model model, Person person) {
-        List<Person> persons = model.getAddressBook().getPersonList();
+    private int findOneBasedIndex(List<Person> persons, Person person) {
         for (int i = 0; i < persons.size(); i++) {
             if (persons.get(i).isSamePerson(person)) {
                 return i + 1;
