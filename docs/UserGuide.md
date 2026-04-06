@@ -45,6 +45,7 @@ Action | Format
 **List** | `list`
 **Add** | `add n/NAME m/NUS_MATRIC role/ROLE soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`<br><br>e.g. `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
 **Edit** | `edit INDEX [n/NAME] [m/NUS_MATRIC] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`<br><br>e.g. `edit 2 p/98765432 e/johndoe@example.com`
+**Filter** | `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]`<br><br>e.g. `filter tag/friend`<br>e.g. `filter tag/friend t/01`
 **Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRIC]...`<br><br>e.g. `find n/jane n/eunice m/A0123456B`
 **Tag** | `tag add n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC[MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add n/1 2 tag/friend tutor`
 **Delete** | `delete INDEX`<br>`delete INDEX [MORE_INDEXES]...`<br>`delete m/NUS_MATRIC`<br><br>e.g. `delete 1 3 5`
@@ -117,6 +118,27 @@ Examples:
 * `edit 1 p/91234567 e/johndoe@example.com`
 * `edit 2 n/Betsy Crower tag/`
 * `edit 3 m/A0654321B role/student soc/betsy3 gh/betsycrowe t/07`
+
+### Filtering students / tutors : `filter`
+
+Filters persons by tag, tutorial group, or both.
+
+Format: `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]`
+
+* At least one filter must be provided.
+* `tag/` can be repeated to filter by multiple tags.
+* `t/` can appear at most once.
+* If multiple `tag/` values are given, a person must have all of them.
+* If `t/` is given, a person must belong to that tutorial group.
+* When both `tag/` and `t/` are provided, a person must satisfy both filters.
+* Tag matching is case-insensitive.
+* Tutorial group input accepts values from `1` to `99`, with or without a leading zero (e.g. `t/1` and `t/01` are both accepted).
+
+Examples:
+* `filter tag/friend`
+* `filter t/01`
+* `filter tag/friend tag/mentor`
+* `filter tag/friend t/01`
 
 ### Finding students / tutors : `find`
 
