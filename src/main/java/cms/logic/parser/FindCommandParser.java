@@ -20,6 +20,8 @@ import cms.model.person.NusMatricContainsKeywordsPredicate;
  * Parses input arguments and creates a new FindCommand object
  */
 public class FindCommandParser implements Parser<FindCommand> {
+    public static final String MESSAGE_EMPTY_KEYWORDS =
+            "Find keywords cannot be blank. Provide at least one non-whitespace keyword after each prefix used.";
 
     /**
      * Parses the given {@code String} of arguments in the context of the FindCommand
@@ -71,6 +73,12 @@ public class FindCommandParser implements Parser<FindCommand> {
                     .filter(s -> !s.isEmpty())
                     .map(String::toUpperCase)
                     .collect(Collectors.toList());
+        }
+
+        if ((hasAll && allKeywords.isEmpty())
+                || (hasName && nameKeywords.isEmpty())
+                || (hasNusMatric && idKeywords.isEmpty())) {
+            throw new ParseException(MESSAGE_EMPTY_KEYWORDS);
         }
 
         AllFieldsContainsKeywordsPredicate allPredicate = new AllFieldsContainsKeywordsPredicate(allKeywords);

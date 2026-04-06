@@ -129,6 +129,7 @@ Format:
 * `find n/KEYWORD [MORE_NAME_KEYWORDS]... m/NUS_MATRIC [MORE_NUS_MATRICS]...`
 
 * Prefix is required (`a/`, `n/`, `m/`).
+* Each used prefix must have at least one non-blank keyword. e.g. `find n/   ` is invalid.
 * Search is case-insensitive for names. e.g. `n/hans` will match `Hans`.
 * Order of keywords does not matter for name search. e.g. `find n/Hans n/Bo` will match `find n/Bo n/Hans`.
 * Full words are matched for names. e.g. `find n/Han` will not match `Hans`.
