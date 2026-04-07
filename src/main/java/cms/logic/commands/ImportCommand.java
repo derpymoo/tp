@@ -43,9 +43,19 @@ public class ImportCommand extends Command {
             "Import file is empty or not a valid Course Management System data file.";
     public static final String MESSAGE_INVALID_DATA =
             "Import file contains invalid Course Management System data.";
+        public static final String MESSAGE_STORAGE_CONTEXT_REQUIRED =
+            "Import command requires storage context.";
     public static final String MESSAGE_KEEP_REQUIRED_NON_EMPTY = "Current data is non-empty. "
             + "Re-run the import command and add keep/current or keep/incoming "
             + "after the import command to choose how conflicts are resolved.";
+        public static final String MESSAGE_NO_CONFLICT_PREVIEW =
+            "\nNo direct conflicts were detected in the import preview.";
+        public static final String MESSAGE_CONFLICT_COUNT_MORE_FORMAT =
+            "\n- ... and %d more conflict(s)";
+        public static final String MESSAGE_IDENTITY_CONFLICT_FORMAT =
+            "incoming '%s' conflicts with current '%s' by NUS Matric (%s)";
+        public static final String MESSAGE_FIELD_CONFLICT_FORMAT =
+            "incoming '%s' conflicts with current '%s' by %s (%s)";
     private static final String MESSAGE_CONFLICT_PREVIEW_HEADER = "\nConflicting entries detected:";
     private static final int CONFLICT_PREVIEW_LIMIT = 5;
 
@@ -78,7 +88,7 @@ public class ImportCommand extends Command {
 
     @Override
     public CommandResult execute(Model model) throws CommandException {
-        throw new CommandException("Import command requires storage context.");
+        throw new CommandException(MESSAGE_STORAGE_CONTEXT_REQUIRED);
     }
 
     @Override
@@ -165,7 +175,7 @@ public class ImportCommand extends Command {
         }
 
         if (conflictLines.isEmpty()) {
-            return "\nNo direct conflicts were detected in the import preview.";
+            return MESSAGE_NO_CONFLICT_PREVIEW;
         }
 
         List<String> limitedConflictLines = new ArrayList<>(conflictLines);
@@ -177,7 +187,7 @@ public class ImportCommand extends Command {
 
         int hiddenCount = limitedConflictLines.size() - displayedCount;
         if (hiddenCount > 0) {
-            preview.append("\n- ... and ").append(hiddenCount).append(" more conflict(s)");
+            preview.append(String.format(MESSAGE_CONFLICT_COUNT_MORE_FORMAT, hiddenCount));
         }
 
         return preview.toString();
@@ -185,7 +195,7 @@ public class ImportCommand extends Command {
 
     private String getConflictDescription(Person incomingPerson, Person existingPerson) {
         if (incomingPerson.isSamePerson(existingPerson)) {
-            return String.format("incoming '%s' conflicts with current '%s' by NUS Matric (%s)",
+            return String.format(MESSAGE_IDENTITY_CONFLICT_FORMAT,
                     incomingPerson.getName(), existingPerson.getName(), incomingPerson.getNusMatric());
         }
 
@@ -194,7 +204,7 @@ public class ImportCommand extends Command {
             return null;
         }
 
-        return String.format("incoming '%s' conflicts with current '%s' by %s (%s)",
+        return String.format(MESSAGE_FIELD_CONFLICT_FORMAT,
                 incomingPerson.getName(), existingPerson.getName(),
                 fieldConflict.getFieldName(), fieldConflict.getFieldValue());
     }
