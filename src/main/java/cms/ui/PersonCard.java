@@ -1,5 +1,6 @@
 package cms.ui;
 
+import cms.commons.util.MaskingUtil;
 import cms.model.person.Person;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -35,7 +36,7 @@ public class PersonCard extends UiPart<Region> {
     @FXML
     private Label tutorialGroup;
     @FXML
-    private Text nusIdValue;
+    private Text nusMatricValue;
 
     /**
      * Creates a {@code PersonCode} with the given {@code Person} and index to display.
@@ -45,9 +46,10 @@ public class PersonCard extends UiPart<Region> {
         this.person = person;
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
-        // The current list-card layout only surfaces summary fields, so masking has no effect here.
         role.setText(person.getRole().value.toUpperCase());
         tutorialGroup.setText(String.valueOf(person.getTutorialGroup().value));
-        nusIdValue.setText(person.getNusId().value);
+        nusMatricValue.setText(isMasked
+                ? MaskingUtil.maskNusMatric(person.getNusMatric())
+                : person.getNusMatric().value);
     }
 }

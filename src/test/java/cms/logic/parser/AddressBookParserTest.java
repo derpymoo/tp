@@ -29,12 +29,13 @@ import cms.logic.commands.ImportCommand.KeepPolicy;
 import cms.logic.commands.ListCommand;
 import cms.logic.commands.MaskCommand;
 import cms.logic.commands.SortCommand;
+import cms.logic.commands.TagCommand;
 import cms.logic.commands.UnmaskCommand;
 import cms.logic.parser.exceptions.ParseException;
 import cms.model.person.AllFieldsContainsKeywordsPredicate;
 import cms.model.person.CombinedFindPredicate;
 import cms.model.person.NameContainsKeywordsPredicate;
-import cms.model.person.NusIdContainsKeywordsPredicate;
+import cms.model.person.NusMatricContainsKeywordsPredicate;
 import cms.model.person.Person;
 import cms.model.person.TagTutorialGroupMatchesPredicate;
 import cms.model.person.TutorialGroup;
@@ -57,7 +58,8 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_clear() throws Exception {
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD) instanceof ClearCommand);
-        assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD + " 3") instanceof ClearCommand);
+        // Extra arguments should create a ClearCommand with ignored args
+        assertEquals(new ClearCommand("3"), parser.parseCommand(ClearCommand.COMMAND_WORD + " 3"));
     }
 
     @Test
@@ -79,7 +81,8 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_exit() throws Exception {
         assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD) instanceof ExitCommand);
-        assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD + " 3") instanceof ExitCommand);
+        // Extra arguments should create an ExitCommand with ignored args
+        assertEquals(new ExitCommand("3"), parser.parseCommand(ExitCommand.COMMAND_WORD + " 3"));
     }
 
     @Test
@@ -123,7 +126,7 @@ public class AddressBookParserTest {
                 new CombinedFindPredicate(
                         new AllFieldsContainsKeywordsPredicate(java.util.Collections.emptyList()),
                         new NameContainsKeywordsPredicate(keywords),
-                        new NusIdContainsKeywordsPredicate(java.util.Collections.emptyList())
+                        new NusMatricContainsKeywordsPredicate(java.util.Collections.emptyList())
                 )), command);
     }
 
@@ -156,7 +159,8 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+        // Extra arguments should create a ListCommand with ignored args
+        assertEquals(new ListCommand("3"), parser.parseCommand(ListCommand.COMMAND_WORD + " 3"));
     }
 
     @Test
@@ -179,6 +183,13 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_tag() throws Exception {
+        assertEquals(new TagCommand(TagCommand.Action.ADD, List.of(INDEX_FIRST_PERSON), List.of(new Tag("friend"))),
+                parser.parseCommand(TagCommand.COMMAND_WORD + " add n/" + INDEX_FIRST_PERSON.getOneBased()
+                        + " tag/friend"));
+    }
+
+    @Test
     public void parseCommand_sortMissingArgument_throwsParseException() {
         String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, SortCommand.MESSAGE_USAGE);
         assertThrows(ParseException.class, expectedMessage, () -> parser.parseCommand(SortCommand.COMMAND_WORD));
@@ -187,13 +198,15 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_mask() throws Exception {
         assertTrue(parser.parseCommand(MaskCommand.COMMAND_WORD) instanceof MaskCommand);
-        assertTrue(parser.parseCommand(MaskCommand.COMMAND_WORD + " 3") instanceof MaskCommand);
+        // Extra arguments should create a MaskCommand with ignored args
+        assertEquals(new MaskCommand("3"), parser.parseCommand(MaskCommand.COMMAND_WORD + " 3"));
     }
 
     @Test
     public void parseCommand_unmask() throws Exception {
         assertTrue(parser.parseCommand(UnmaskCommand.COMMAND_WORD) instanceof UnmaskCommand);
-        assertTrue(parser.parseCommand(UnmaskCommand.COMMAND_WORD + " 3") instanceof UnmaskCommand);
+        // Extra arguments should create an UnmaskCommand with ignored args
+        assertEquals(new UnmaskCommand("3"), parser.parseCommand(UnmaskCommand.COMMAND_WORD + " 3"));
     }
 
     @Test

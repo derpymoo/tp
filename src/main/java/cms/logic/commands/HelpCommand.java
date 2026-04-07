@@ -53,6 +53,7 @@ public class HelpCommand extends Command {
         // Navigation and discovery
         helpMessages.put(ListCommand.COMMAND_WORD, ListCommand.MESSAGE_USAGE);
         helpMessages.put(FindCommand.COMMAND_WORD, FindCommand.MESSAGE_USAGE);
+        helpMessages.put(TagCommand.COMMAND_WORD, TagCommand.MESSAGE_USAGE);
         helpMessages.put(FilterCommand.COMMAND_WORD, FilterCommand.MESSAGE_USAGE);
         helpMessages.put(SortCommand.COMMAND_WORD, SortCommand.MESSAGE_USAGE);
 

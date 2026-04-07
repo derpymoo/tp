@@ -57,10 +57,11 @@ The Help Window is a separate window opened by the `help` command (or `F1`), and
 Action | Format
 --------|------------------
 **List** | `list`
-**Add** | `add n/NAME id/NUS_ID [role/ROLE] soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG MORE_TAGS]...`<br><br>e.g. `add n/John Doe id/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
-**Edit** | `edit INDEX [n/NAME] [id/NUS_ID] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`<br><br>e.g. `edit 2 p/98765432 e/johndoe@example.com`
-**Delete** | `delete INDEX`<br>`delete INDEX [MORE_INDEXES]...`<br>`delete id/NUS_ID`<br><br>e.g. `delete 1 3 5`
-**Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find id/NUS_ID [MORE_NUS_IDS]...`<br><br>e.g. `find n/jane n/eunice id/A0123456B`
+**Add** | `add n/NAME m/NUS_MATRIC role/ROLE soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`<br><br>e.g. `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
+**Edit** | `edit INDEX [n/NAME] [m/NUS_MATRIC] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`<br><br>e.g. `edit 2 p/98765432 e/johndoe@example.com`
+**Delete** | `delete INDEX`<br>`delete INDEX [MORE_INDEXES]...`<br>`delete m/NUS_MATRIC`<br><br>e.g. `delete 1 3 5`
+**Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRIC]...`<br><br>e.g. `find n/jane n/eunice m/A0123456B`
+**Tag** | `tag add n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add n/1 2 tag/friend tutor`
 **Filter** | `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]...`<br><br>e.g. `filter tag/friends t/01`
 **Sort** | `sort tg`<br>`sort name`<br><br>e.g. `sort tg`
 **Import** | `import FILE_PATH [keep/current|keep/incoming]`<br><br>e.g. `import data/addressbook.json keep/current`
@@ -80,14 +81,14 @@ Action | Format
 
 * A command has a command word plus fields.
 * Command word: `add`, `edit`, `find`, ...
-* Prefixes identify each field, e.g. `n/`, `id/`, `e/`.
+* Prefixes identify each field, e.g. `n/`, `m/`, `e/`.
 * `/` is reserved for prefixes and cannot appear in any field value.
 * Words in `UPPER_CASE` are values to provide.
 * Items in square brackets are optional.
 * `...` means the field can be repeated.
 * Parameters can be in any order.
-* For commands without parameters (`list`, `exit`, `clear`), extra text is ignored.
-* e.g. `add n/John Doe id/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/mentor`
+* For commands without parameters (`help`, `list`, `exit`, `clear`), extra text is ignored.
+* e.g. `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/mentor`
 </div>
 
 ### Listing all student and tutor records : `list`
@@ -102,25 +103,25 @@ Adds a student or tutor record to CMS.
 
 All required fields must be valid (See [Fields and accepted formats](#fields-and-accepted-formats)).
 
-Format: `add n/NAME id/NUS_ID [role/ROLE] soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG MORE_TAGS]...`
+Format: `add n/NAME m/NUS_MATRIC role/ROLE soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`
 
 Examples:
-* `add n/David Tan id/A0211111C role/student soc/david1 gh/davidtan99 e/david@u.nus.edu p/97654321 t/05`
-* `add n/John Doe id/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/1 tag/python-experienced needs-help`
+* `add n/David Tan m/A0211111C role/student soc/david1 gh/davidtan99 e/david@u.nus.edu p/97654321 t/05`
+* `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/python-experienced`
 
 Expected result:
 * The new person appears in the Person List Panel.
 * The Result Display confirms the added person.
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:**
-Add is rejected if unique fields conflict with an existing person (e.g. same NUS ID / SoC username / GitHub username / email).
+Add is rejected if unique fields conflict with an existing person (e.g. same NUS Matric / SoC username / GitHub username / email).
 </div>
 
 ### Editing a student / tutor : `edit`
 
 Edits an existing student or tutor record in CMS.
 
-Format: `edit INDEX [n/NAME] [id/NUS_ID] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`
+Format: `edit INDEX [n/NAME] [m/NUS_MATRIC] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`
 
 * Edits the person at the specified `INDEX`.
 * `INDEX` must be a positive integer (1, 2, 3, ...).
@@ -133,7 +134,7 @@ Format: `edit INDEX [n/NAME] [id/NUS_ID] [role/ROLE] [soc/SOC_USERNAME] [gh/GITH
 Examples:
 * `edit 1 p/91234567 e/johndoe@example.com`
 * `edit 2 n/Betsy Crower tag/`
-* `edit 3 id/A0654321B role/student soc/betsy3 gh/betsycrowe t/07`
+* `edit 3 m/A0654321B role/student soc/betsy3 gh/betsycrowe t/07`
 
 Expected result:
 * The selected person's displayed fields are updated.
@@ -141,19 +142,19 @@ Expected result:
 
 ### Deleting a student / tutor : `delete`
 
-Deletes one or more persons by displayed index, or by NUS ID.
+Deletes one or more persons by displayed index, or by NUS Matric.
 
 Format:
 * `delete INDEX`
 * `delete INDEX [MORE_INDEXES]...`
-* `delete id/NUS_ID`
+* `delete m/NUS_MATRIC`
 
 * For index-based delete, each index refers to the displayed list and must be a positive integer.
 
 Examples:
 * `delete 2`
 * `delete 1 3 5`
-* `delete id/A0234567B`
+* `delete m/A0234567B`
 
 Expected result:
 * Matching person(s) are removed from the Person List Panel.
@@ -161,28 +162,51 @@ Expected result:
 
 ### Finding students / tutors : `find`
 
-Finds persons whose names or NUS IDs contain any of the given keywords.
+Finds persons whose names or NUS Matrics contain any of the given keywords.
 
 Format:
 * `find a/KEYWORD [MORE_KEYWORDS]...`
 * `find n/KEYWORD [MORE_NAME_KEYWORDS]...`
-* `find id/NUS_ID [MORE_NUS_IDS]...`
-* `find n/KEYWORD [MORE_NAME_KEYWORDS]... id/NUS_ID [MORE_NUS_IDS]...`
+* `find m/NUS_MATRIC [MORE_NUS_MATRICS]...`
+* `find n/KEYWORD [MORE_NAME_KEYWORDS]... m/NUS_MATRIC [MORE_NUS_MATRICS]...`
 
-* Prefix is required (`a/`, `n/`, `id/`).
+* Prefix is required (`a/`, `n/`, `m/`).
 * Search is case-insensitive for names. e.g. `n/hans` will match `Hans`.
 * Order of keywords does not matter for name search. e.g. `find n/Hans n/Bo` will match `find n/Bo n/Hans`.
 * Full words are matched for names. e.g. `find n/Han` will not match `Hans`.
-* `id/` matching is case-insensitive. e.g. `id/a0123456b` matches `A0123456B`.
+* `m/` matching is case-insensitive. e.g. `m/a0123456b` matches `A0123456B`.
 * Mixed prefixes are allowed in one command, and results are returned by union (OR across prefixes).
 
 Examples:
 * `find a/jane`
 * `find n/jane n/eunice`
 * `find n/jane eunice`
-* `find n/jane n/eunice id/A0123456B id/A1234567C`
-* `find id/A0123456B A1234567C`
-* `find id/A0123456B id/A1234567C`
+* `find n/jane n/eunice m/A0123456B m/A1234567C`
+* `find m/A0123456B A1234567C`
+* `find m/A0123456B m/A1234567C`
+
+### Adding or removing tags : `tag`
+
+Adds or removes one or more tags from one or more persons.
+
+Format:
+* `tag add n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`
+* `tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`
+* `tag delete n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`
+* `tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`
+
+* Use `add` to add tags and `delete` to remove tags.
+* Target persons by either displayed index (`n/`) or NUS Matric (`m/`), but not both in the same command.
+* For index-based tagging, each index refers to the displayed list and must be a positive integer.
+* At least one target person and one tag must be provided.
+* Existing tags are not duplicated.
+* Tag values must follow the same rules as [`tag/TAG`](#field-tag).
+
+Examples:
+* `tag add n/1 2 tag/friend tutor`
+* `tag add m/A1234567B A2345678C tag/mentor`
+* `tag delete n/3 tag/friend`
+* `tag delete m/A1234567B tag/mentor`
 
 Expected result:
 * The Person List Panel updates to show only matching persons.
@@ -321,7 +345,7 @@ Invalid edits can cause CMS to reset your data file on next launch. Back up `CMS
 
 Use this section as a quick checklist for `add` and `edit`.
 
-`/` is reserved for field prefixes (for example `n/`, `id/`, `soc/`) and is invalid in all field values.
+`/` is reserved for field prefixes (for example `n/`, `m/`, `soc/`) and is invalid in all field values.
 Leading/trailing spaces are trimmed for all field values before validation.
 
 <a id="field-name"></a>
@@ -334,13 +358,13 @@ Leading/trailing spaces are trimmed for all field values before validation.
 * Valid: `n/John Doe`
 * Invalid: `n/Ravi s/o Kumar`
 
-<a id="field-nus-id"></a>
-**`id/NUS_ID`**
-* Must be `A` or `U` + 7 digits + a letter (e.g. `A0234567B`, `U1234567Z`).
+<a id="field-nus-matric"></a>
+**`m/NUS_MATRIC`**
+* Must be `A` or `U` + 7 digits + uppercase letter (e.g. `A0234567B`, `U1234567Z`).
 * Must be unique in CMS.
 * Case sensitivity: case-insensitive input (stored in uppercase).
-* Valid: `id/A0234567B`
-* Invalid: `id/B0234567B`
+* Valid: `m/A0234567B`
+* Invalid: `m/B0234567B`
 
 <a id="field-role"></a>
 **`role/ROLE`**
@@ -351,7 +375,7 @@ Leading/trailing spaces are trimmed for all field values before validation.
 
 <a id="field-soc-username"></a>
 **`soc/SOC_USERNAME`**
-* Either a SoC-style username or a valid NUS ID format.
+* Either a SoC-style username or a valid NUS Matric format.
 * SoC-style username rules:
   * 5 to 8 characters.
   * Lowercase letters, digits, and hyphens only.
@@ -415,11 +439,11 @@ Leading/trailing spaces are trimmed for all field values before validation.
 
 **Field**: A value supplied with a prefix in a command, e.g. `n/John Doe`.
 
-**Prefix**: A marker that indicates what a field means, e.g. `n/`, `id/`, `e/`.
+**Prefix**: A marker that indicates what a field means, e.g. `n/`, `m/`, `e/`.
 
 **INDEX**: A 1-based position of a person in the currently displayed list.
 
-**NUS ID**: Identifier in format `A` or `U` + 7 digits + a letter, e.g. `A0234567B`.
+**NUS Matric**: Identifier in format `A` or `U` + 7 digits + a letter, e.g. `A0234567B`.
 
 **SoC username**: School of Computing account username stored in the `soc/` field.
 
@@ -450,4 +474,4 @@ Leading/trailing spaces are trimmed for all field values before validation.
 **A**: No. There is currently no undo feature, so keep backups of `data/CMS.json` if needed.
 
 **Q**: Why is my `find` command not returning results?<br>
-**A**: Check your prefixes and input format (`a/`, `n/`, `id/`), and verify that full-word matching rules are met for name searches.
+**A**: Check your prefixes and input format (`a/`, `n/`, `m/`), and verify that full-word matching rules are met for name searches.

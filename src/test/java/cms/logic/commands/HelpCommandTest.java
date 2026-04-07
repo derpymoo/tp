@@ -60,6 +60,7 @@ public class HelpCommandTest {
         assertTrue(overview.contains("- " + DeleteCommand.COMMAND_WORD + ":"));
         assertTrue(overview.contains("- " + ListCommand.COMMAND_WORD + ":"));
         assertTrue(overview.contains("- " + FindCommand.COMMAND_WORD + ":"));
+        assertTrue(overview.contains("- " + TagCommand.COMMAND_WORD + ":"));
         assertTrue(overview.contains("- " + FilterCommand.COMMAND_WORD + ":"));
         assertTrue(overview.contains("- " + SortCommand.COMMAND_WORD + ":"));
         assertTrue(overview.contains("- " + MaskCommand.COMMAND_WORD + ":"));
@@ -74,6 +75,7 @@ public class HelpCommandTest {
     @Test
     public void getHelpMessage_supportedCommand_notNull() {
         assertNotNull(HelpCommand.getHelpMessage(AddCommand.COMMAND_WORD));
+        assertNotNull(HelpCommand.getHelpMessage(TagCommand.COMMAND_WORD));
         assertNotNull(HelpCommand.getHelpMessage(FilterCommand.COMMAND_WORD));
         assertNotNull(HelpCommand.getHelpMessage(SortCommand.COMMAND_WORD));
         assertNotNull(HelpCommand.getHelpMessage(MaskCommand.COMMAND_WORD));
