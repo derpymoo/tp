@@ -26,7 +26,7 @@ public class ExportCommand extends Command {
             "Could not export data to file %s due to the following error: %s";
     public static final String MESSAGE_EXPORT_PERMISSION_ERROR_FORMAT =
             "Could not export data to file %s due to insufficient permissions to write to the file or the folder.";
-        public static final String MESSAGE_STORAGE_CONTEXT_REQUIRED =
+    public static final String MESSAGE_STORAGE_CONTEXT_REQUIRED =
             "Export command requires storage context.";
 
     private final Path exportFilePath;

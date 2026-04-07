@@ -65,7 +65,7 @@ public class ImportCommandTest {
     }
 
     @Test
-        public void execute_keepIncoming_conflictByUniqueField() throws Exception {
+    public void execute_keepIncoming_conflictByUniqueField() throws Exception {
         Path path = temporaryFolder.resolve("data").resolve("importConflict.json");
         ImportCommand importCommand = new ImportCommand(path, KeepPolicy.INCOMING);
 

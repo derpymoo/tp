@@ -43,18 +43,18 @@ public class ImportCommand extends Command {
             "Import file is empty or not a valid Course Management System data file.";
     public static final String MESSAGE_INVALID_DATA =
             "Import file contains invalid Course Management System data.";
-        public static final String MESSAGE_STORAGE_CONTEXT_REQUIRED =
+    public static final String MESSAGE_STORAGE_CONTEXT_REQUIRED =
             "Import command requires storage context.";
     public static final String MESSAGE_KEEP_REQUIRED_NON_EMPTY = "Current data is non-empty. "
             + "Re-run the import command and add keep/current or keep/incoming "
             + "after the import command to choose how conflicts are resolved.";
-        public static final String MESSAGE_NO_CONFLICT_PREVIEW =
+    public static final String MESSAGE_NO_CONFLICT_PREVIEW =
             "\nNo direct conflicts were detected in the import preview.";
-        public static final String MESSAGE_CONFLICT_COUNT_MORE_FORMAT =
+    public static final String MESSAGE_CONFLICT_COUNT_MORE_FORMAT =
             "\n- ... and %d more conflict(s)";
-        public static final String MESSAGE_IDENTITY_CONFLICT_FORMAT =
+    public static final String MESSAGE_IDENTITY_CONFLICT_FORMAT =
             "incoming '%s' conflicts with current '%s' by NUS Matric (%s)";
-        public static final String MESSAGE_FIELD_CONFLICT_FORMAT =
+    public static final String MESSAGE_FIELD_CONFLICT_FORMAT =
             "incoming '%s' conflicts with current '%s' by %s (%s)";
     private static final String MESSAGE_CONFLICT_PREVIEW_HEADER = "\nConflicting entries detected:";
     private static final int CONFLICT_PREVIEW_LIMIT = 5;
