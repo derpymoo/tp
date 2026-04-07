@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<StackPane fx:id="placeHolder" xmlns="http://javafx.com/javafx/17"
-           xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="placeHolder" xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1">
     <TextArea fx:id="resultDisplay" styleClass="result-display" editable="false"
-              wrapText="true" focusTraversable="false"/>
-</StackPane>
+              wrapText="true" focusTraversable="false" VBox.vgrow="NEVER"/>
+    <HBox alignment="CENTER_RIGHT">
+        <Hyperlink fx:id="expandLink" onAction="#handleExpandToggle" styleClass="result-expand-link"
+                   text="Expand" visible="false" managed="false" HBox.hgrow="ALWAYS"/>
+    </HBox>
+</VBox>

@@ -11,9 +11,6 @@ import static cms.logic.parser.CliSyntax.PREFIX_SOCUSERNAME;
 import static cms.logic.parser.CliSyntax.PREFIX_TAG;
 import static cms.logic.parser.CliSyntax.PREFIX_TUTORIALGROUP;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -69,7 +66,7 @@ public class AddCommandParser implements Parser<AddCommand> {
         Phone phone = ParserUtil.parsePhone(argMultimap.getValue(PREFIX_PHONE).get());
         Email email = ParserUtil.parseEmail(argMultimap.getValue(PREFIX_EMAIL).get());
         TutorialGroup tutorialGroup = ParserUtil.parseTutorialGroup(argMultimap.getValue(PREFIX_TUTORIALGROUP).get());
-        Set<Tag> tagList = ParserUtil.parseTags(splitTagsOnWhitespace(argMultimap.getAllValues(PREFIX_TAG)));
+        Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
 
         Person person;
         try {
@@ -87,25 +84,6 @@ public class AddCommandParser implements Parser<AddCommand> {
      */
     private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
         return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
-    }
-
-    /**
-     * Splits each tag argument into individual tags on whitespace so users can provide
-     * multiple tags after a single tag/ prefix.
-     */
-    private static List<String> splitTagsOnWhitespace(Collection<String> rawTagValues) {
-        List<String> splitTags = new ArrayList<>();
-        for (String rawTagValue : rawTagValues) {
-            String trimmedTagValue = rawTagValue.trim();
-            if (trimmedTagValue.isEmpty()) {
-                continue;
-            }
-            String[] tokens = trimmedTagValue.split("\\s+");
-            for (String token : tokens) {
-                splitTags.add(token);
-            }
-        }
-        return splitTags;
     }
 
 }

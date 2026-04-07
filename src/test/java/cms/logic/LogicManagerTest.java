@@ -18,7 +18,13 @@ import static cms.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static cms.logic.commands.CommandTestUtil.VALID_SOCUSERNAME_BOB;
 import static cms.logic.commands.CommandTestUtil.VALID_TUTORIALGROUP_BOB;
 import static cms.testutil.Assert.assertThrows;
+import static cms.testutil.TypicalPersons.ALICE;
 import static cms.testutil.TypicalPersons.AMY;
+import static cms.testutil.TypicalPersons.BENSON;
+import static cms.testutil.TypicalPersons.CARL;
+import static cms.testutil.TypicalPersons.DANIEL;
+import static cms.testutil.TypicalPersons.ELLE;
+import static cms.testutil.TypicalPersons.FIONA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -217,7 +223,7 @@ public class LogicManagerTest {
         Path exportPath = temporaryFolder.resolve("exports").resolve("willFail.json");
         String exportCommand = ExportCommand.COMMAND_WORD + " \"" + exportPath + "\"";
         String expectedMessage = String.format(
-                LogicManager.FILE_OPS_EXPORT_ERROR_FORMAT, exportPath, exportException.getMessage());
+            ExportCommand.MESSAGE_EXPORT_ERROR_FORMAT, exportPath, exportException.getMessage());
 
         assertCommandFailure(exportCommand, CommandException.class, expectedMessage);
     }
@@ -309,7 +315,32 @@ public class LogicManagerTest {
                 + EMAIL_DESC_AMY + TUTORIALGROUP_DESC_AMY);
         Person expectedCurrentPerson = new PersonBuilder(AMY).withTags().build();
 
-        Path importPath = createImportFileWithSinglePerson(new PersonBuilder()
+        Person conflictingIncomingPerson = new PersonBuilder(AMY)
+            .withName("Amy Updated")
+            .withPhone("99990000")
+            .build();
+        Path importPath = createImportFileWithSinglePerson(conflictingIncomingPerson);
+
+        Path normalizedImportPath = importPath.toAbsolutePath().normalize();
+        String importCommand = buildImportCommand(normalizedImportPath, null);
+
+        CommandException thrownException = org.junit.jupiter.api.Assertions.assertThrows(
+            CommandException.class, () -> logic.execute(importCommand));
+        assertTrue(thrownException.getMessage().contains(ImportCommand.MESSAGE_KEEP_REQUIRED_NON_EMPTY));
+        assertTrue(thrownException.getMessage().contains(conflictingIncomingPerson.getName().toString()));
+        assertTrue(thrownException.getMessage().contains(expectedCurrentPerson.getName().toString()));
+
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(expectedCurrentPerson, model.getFilteredPersonList().get(0));
+    }
+
+    @Test
+    public void execute_importCommandWithCurrentDataAndNoKeep_noDirectConflictsShowsPreviewNote() throws Exception {
+        logic.execute(AddCommand.COMMAND_WORD + NAME_DESC_AMY + NUSMATRIC_DESC_AMY + ROLE_DESC_AMY
+                + SOCUSERNAME_DESC_AMY + GITHUBUSERNAME_DESC_AMY + PHONE_DESC_AMY
+                + EMAIL_DESC_AMY + TUTORIALGROUP_DESC_AMY);
+
+        Person nonConflictingIncomingPerson = new PersonBuilder()
                 .withName(VALID_NAME_BOB)
                 .withNusMatric(VALID_NUSMATRIC_BOB)
                 .withSocUsername(VALID_SOCUSERNAME_BOB)
@@ -317,13 +348,70 @@ public class LogicManagerTest {
                 .withEmail(VALID_EMAIL_BOB)
                 .withPhone(VALID_PHONE_BOB)
                 .withTutorialGroup(VALID_TUTORIALGROUP_BOB)
-                .build());
+                .build();
+        Path importPath = createImportFileWithSinglePerson(nonConflictingIncomingPerson);
+        String importCommand = buildImportCommand(importPath.toAbsolutePath().normalize(), null);
 
-        Path normalizedImportPath = importPath.toAbsolutePath().normalize();
-        String importCommand = buildImportCommand(normalizedImportPath, null);
-        assertCommandFailure(importCommand, CommandException.class, LogicManager.IMPORT_KEEP_REQUIRED_NON_EMPTY);
-        assertEquals(1, model.getFilteredPersonList().size());
-        assertEquals(expectedCurrentPerson, model.getFilteredPersonList().get(0));
+        CommandException thrownException = org.junit.jupiter.api.Assertions.assertThrows(
+                CommandException.class, () -> logic.execute(importCommand));
+        assertTrue(thrownException.getMessage().contains("No direct conflicts were detected in the import preview."));
+    }
+
+    @Test
+    public void execute_importCommandWithCurrentDataAndNoKeep_fieldConflictShowsFieldDetails() throws Exception {
+        logic.execute(AddCommand.COMMAND_WORD + NAME_DESC_AMY + NUSMATRIC_DESC_AMY + ROLE_DESC_AMY
+                + SOCUSERNAME_DESC_AMY + GITHUBUSERNAME_DESC_AMY + PHONE_DESC_AMY
+                + EMAIL_DESC_AMY + TUTORIALGROUP_DESC_AMY);
+
+        Person existingPerson = new PersonBuilder(AMY).withTags().build();
+        Person fieldConflictingIncomingPerson = new PersonBuilder()
+                .withName("Incoming Email Conflict")
+                .withNusMatric(VALID_NUSMATRIC_BOB)
+                .withSocUsername(VALID_SOCUSERNAME_BOB)
+                .withGithubUsername(VALID_GITHUBUSERNAME_BOB)
+                .withEmail(existingPerson.getEmail().toString())
+                .withPhone(VALID_PHONE_BOB)
+                .withTutorialGroup(VALID_TUTORIALGROUP_BOB)
+                .build();
+        Path importPath = createImportFileWithSinglePerson(fieldConflictingIncomingPerson);
+        String importCommand = buildImportCommand(importPath.toAbsolutePath().normalize(), null);
+
+        CommandException thrownException = org.junit.jupiter.api.Assertions.assertThrows(
+                CommandException.class, () -> logic.execute(importCommand));
+        assertTrue(thrownException.getMessage().contains("by email"));
+        assertTrue(thrownException.getMessage().contains(existingPerson.getEmail().toString()));
+    }
+
+    @Test
+    public void execute_importCommandWithCurrentDataAndNoKeep_manyConflictsShowsHiddenCount() throws Exception {
+        Person currentPersonOne = new PersonBuilder(ALICE).build();
+        Person currentPersonTwo = new PersonBuilder(BENSON).build();
+        Person currentPersonThree = new PersonBuilder(CARL).build();
+        Person currentPersonFour = new PersonBuilder(DANIEL).build();
+        Person currentPersonFive = new PersonBuilder(ELLE).build();
+        Person currentPersonSix = new PersonBuilder(FIONA).build();
+
+        model.addPerson(currentPersonOne);
+        model.addPerson(currentPersonTwo);
+        model.addPerson(currentPersonThree);
+        model.addPerson(currentPersonFour);
+        model.addPerson(currentPersonFive);
+        model.addPerson(currentPersonSix);
+
+        Person incomingConflictOne = new PersonBuilder(currentPersonOne).withName("Incoming One").build();
+        Person incomingConflictTwo = new PersonBuilder(currentPersonTwo).withName("Incoming Two").build();
+        Person incomingConflictThree = new PersonBuilder(currentPersonThree).withName("Incoming Three").build();
+        Person incomingConflictFour = new PersonBuilder(currentPersonFour).withName("Incoming Four").build();
+        Person incomingConflictFive = new PersonBuilder(currentPersonFive).withName("Incoming Five").build();
+        Person incomingConflictSix = new PersonBuilder(currentPersonSix).withName("Incoming Six").build();
+
+        Path importPath = createImportFileWithPersons(incomingConflictOne, incomingConflictTwo, incomingConflictThree,
+                incomingConflictFour, incomingConflictFive, incomingConflictSix);
+        String importCommand = buildImportCommand(importPath.toAbsolutePath().normalize(), null);
+
+        CommandException thrownException = org.junit.jupiter.api.Assertions.assertThrows(
+                CommandException.class, () -> logic.execute(importCommand));
+        assertTrue(thrownException.getMessage().contains("... and 1 more conflict(s)"));
     }
 
     @Test

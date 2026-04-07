@@ -30,7 +30,10 @@ import cms.model.AddressBook;
 import cms.model.Model;
 import cms.model.ModelManager;
 import cms.model.UserPrefs;
+import cms.model.person.FieldConflict;
 import cms.model.person.Person;
+import cms.model.person.exceptions.DuplicatePersonException;
+import cms.model.person.exceptions.DuplicatePersonFieldException;
 import cms.testutil.EditPersonDescriptorBuilder;
 import cms.testutil.PersonBuilder;
 
@@ -101,9 +104,30 @@ public class EditCommandTest {
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        expectedModel.setPerson(model.getFilteredPersonList().get(0), editedPerson);
+        showPersonAtIndex(expectedModel, INDEX_FIRST_PERSON);
+        expectedModel.setPerson(expectedModel.getFilteredPersonList().get(0), editedPerson);
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_filteredListStillMatches_success() {
+        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+
+        Person personInFilteredList = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person editedPerson = new PersonBuilder(personInFilteredList).withPhone(VALID_PHONE_BOB).build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
+                new EditPersonDescriptorBuilder().withPhone(VALID_PHONE_BOB).build());
+
+        String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        showPersonAtIndex(expectedModel, INDEX_FIRST_PERSON);
+        expectedModel.setPerson(expectedModel.getFilteredPersonList().get(0), editedPerson);
+
+        assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
+        assertEquals(1, model.getFilteredPersonList().size());
+        assertEquals(editedPerson, model.getFilteredPersonList().get(0));
     }
 
     @Test
@@ -112,7 +136,23 @@ public class EditCommandTest {
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(firstPerson).build();
         EditCommand editCommand = new EditCommand(INDEX_SECOND_PERSON, descriptor);
 
-        assertCommandFailure(editCommand, model, EditCommand.MESSAGE_DUPLICATE_PERSON);
+        String expectedMessage = DuplicatePersonException.buildMessage(firstPerson);
+        assertCommandFailure(editCommand, model, expectedMessage);
+    }
+
+    @Test
+    public void execute_conflictingUniqueFieldUnfilteredList_failure() {
+        Person conflictingPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+        String conflictingEmail = conflictingPerson.getEmail().value;
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withEmail(conflictingEmail)
+                .build();
+        EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON, descriptor);
+
+        String expectedMessage = DuplicatePersonFieldException.buildMessage(
+                new FieldConflict(FieldConflict.Type.EMAIL, conflictingPerson));
+        assertCommandFailure(editCommand, model, expectedMessage);
     }
 
     @Test
@@ -124,7 +164,8 @@ public class EditCommandTest {
         EditCommand editCommand = new EditCommand(INDEX_FIRST_PERSON,
                 new EditPersonDescriptorBuilder(personInList).build());
 
-        assertCommandFailure(editCommand, model, EditCommand.MESSAGE_DUPLICATE_PERSON);
+        String expectedMessage = DuplicatePersonException.buildMessage(personInList);
+        assertCommandFailure(editCommand, model, expectedMessage);
     }
 
     @Test

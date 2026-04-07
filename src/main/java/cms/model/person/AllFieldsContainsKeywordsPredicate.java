@@ -1,6 +1,7 @@
 package cms.model.person;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 
 import cms.commons.util.StringUtil;
@@ -25,15 +26,17 @@ public class AllFieldsContainsKeywordsPredicate implements Predicate<Person> {
             boolean matchesName = StringUtil.containsWordIgnoreCase(person.getName().fullName, keyword);
             boolean matchesNusMatric = person.getNusMatric() != null
                     && person.getNusMatric().value.equalsIgnoreCase(keyword);
-            boolean matchesPhone = person.getPhone() != null && person.getPhone().value.contains(keyword);
-            boolean matchesEmail = person.getEmail() != null && person.getEmail().value.contains(keyword);
-            boolean matchesSoc = person.getSocUsername() != null && person.getSocUsername().value.contains(keyword);
+            boolean matchesPhone = person.getPhone() != null && containsIgnoreCase(person.getPhone().value, keyword);
+            boolean matchesEmail = person.getEmail() != null && containsIgnoreCase(person.getEmail().value, keyword);
+            boolean matchesSoc = person.getSocUsername() != null
+                    && containsIgnoreCase(person.getSocUsername().value, keyword);
             boolean matchesGithub = person.getGithubUsername() != null
-                    && person.getGithubUsername().value.contains(keyword);
+                    && containsIgnoreCase(person.getGithubUsername().value, keyword);
             boolean matchesRole = person.getRole() != null
                     && person.getRole().value.equalsIgnoreCase(keyword);
             boolean matchesTutorial = person.getTutorialGroup() != null
-                    && person.getTutorialGroup().toString().contains(keyword);
+                    && TutorialGroup.isValidTutorialGroup(keyword)
+                    && person.getTutorialGroup().toString().equals(TutorialGroup.canonicalise(keyword));
             boolean matchesTag = person.getTags().stream()
                     .anyMatch(tag -> tag.tagName.equalsIgnoreCase(keyword));
 
@@ -50,6 +53,10 @@ public class AllFieldsContainsKeywordsPredicate implements Predicate<Person> {
             }
         }
         return false;
+    }
+
+    private boolean containsIgnoreCase(String source, String keyword) {
+        return source.toLowerCase(Locale.ROOT).contains(keyword.toLowerCase(Locale.ROOT));
     }
 
     @Override

@@ -124,35 +124,22 @@ public class FindCommandParserTest {
 
     @Test
     public void parse_allPrefix_blankValue() {
-        // a/ with only spaces should result in empty allKeywords list after filtering
-        FindCommand expected = new FindCommand(
-                new CombinedFindPredicate(
-                        new AllFieldsContainsKeywordsPredicate(Collections.emptyList()),
-                        new NameContainsKeywordsPredicate(Collections.emptyList()),
-                        new NusMatricContainsKeywordsPredicate(Collections.emptyList())));
-        assertParseSuccess(parser, " a/  ", expected);
+        assertParseFailure(parser, " a/  ", FindCommandParser.MESSAGE_EMPTY_KEYWORDS);
     }
 
     @Test
     public void parse_namePrefix_blankValue() {
-        // n/ with only spaces should result in empty nameKeywords list after filtering
-        FindCommand expected = new FindCommand(
-                new CombinedFindPredicate(
-                        new AllFieldsContainsKeywordsPredicate(Collections.emptyList()),
-                        new NameContainsKeywordsPredicate(Collections.emptyList()),
-                        new NusMatricContainsKeywordsPredicate(Collections.emptyList())));
-        assertParseSuccess(parser, " n/   ", expected);
+        assertParseFailure(parser, " n/   ", FindCommandParser.MESSAGE_EMPTY_KEYWORDS);
     }
 
     @Test
     public void parse_idPrefix_blankValue() {
-        // m/ with only spaces should result in empty idKeywords list after filtering
-        FindCommand expected = new FindCommand(
-                new CombinedFindPredicate(
-                        new AllFieldsContainsKeywordsPredicate(Collections.emptyList()),
-                        new NameContainsKeywordsPredicate(Collections.emptyList()),
-                        new NusMatricContainsKeywordsPredicate(Collections.emptyList())));
-        assertParseSuccess(parser, " m/   ", expected);
+        assertParseFailure(parser, " m/   ", FindCommandParser.MESSAGE_EMPTY_KEYWORDS);
+    }
+
+    @Test
+    public void parse_mixedPrefixesBlankValue_throwsParseException() {
+        assertParseFailure(parser, " a/john n/   ", FindCommandParser.MESSAGE_EMPTY_KEYWORDS);
     }
 }
 

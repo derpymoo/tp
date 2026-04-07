@@ -105,6 +105,10 @@ public class AllFieldsContainsKeywordsPredicateTest {
         AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
                 Collections.singletonList("example.com"));
         assertTrue(p.test(person));
+
+        AllFieldsContainsKeywordsPredicate mixedCase = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("ALICE@EXAMPLE"));
+        assertTrue(mixedCase.test(person));
     }
 
     @Test
@@ -113,6 +117,10 @@ public class AllFieldsContainsKeywordsPredicateTest {
         AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
                 Collections.singletonList("alice"));
         assertTrue(p.test(person));
+
+        AllFieldsContainsKeywordsPredicate mixedCase = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("ALI"));
+        assertTrue(mixedCase.test(person));
     }
 
     @Test
@@ -121,6 +129,10 @@ public class AllFieldsContainsKeywordsPredicateTest {
         AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
                 Collections.singletonList("alicegit"));
         assertTrue(p.test(person));
+
+        AllFieldsContainsKeywordsPredicate mixedCase = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("GIT"));
+        assertTrue(mixedCase.test(person));
     }
 
     @Test
@@ -137,6 +149,34 @@ public class AllFieldsContainsKeywordsPredicateTest {
         AllFieldsContainsKeywordsPredicate p = new AllFieldsContainsKeywordsPredicate(
             Collections.singletonList("10"));
         assertTrue(p.test(person));
+
+        AllFieldsContainsKeywordsPredicate leadingZero = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("010"));
+        assertTrue(leadingZero.test(person));
+    }
+
+    @Test
+    public void tutorialGroupPartialMatch_returnsFalse() {
+        Person person = new PersonBuilder().withTutorialGroup("10").build();
+        AllFieldsContainsKeywordsPredicate partialMatch = new AllFieldsContainsKeywordsPredicate(
+                Collections.singletonList("1"));
+        assertFalse(partialMatch.test(person));
+    }
+
+    @Test
+    public void caseInsensitiveSubstringMatches_returnsTrue() {
+        Person person = new PersonBuilder()
+                .withPhone("91234567")
+                .withEmail("John@Test.com")
+                .withSocUsername("JohnSoc")
+                .withGithubUsername("JohnGit")
+                .withTutorialGroup("10")
+                .build();
+
+        assertTrue(new AllFieldsContainsKeywordsPredicate(Collections.singletonList("9123")).test(person));
+        assertTrue(new AllFieldsContainsKeywordsPredicate(Collections.singletonList("john@test")).test(person));
+        assertTrue(new AllFieldsContainsKeywordsPredicate(Collections.singletonList("JOHNS")).test(person));
+        assertTrue(new AllFieldsContainsKeywordsPredicate(Collections.singletonList("git")).test(person));
     }
 
     @Test

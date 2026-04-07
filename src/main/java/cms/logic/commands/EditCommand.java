@@ -9,7 +9,6 @@ import static cms.logic.parser.CliSyntax.PREFIX_ROLE;
 import static cms.logic.parser.CliSyntax.PREFIX_SOCUSERNAME;
 import static cms.logic.parser.CliSyntax.PREFIX_TAG;
 import static cms.logic.parser.CliSyntax.PREFIX_TUTORIALGROUP;
-import static cms.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collections;
@@ -34,6 +33,8 @@ import cms.model.person.Phone;
 import cms.model.person.Role;
 import cms.model.person.SocUsername;
 import cms.model.person.TutorialGroup;
+import cms.model.person.exceptions.DuplicatePersonException;
+import cms.model.person.exceptions.DuplicatePersonFieldException;
 import cms.model.tag.Tag;
 
 /**
@@ -96,12 +97,11 @@ public class EditCommand extends Command {
             throw new CommandException(e.getMessage(), e);
         }
 
-        if (!personToEdit.isSamePerson(editedPerson) && model.hasPerson(editedPerson)) {
-            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
+        try {
+            model.setPerson(personToEdit, editedPerson);
+        } catch (DuplicatePersonException | DuplicatePersonFieldException e) {
+            throw new CommandException(e.getMessage(), e);
         }
-
-        model.setPerson(personToEdit, editedPerson);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS,
                 Messages.format(editedPerson, model.isMasked())));
     }
