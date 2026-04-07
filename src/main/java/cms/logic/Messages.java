@@ -19,6 +19,7 @@ public class Messages {
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d persons listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
             "Multiple values specified for the following single-valued field(s): ";
+    public static final String MESSAGE_IGNORED_PARAMETERS = "Extra input '%1$s' was ignored";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
@@ -45,6 +46,8 @@ public class Messages {
     public static String format(Person person, boolean isMasked) {
         String phone = isMasked ? MaskingUtil.maskPhone(person.getPhone()) : person.getPhone().toString();
         String email = isMasked ? MaskingUtil.maskEmail(person.getEmail()) : person.getEmail().toString();
+        String nusMatric = isMasked ? MaskingUtil.maskNusMatric(person.getNusMatric())
+                : person.getNusMatric().toString();
         String socUsername = isMasked ? MaskingUtil.maskSocUsername(person.getSocUsername())
                 : person.getSocUsername().toString();
         String githubUsername = isMasked ? MaskingUtil.maskGithubUsername(person.getGithubUsername())
@@ -56,7 +59,7 @@ public class Messages {
                 .append("; Email: ")
                 .append(email)
                 .append("; NUS Matric: ")
-                .append(person.getNusMatric())
+                .append(nusMatric)
                 .append("; SoC Username: ")
                 .append(socUsername)
                 .append("; GitHub Username: ")

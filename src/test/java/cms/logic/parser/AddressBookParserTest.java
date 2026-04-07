@@ -58,7 +58,8 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_clear() throws Exception {
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD) instanceof ClearCommand);
-        assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD + " 3") instanceof ClearCommand);
+        // Extra arguments should create a ClearCommand with ignored args
+        assertEquals(new ClearCommand("3"), parser.parseCommand(ClearCommand.COMMAND_WORD + " 3"));
     }
 
     @Test
@@ -80,7 +81,8 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_exit() throws Exception {
         assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD) instanceof ExitCommand);
-        assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD + " 3") instanceof ExitCommand);
+        // Extra arguments should create an ExitCommand with ignored args
+        assertEquals(new ExitCommand("3"), parser.parseCommand(ExitCommand.COMMAND_WORD + " 3"));
     }
 
     @Test
@@ -157,7 +159,8 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
-        assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+        // Extra arguments should create a ListCommand with ignored args
+        assertEquals(new ListCommand("3"), parser.parseCommand(ListCommand.COMMAND_WORD + " 3"));
     }
 
     @Test
@@ -170,6 +173,14 @@ public class AddressBookParserTest {
     public void parseCommand_sortName() throws Exception {
         assertEquals(new SortCommand(SortCommand.SORT_BY_NAME),
                 parser.parseCommand(SortCommand.COMMAND_WORD + " " + SortCommand.SORT_BY_NAME));
+    }
+
+    @Test
+    public void parseCommand_sortMixedCaseArguments() throws Exception {
+        assertEquals(new SortCommand(SortCommand.SORT_BY_TUTORIAL_GROUP),
+                parser.parseCommand(SortCommand.COMMAND_WORD + " Tg"));
+        assertEquals(new SortCommand(SortCommand.SORT_BY_NAME),
+                parser.parseCommand(SortCommand.COMMAND_WORD + " NaMe"));
     }
 
     @Test
@@ -195,13 +206,15 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_mask() throws Exception {
         assertTrue(parser.parseCommand(MaskCommand.COMMAND_WORD) instanceof MaskCommand);
-        assertTrue(parser.parseCommand(MaskCommand.COMMAND_WORD + " 3") instanceof MaskCommand);
+        // Extra arguments should create a MaskCommand with ignored args
+        assertEquals(new MaskCommand("3"), parser.parseCommand(MaskCommand.COMMAND_WORD + " 3"));
     }
 
     @Test
     public void parseCommand_unmask() throws Exception {
         assertTrue(parser.parseCommand(UnmaskCommand.COMMAND_WORD) instanceof UnmaskCommand);
-        assertTrue(parser.parseCommand(UnmaskCommand.COMMAND_WORD + " 3") instanceof UnmaskCommand);
+        // Extra arguments should create an UnmaskCommand with ignored args
+        assertEquals(new UnmaskCommand("3"), parser.parseCommand(UnmaskCommand.COMMAND_WORD + " 3"));
     }
 
     @Test

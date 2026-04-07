@@ -179,18 +179,19 @@ public class MainWindow extends UiPart<Stage> {
      * Rebuilds the person list panel and restores the previous selection when possible.
      */
     private void refreshPersonListPanel(Person previouslySelectedPerson) {
+        boolean isMasked = logic.isMasked();
         ObservableList<Person> filteredPersons = logic.getFilteredPersonList();
         Person personToRestore = findMatchingPerson(filteredPersons, previouslySelectedPerson);
 
-        personListPanel = new PersonListPanel(filteredPersons, logic.isMasked());
+        personListPanel = new PersonListPanel(filteredPersons, isMasked);
         personListPanel.selectedPersonProperty().addListener((observable, oldValue, newValue) ->
-                personDetailPanel.showPerson(newValue));
+                personDetailPanel.showPerson(newValue, isMasked));
 
         if (personToRestore != null) {
             personListPanel.selectPerson(personToRestore);
         }
 
-        personDetailPanel.showPerson(personListPanel.selectedPersonProperty().get());
+        personDetailPanel.showPerson(personListPanel.selectedPersonProperty().get(), isMasked);
 
         personListPanelPlaceholder.getChildren().setAll(personListPanel.getRoot());
     }
@@ -272,7 +273,7 @@ public class MainWindow extends UiPart<Stage> {
         try {
             CommandResult commandResult = logic.execute(commandText);
             logger.info("Result: " + commandResult.getFeedbackToUser());
-            resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser());
+            resultDisplay.setFeedbackToUser(commandResult.getFeedbackToUser(), false);
 
             if (commandResult.isShowHelp()) {
                 handleHelp(commandResult.getHelpContent().orElse(HelpWindow.DEFAULT_HELP_MESSAGE));
@@ -287,7 +288,7 @@ public class MainWindow extends UiPart<Stage> {
             return commandResult;
         } catch (CommandException | ParseException e) {
             logger.info("An error occurred while executing command: " + commandText);
-            resultDisplay.setFeedbackToUser(e.getMessage());
+            resultDisplay.setFeedbackToUser(e.getMessage(), true);
             throw e;
         }
     }

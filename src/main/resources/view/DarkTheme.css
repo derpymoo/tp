@@ -147,6 +147,10 @@
     -fx-padding: 0;
 }
 
+.result-display .text {
+    -fx-fill: #6fa56e;
+}
+
 .result-display .content {
     -fx-background-color: transparent;
 }
@@ -161,6 +165,27 @@
 
 .result-display .scroll-bar {
     -fx-background-color: transparent;
+}
+
+.result-expand-link {
+    -fx-padding: 2 0 0 0;
+    -fx-border-color: transparent;
+    -fx-text-fill: #9aa0a6;
+    -fx-font-family: "Consolas";
+    -fx-font-size: 11px;
+    -fx-underline: true;
+}
+
+.result-expand-link .text {
+    -fx-fill: #9aa0a6;
+}
+
+.result-expand-link:hover {
+    -fx-text-fill: white;
+}
+
+.result-expand-link:hover .text {
+    -fx-fill: white;
 }
 
 .status-bar .label {
