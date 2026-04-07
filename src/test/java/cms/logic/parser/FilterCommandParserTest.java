@@ -75,6 +75,14 @@ public class FilterCommandParserTest {
     }
 
     @Test
+    public void parse_multipleTagsInSinglePrefix_success() {
+        FilterCommand expectedCommand =
+                new FilterCommand(new TagTutorialGroupMatchesPredicate(Set.of(new Tag("needs"), new Tag("help")),
+                        Set.of()));
+        assertParseSuccess(parser, " tag/needs help", expectedCommand);
+    }
+
+    @Test
     public void parse_duplicateTutorialGroup_throwsParseException() {
         assertParseFailure(parser, " t/01 t/02",
                 cms.logic.Messages.getErrorMessageForDuplicatePrefixes(CliSyntax.PREFIX_TUTORIALGROUP));
@@ -89,7 +97,7 @@ public class FilterCommandParserTest {
 
     @Test
     public void parse_invalidTag_throwsParseException() {
-        assertParseFailure(parser, " tag/needs help",
+        assertParseFailure(parser, " tag/#friend",
                 cms.model.tag.Tag.MESSAGE_CONSTRAINTS);
     }
 

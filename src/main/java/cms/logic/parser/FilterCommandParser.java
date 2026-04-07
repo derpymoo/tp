@@ -44,11 +44,12 @@ public class FilterCommandParser implements Parser<FilterCommand> {
     }
 
     private Set<Tag> parseTags(List<String> rawTags) throws ParseException {
-        Set<Tag> parsedTags = new LinkedHashSet<>();
         for (String rawTag : rawTags) {
-            parsedTags.add(ParserUtil.parseTag(rawTag));
+            if (rawTag.trim().isEmpty()) {
+                throw new ParseException(Tag.MESSAGE_CONSTRAINTS);
+            }
         }
-        return parsedTags;
+        return ParserUtil.parseTags(rawTags);
     }
 
     private Set<TutorialGroup> parseTutorialGroups(List<String> rawTutorialGroups) throws ParseException {
