@@ -95,11 +95,9 @@ public class EditCommandParserTest {
         // invalid phone followed by valid email
         assertParseFailure(parser, "1" + INVALID_PHONE_DESC + EMAIL_DESC_AMY, Phone.MESSAGE_CONSTRAINTS);
 
-        // while parsing {@code PREFIX_TAG} alone will reset the tags of the {@code Person} being edited,
-        // parsing it together with a valid tag results in error
-        assertParseFailure(parser, "1" + TAG_DESC_FRIEND + TAG_DESC_HUSBAND + TAG_EMPTY, Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1" + TAG_DESC_FRIEND + TAG_EMPTY + TAG_DESC_HUSBAND, Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1" + TAG_EMPTY + TAG_DESC_FRIEND + TAG_DESC_HUSBAND, Tag.MESSAGE_CONSTRAINTS);
+        // invalid tag in a space-separated tag/ value
+        assertParseFailure(parser, "1" + TAG_DESC_FRIEND + " hubby*", Tag.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "1" + TAG_EMPTY + TAG_DESC_FRIEND + " hubby/", Tag.MESSAGE_CONSTRAINTS);
 
         // multiple invalid values, but only the first invalid value is captured
         assertParseFailure(parser, "1" + INVALID_NAME_DESC + INVALID_EMAIL_DESC + VALID_PHONE_AMY,
@@ -118,6 +116,22 @@ public class EditCommandParserTest {
         EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
 
         assertParseSuccess(parser, userInput, expectedCommand);
+
+        // empty tag prefixes are ignored; valid tags are still parsed
+        String userInputWithTrailingEmptyTag = targetIndex.getOneBased()
+            + TAG_DESC_FRIEND + TAG_DESC_HUSBAND + TAG_EMPTY;
+        String userInputWithMiddleEmptyTag = targetIndex.getOneBased()
+            + TAG_DESC_FRIEND + TAG_EMPTY + TAG_DESC_HUSBAND;
+        String userInputWithLeadingEmptyTag = targetIndex.getOneBased()
+            + TAG_EMPTY + TAG_DESC_FRIEND + TAG_DESC_HUSBAND;
+
+        EditPersonDescriptor tagsDescriptor = new EditPersonDescriptorBuilder()
+            .withTags(VALID_TAG_FRIEND, VALID_TAG_HUSBAND).build();
+        EditCommand expectedTagsCommand = new EditCommand(targetIndex, tagsDescriptor);
+
+        assertParseSuccess(parser, userInputWithTrailingEmptyTag, expectedTagsCommand);
+        assertParseSuccess(parser, userInputWithMiddleEmptyTag, expectedTagsCommand);
+        assertParseSuccess(parser, userInputWithLeadingEmptyTag, expectedTagsCommand);
     }
 
     @Test

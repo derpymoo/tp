@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-Course Management System (CMS) is a desktop application designed for NUS course coordinators who need to efficiently manage large cohorts, tutor assignments, and student records. Optimized for speed and productivity, CMS leverages a Command Line Interface (CLI) to enable users to perform tasks quickly and accurately.
+Managing large cohorts with point-and-click workflows is slow, repetitive, and prone to mistakes, especially when student and tutor records must stay consistent. Course Management System (CMS) is built for NUS course coordinators who need speed and accuracy: a command-driven workflow with built-in validation and uniqueness checks that helps you complete routine record tasks in seconds with confidence.
 
 * Table of Contents
 {:toc}
@@ -37,19 +37,38 @@ To transfer your data to another computer, install CMS there and overwrite the e
 
 --------------------------------------------------------------------------------------------------------------------
 
+## User interface overview
+
+![UI overview](images/Ui.png)
+
+CMS uses a single main window with four working areas:
+
+1. **Command Box**: (Bottom) Enter commands such as `add`, `find`, and `edit`.
+2. **Result Display**: (Top) Shows success, error, and guidance messages after each command.
+3. **Person List Panel**: (Middle Left) Displays the current list (or filtered list) of students and tutors.
+4. **Person Detail Panel**: (Middle Right) Shows details of the currently selected person.
+
+The Help Window is a separate window opened by the `help` command (or `F1`), and displays command guidance plus a User Guide link.
+
+--------------------------------------------------------------------------------------------------------------------
+
 ## Command summary
 
 Action | Format
 --------|------------------
-**Help** | `help`
 **List** | `list`
 **Add** | `add n/NAME m/NUS_MATRIC role/ROLE soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`<br><br>e.g. `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
 **Edit** | `edit INDEX [n/NAME] [m/NUS_MATRIC] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`<br><br>e.g. `edit 2 p/98765432 e/johndoe@example.com`
-**Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRIC]...`<br><br>e.g. `find n/jane n/eunice m/A0123456B`
-**Tag** | `tag add n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC[MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add n/1 2 tag/friend tutor`
 **Delete** | `delete INDEX`<br>`delete INDEX [MORE_INDEXES]...`<br>`delete m/NUS_MATRIC`<br><br>e.g. `delete 1 3 5`
+**Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRIC]...`<br><br>e.g. `find n/jane n/eunice m/A0123456B`
+**Tag** | `tag add n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add n/1 2 tag/friend tutor`
+**Filter** | `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]...`<br><br>e.g. `filter tag/friends t/01`
+**Sort** | `sort tg`<br>`sort name`<br><br>e.g. `sort tg`
 **Import** | `import FILE_PATH [keep/current|keep/incoming]`<br><br>e.g. `import data/addressbook.json keep/current`
 **Export** | `export FILE_PATH`<br><br>e.g. `export "C:\\Users\\Josh\\Documents\\backup.json"`
+**Mask** | `mask`
+**Unmask** | `unmask`
+**Help** | `help [COMMAND]`
 **Clear** | `clear`
 **Exit** | `exit`
 
@@ -63,19 +82,14 @@ Action | Format
 * A command has a command word plus fields.
 * Command word: `add`, `edit`, `find`, ...
 * Prefixes identify each field, e.g. `n/`, `m/`, `e/`.
+* `/` is reserved for prefixes and cannot appear in any field value.
 * Words in `UPPER_CASE` are values to provide.
 * Items in square brackets are optional.
 * `...` means the field can be repeated.
 * Parameters can be in any order.
-* For commands without parameters (`help`, `list`, `exit`, `clear`), extra text is ignored.
+* For commands without parameters (`list`, `exit`, `clear`), extra text is ignored.
 * e.g. `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/mentor`
 </div>
-
-### Viewing help : `help`
-
-Shows a message with a hyperlink to this User Guide.
-
-Format: `help`
 
 ### Listing all student and tutor records : `list`
 
@@ -94,6 +108,10 @@ Format: `add n/NAME m/NUS_MATRIC role/ROLE soc/SOC_USERNAME gh/GITHUB_USERNAME e
 Examples:
 * `add n/David Tan m/A0211111C role/student soc/david1 gh/davidtan99 e/david@u.nus.edu p/97654321 t/05`
 * `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/python-experienced`
+
+Expected result:
+* The new person appears in the Person List Panel.
+* The Result Display confirms the added person.
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:**
 Add is rejected if unique fields conflict with an existing person (e.g. same NUS Matric / SoC username / GitHub username / email).
@@ -117,6 +135,30 @@ Examples:
 * `edit 1 p/91234567 e/johndoe@example.com`
 * `edit 2 n/Betsy Crower tag/`
 * `edit 3 m/A0654321B role/student soc/betsy3 gh/betsycrowe t/07`
+
+Expected result:
+* The selected person's displayed fields are updated.
+* The Result Display confirms the edited person.
+
+### Deleting a student / tutor : `delete`
+
+Deletes one or more persons by displayed index, or by NUS Matric.
+
+Format:
+* `delete INDEX`
+* `delete INDEX [MORE_INDEXES]...`
+* `delete m/NUS_MATRIC`
+
+* For index-based delete, each index refers to the displayed list and must be a positive integer.
+
+Examples:
+* `delete 2`
+* `delete 1 3 5`
+* `delete m/A0234567B`
+
+Expected result:
+* Matching person(s) are removed from the Person List Panel.
+* The Result Display confirms which person(s) were deleted.
 
 ### Finding students / tutors : `find`
 
@@ -150,12 +192,12 @@ Adds or removes one or more tags from one or more persons.
 
 Format:
 * `tag add n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`
-* `tag add id/NUS_ID [MORE_NUS_IDS]... tag/TAG [MORE_TAGS]...`
+* `tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`
 * `tag delete n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`
-* `tag delete id/NUS_ID [MORE_NUS_IDS]... tag/TAG [MORE_TAGS]...`
+* `tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`
 
 * Use `add` to add tags and `delete` to remove tags.
-* Target persons by either displayed index (`n/`) or NUS ID (`id/`), but not both in the same command.
+* Target persons by either displayed index (`n/`) or NUS Matric (`m/`), but not both in the same command.
 * For index-based tagging, each index refers to the displayed list and must be a positive integer.
 * At least one target person and one tag must be provided.
 * Existing tags are not duplicated.
@@ -163,25 +205,44 @@ Format:
 
 Examples:
 * `tag add n/1 2 tag/friend tutor`
-* `tag add id/A1234567B A2345678C tag/mentor`
+* `tag add m/A1234567B A2345678C tag/mentor`
 * `tag delete n/3 tag/friend`
-* `tag delete id/A1234567B tag/mentor`
+* `tag delete m/A1234567B tag/mentor`
 
-### Deleting a student / tutor : `delete`
+Expected result:
+* The Person List Panel updates to show only matching persons.
+* If there are no matches, the list is empty.
 
-Deletes one or more persons by displayed index, or by NUS Matric.
+### Filtering by tag or tutorial group : `filter`
 
-Format:
-* `delete INDEX`
-* `delete INDEX [MORE_INDEXES]...`
-* `delete m/NUS_MATRIC`
+Filters the currently visible list by one or both of these fields:
+* `tag/TAG`
+* `t/TUTORIAL_GROUP_NUMBER`
 
-* For index-based delete, each index refers to the displayed list and must be a positive integer.
+Format: `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]...`
 
 Examples:
-* `delete 2`
-* `delete 1 3 5`
-* `delete m/A0234567B`
+* `filter tag/friends`
+* `filter t/01`
+* `filter tag/friends t/01`
+
+Expected result:
+* The Person List Panel updates to persons matching all provided filter criteria.
+
+### Sorting records : `sort`
+
+Sorts all persons by name or tutorial group.
+
+Format:
+* `sort name`
+* `sort tg`
+
+Examples:
+* `sort name`
+* `sort tg`
+
+Expected result:
+* Persons are reordered based on the selected sort key.
 
 ### Importing records from a JSON file : `import`
 
@@ -212,11 +273,44 @@ Format: `export FILE_PATH`
 
 * `FILE_PATH` must end with `.json`.
 * File paths with spaces are supported, e.g. `C:/Users/Test/My Data/export.json`.
-* Quoted file paths are also supported, e.g. `"C:/Users/Test/My Data/export.json"`.
+* Quoted file paths are also supported, e.g. `"C:/Users/Test/My Documents/backup.json"`.
 
 Examples:
 * `export data/backup.json`
 * `export "C:/Users/Test/My Documents/backup.json"`
+
+### Masking sensitive fields : `mask`
+
+Masks sensitive fields (NUS ID, SoC username, GitHub username, email, phone number) in the person list and detail panels.
+
+Format: `mask`
+
+Expected result:
+* Sensitive fields are hidden until `unmask` is used.
+
+### Unmasking sensitive fields : `unmask`
+
+Unmasks sensitive fields in the person list and detail panels.
+
+Format: `unmask`
+
+Expected result:
+* Sensitive fields are shown again.
+
+### Viewing help : `help`
+
+Opens the Help Window with command guidance and a User Guide link.
+
+Format: `help [COMMAND]`
+
+* If `COMMAND` is omitted, CMS shows a brief command summary.
+* If `COMMAND` is provided (for example `add`), CMS shows detailed usage for that command.
+* The Help Window is opened if closed, otherwise the same window is focused.
+* Pressing `F1` or clicking the Help menu item shows the same summary as running `help`.
+
+Examples:
+* `help`
+* `help add`
 
 ### Purging all records : `clear`
 
@@ -225,7 +319,7 @@ Deletes **all** records from CMS.
 Format: `clear`
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-This command deletes all records and is irreversible from within the app.
+Use `clear` only when you are sure, as this cannot be undone from within CMS.
 </div>
 
 ### Exiting the program : `exit`
@@ -252,21 +346,26 @@ Invalid edits can cause CMS to reset your data file on next launch. Back up `CMS
 
 Use this section as a quick checklist for `add` and `edit`.
 
+`/` is reserved for field prefixes (for example `n/`, `m/`, `soc/`) and is invalid in all field values.
+Leading/trailing spaces are trimmed for all field values before validation.
+
 <a id="field-name"></a>
 **`n/NAME`**
-* Letters, numbers, and spaces only.
+* 1 to 128 characters and must include at least one letter.
+* Allowed characters: letters, spaces, hyphens (`-`), apostrophes (`'`), and periods (`.`).
 * Cannot be blank.
-* Case sensitivity: case-sensitive (stored as entered).
+* Consecutive spaces are collapsed. E.g. `n/John   Doe` is treated as `n/John Doe`.
+* Case sensitivity: case-sensitive (stored as entered after space normalization).
 * Valid: `n/John Doe`
-* Invalid: `n/John@Doe`
+* Invalid: `n/Ravi s/o Kumar`
 
 <a id="field-nus-matric"></a>
 **`m/NUS_MATRIC`**
-* Must be `A` + 7 digits + uppercase letter (e.g. `A0234567B`).
+* Must be `A` + 7 digits + uppercase letter (e.g. `A0234567X`) or `U` + 7 digits + uppercase letter (e.g. `U023456W`).
 * Must be unique in CMS.
-* Case sensitivity: case-sensitive (`A` and trailing letter must be uppercase).
+* Case sensitivity: case-insensitive input (stored in uppercase).
 * Valid: `m/A0234567B`
-* Invalid: `m/a0234567b`
+* Invalid: `m/B0234567B`
 
 <a id="field-role"></a>
 **`role/ROLE`**
@@ -284,7 +383,7 @@ Use this section as a quick checklist for `add` and `edit`.
   * Cannot start or end with a hyphen.
   * No spaces.
 * Must be unique in CMS.
-* Case sensitivity: case-sensitive.
+* Case sensitivity: case-insensitive input (stored in lowercase).
 * Valid: `soc/john1`
 * Invalid: `soc/-john`
 
@@ -292,16 +391,16 @@ Use this section as a quick checklist for `add` and `edit`.
 **`gh/GITHUB_USERNAME`**
 * 1-39 characters.
 * Letters, digits, and hyphens only.
-* Cannot start/end with `-`.
+* Cannot start/end with `-` and cannot contain consecutive hyphens (`--`).
 * Must be unique in CMS.
-* Case sensitivity: case-sensitive.
+* Case sensitivity: case-insensitive input (stored in lowercase).
 * Valid: `gh/jane-lim123`
 * Invalid: `gh/-jane`
 
 <a id="field-email"></a>
 **`e/EMAIL`**
 * Must be a valid email format.
-* Case sensitivity: case-sensitive.
+* Case sensitivity: case-insensitive input (stored in lowercase).
 * Valid: `e/johndoe@u.nus.edu`
 * Invalid: `e/johndoe@u`
 
@@ -315,21 +414,45 @@ Use this section as a quick checklist for `add` and `edit`.
 
 <a id="field-tutorial-group"></a>
 **`t/TUTORIAL_GROUP`**
-* Must be `01` to `99`.
-* Case sensitivity: not applicable (numeric only).
+* Must be a number from `1` to `99`.
+* Leading zeros are allowed in input.
 * Valid: `t/01`
 * Invalid: `t/100`
 
 <a id="field-tag"></a>
 **`tag/TAG`**
 * Optional, repeatable.
-* Alphanumeric characters only.
-* No spaces inside a tag.
+* Alphanumeric characters, with optional single hyphens to replace spaces.
+* Spaces are treated as separators, so `tag/needs help` becomes two tags: `needs` and `help`.
 * Cannot start or end with a hyphen.
 * Repeated tags for the same person are kept only once.
-* Case sensitivity: case-sensitive.
+* Case sensitivity: case-insensitive input (stored in lowercase).
 * Valid: `tag/python`
-* Invalid: `tag/needs help`
+* Invalid: `tag/-help`
+
+--------------------------------------------------------------------------------------------------------------------
+
+## Glossary
+
+**CLI**: Command Line Interface used to control CMS by typing commands.
+
+**Command word**: The action keyword at the start of a command, e.g. `add`, `find`, `help`.
+
+**Field**: A value supplied with a prefix in a command, e.g. `n/John Doe`.
+
+**Prefix**: A marker that indicates what a field means, e.g. `n/`, `m/`, `e/`.
+
+**INDEX**: A 1-based position of a person in the currently displayed list.
+
+**NUS Matric**: Identifier given by NUS in format `A` + 7 digits + a letter,(`A0234567B`) or `U` + 6 digits + a letter (e.g., `U023456W`).
+
+**SoC username**: School of Computing account username stored in the `soc/` field.
+
+**Tutorial group**: Class/tutorial group number in the `t/` field.
+
+**Tag**: Optional label used to categorize a person, e.g. `tag/python`. Could be used for any purpose such as indicating needs, statuses, or grades.
+
+**Help Window**: Separate window that displays help text and a User Guide hyperlink.
 
 --------------------------------------------------------------------------------------------------------------------
 

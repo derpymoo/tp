@@ -99,7 +99,6 @@ public class EditCommandParser implements Parser<EditCommand> {
      */
     private Optional<Set<Tag>> parseTagsForEdit(Collection<String> tags) throws ParseException {
         assert tags != null;
-
         if (tags.isEmpty()) {
             return Optional.empty();
         }

@@ -141,13 +141,22 @@ public class ParserUtil {
     }
 
     /**
-     * Parses {@code Collection<String> tags} into a {@code Set<Tag>}.
+     * Parses {@code Collection<String>} tag values into a {@code Set<Tag>}.
+     * Each raw tag value may contain whitespace-separated tags, which are split before validation.
      */
     public static Set<Tag> parseTags(Collection<String> tags) throws ParseException {
         requireNonNull(tags);
         final Set<Tag> tagSet = new HashSet<>();
-        for (String tagName : tags) {
-            tagSet.add(parseTag(tagName));
+        for (String rawTagValue : tags) {
+            String trimmedTagValue = rawTagValue.trim();
+            if (trimmedTagValue.isEmpty()) {
+                continue;
+            }
+
+            String[] tokens = trimmedTagValue.split("\\s+");
+            for (String token : tokens) {
+                tagSet.add(parseTag(token));
+            }
         }
         return tagSet;
     }

@@ -11,10 +11,8 @@ public class NusMatric {
 
     public static final String MESSAGE_CONSTRAINTS =
             "NUS Matric must be in the format A#######X or U######X with a valid checksum, where # is a digit "
-                + "and X is a letter (e.g., A0234567X or U023456W). Legacy U####### input is also accepted "
-                + "and canonicalised to U######X (e.g., U0906931 is accepted and canonicalised to U096931E).";
+                + "and X is a letter (e.g., A0234567X or U023456W).";
     public static final String VALIDATION_REGEX = "(A\\d{7}|U\\d{6})[A-Z]";
-    private static final String LEGACY_U_NUSNET_REGEX = "U\\d{7}";
 
     private static final String CHECK_DIGIT_TABLE = "YXWURNMLJHEAB";
     private static final int[] A_WEIGHTS = {1, 1, 1, 1, 1, 1};
@@ -41,23 +39,7 @@ public class NusMatric {
         if (input == null) {
             return null;
         }
-        String canonical = input.trim().toUpperCase();
-
-        if (canonical.matches(LEGACY_U_NUSNET_REGEX)) {
-            return canonicaliseLegacyUNusnet(canonical);
-        }
-
-        return canonical;
-    }
-
-    /**
-     * Canonicalises the legacy U-prefix NUSNET form to the standard U-prefix form.
-     */
-    private static String canonicaliseLegacyUNusnet(String legacyUNusnet) {
-        // Legacy U-prefix NUSNET form has 7 digits; drop the 3rd digit to get U + 6 digits.
-        String matricWithoutCheckDigit = legacyUNusnet.substring(0, 3) + legacyUNusnet.substring(4);
-        char checkDigit = computeCheckDigit('U', matricWithoutCheckDigit.substring(1));
-        return matricWithoutCheckDigit + checkDigit;
+        return input.trim().toUpperCase();
     }
 
     /**
