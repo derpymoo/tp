@@ -14,6 +14,8 @@ import javafx.scene.text.Text;
 public class PersonCard extends UiPart<Region> {
 
     private static final String FXML = "PersonListCard.fxml";
+    private static final String ROLE_STUDENT_STYLE_CLASS = "role-student";
+    private static final String ROLE_TUTOR_STYLE_CLASS = "role-tutor";
 
     /**
      * Note: Certain keywords such as "location" and "resources" are reserved keywords in JavaFX.
@@ -47,7 +49,10 @@ public class PersonCard extends UiPart<Region> {
         id.setText(displayedIndex + ". ");
         name.setText(person.getName().fullName);
         role.setText(person.getRole().value.toUpperCase());
-        tutorialGroup.setText(String.valueOf(person.getTutorialGroup().value));
+        tutorialGroup.setText(String.format("T%02d", person.getTutorialGroup().value));
+        role.getStyleClass().removeAll(ROLE_STUDENT_STYLE_CLASS, ROLE_TUTOR_STYLE_CLASS);
+        role.getStyleClass().add(person.getRole().value.equals("student")
+                ? ROLE_STUDENT_STYLE_CLASS : ROLE_TUTOR_STYLE_CLASS);
         nusMatricValue.setText(isMasked
                 ? MaskingUtil.maskNusMatric(person.getNusMatric())
                 : person.getNusMatric().value);

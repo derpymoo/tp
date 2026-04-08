@@ -70,7 +70,7 @@ public class PersonDetailPanel extends UiPart<Region> {
 
         name.setText(person.getName().fullName);
         role.setText(person.getRole().value.toUpperCase());
-        tutorialGroup.setText(String.valueOf(person.getTutorialGroup().value));
+        tutorialGroup.setText(String.format("T%02d", person.getTutorialGroup().value));
 
         if (isMasked) {
             nusMatric.setText(MaskingUtil.maskNusMatric(person.getNusMatric()));
