@@ -4,6 +4,7 @@ import static cms.commons.util.AppUtil.checkArgument;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,6 +35,8 @@ public class DeleteCommand extends Command {
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
     public static final String MESSAGE_DELETE_PERSONS_SUCCESS = "Deleted persons:\n%1$s";
+    public static final String MESSAGE_DUPLICATE_TARGETS_IGNORED =
+            "Warning: %1$d duplicate target(s) detected and ignored.\n";
 
     private final TargetType targetType;
     private final List<Index> targetIndexes;
@@ -96,13 +99,16 @@ public class DeleteCommand extends Command {
             deletedPersons = deletePersonsByNusMatric(model);
         }
 
+        int duplicateCount = getDuplicateTargetCount();
+        String duplicateNote = formatDuplicateNote(duplicateCount);
+
         if (deletedPersons.size() == 1) {
             return new CommandResult(
-                    String.format(MESSAGE_DELETE_PERSON_SUCCESS,
+                    duplicateNote + String.format(MESSAGE_DELETE_PERSON_SUCCESS,
                             Messages.format(deletedPersons.get(0), model.isMasked())));
         }
 
-        return new CommandResult(String.format(MESSAGE_DELETE_PERSONS_SUCCESS,
+        return new CommandResult(duplicateNote + String.format(MESSAGE_DELETE_PERSONS_SUCCESS,
                 formatDeletedPersons(deletedPersons, model.isMasked())));
     }
 
@@ -110,6 +116,20 @@ public class DeleteCommand extends Command {
         return deletedPersons.stream()
                 .map(person -> Messages.format(person, isMasked))
                 .collect(Collectors.joining("\n"));
+    }
+
+    private int getDuplicateTargetCount() {
+        if (targetType == TargetType.INDEX) {
+            return targetIndexes.size() - new LinkedHashSet<>(targetIndexes).size();
+        }
+        return targetNusMatrics.size() - new LinkedHashSet<>(targetNusMatrics).size();
+    }
+
+    private String formatDuplicateNote(int duplicateCount) {
+        if (duplicateCount == 0) {
+            return "";
+        }
+        return String.format(MESSAGE_DUPLICATE_TARGETS_IGNORED, duplicateCount);
     }
 
     private List<Person> deletePersonsByIndex(Model model) throws CommandException {

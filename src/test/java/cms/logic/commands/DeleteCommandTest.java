@@ -74,13 +74,14 @@ public class DeleteCommandTest {
 
     @Test
     public void execute_duplicateIndexesUnfilteredList_deletesPersonOnce() {
-        DeleteCommand deleteCommand = new DeleteCommand(List.of(INDEX_FIRST_PERSON, INDEX_FIRST_PERSON));
+        DeleteCommand deleteCommand = new DeleteCommand(List.of(Index.fromOneBased(1), Index.fromOneBased(1)));
 
         Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
 
-        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DUPLICATE_TARGETS_IGNORED, 1)
+                + String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
                 Messages.format(personToDelete));
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
@@ -135,7 +136,24 @@ public class DeleteCommandTest {
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deletePerson(personToDelete);
 
-        String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DUPLICATE_TARGETS_IGNORED, 1)
+                + String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
+                Messages.format(personToDelete));
+
+        assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_multipleDuplicateIndexesUnfilteredList_showsDuplicateNote() {
+        DeleteCommand deleteCommand = new DeleteCommand(List.of(
+                Index.fromOneBased(1), Index.fromOneBased(1), Index.fromOneBased(1)));
+
+        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.deletePerson(personToDelete);
+
+        String expectedMessage = String.format(DeleteCommand.MESSAGE_DUPLICATE_TARGETS_IGNORED, 2)
+                + String.format(DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS,
                 Messages.format(personToDelete));
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);

@@ -199,4 +199,12 @@ public class ParserUtilTest {
 
         assertEquals(expectedTagSet, actualTagSet);
     }
+
+    @Test
+    public void parseTags_equivalentNonCanonicalTags_deduplicatesCanonicalTags() throws Exception {
+        Set<Tag> actualTagSet = ParserUtil.parseTags(Arrays.asList("Friend", " friend ", "FRIEND"));
+        Set<Tag> expectedTagSet = Collections.singleton(new Tag("friend"));
+
+        assertEquals(expectedTagSet, actualTagSet);
+    }
 }
