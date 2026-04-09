@@ -19,29 +19,29 @@ public class ImportCommandParserTest {
     private final ImportCommandParser parser = new ImportCommandParser();
 
     @Test
-    public void parse_validUnquotedPath_success() {
+    public void parse_validQuotedPath_success() {
         String path = "data/import.json";
-        assertParseSuccess(parser, path, new ImportCommand(Path.of(path)));
+        assertParseSuccess(parser, "\"" + path + "\"", new ImportCommand(Path.of(path)));
     }
 
     @Test
     public void parse_validKeepIncoming_success() {
         String path = "data/import.json";
-        assertParseSuccess(parser, path + " keep/incoming",
+        assertParseSuccess(parser, "\"" + path + "\" keep/incoming",
                 new ImportCommand(Path.of(path), KeepPolicy.INCOMING));
     }
 
     @Test
     public void parse_validKeepCurrent_success() {
         String path = "data/import.json";
-        assertParseSuccess(parser, path + " keep/current",
+        assertParseSuccess(parser, "\"" + path + "\" keep/current",
                 new ImportCommand(Path.of(path), KeepPolicy.CURRENT));
     }
 
     @Test
     public void parse_pathContainingKeepSegmentWithKeepIncoming_success() {
         String path = "keep/data.json";
-        assertParseSuccess(parser, path + " keep/incoming",
+        assertParseSuccess(parser, "\"" + path + "\" keep/incoming",
                 new ImportCommand(Path.of(path), KeepPolicy.INCOMING));
     }
 
@@ -59,23 +59,29 @@ public class ImportCommandParserTest {
     }
 
     @Test
+    public void parse_unquotedPath_failure() {
+        assertParseFailure(parser, "data/import.json",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ImportCommand.MESSAGE_USAGE));
+    }
+
+    @Test
     public void parse_missingPath_failure() {
         assertParseFailure(parser, "   ", String.format(MESSAGE_INVALID_COMMAND_FORMAT, ImportCommand.MESSAGE_USAGE));
     }
 
     @Test
     public void parse_invalidExtension_failure() {
-        assertParseFailure(parser, "data/import.txt", ImportCommandParser.MESSAGE_FILE_EXTENSION_REQUIRED);
+        assertParseFailure(parser, "\"data/import.txt\"", ImportCommandParser.MESSAGE_FILE_EXTENSION_REQUIRED);
     }
 
     @Test
     public void parse_invalidKeep_failure() {
-        assertParseFailure(parser, "data/import.json keep/other", ImportCommandParser.MESSAGE_INVALID_KEEP);
+        assertParseFailure(parser, "\"data/import.json\" keep/other", ImportCommandParser.MESSAGE_INVALID_KEEP);
     }
 
     @Test
     public void parse_tooManyArguments_failure() {
-        assertParseFailure(parser, "data/import.json keep/current keep/incoming",
+        assertParseFailure(parser, "\"data/import.json\" keep/current keep/incoming",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, ImportCommand.MESSAGE_USAGE));
     }
 
@@ -97,7 +103,7 @@ public class ImportCommandParserTest {
         }
 
         try {
-            parser.parse(invalidPath);
+            parser.parse("\"" + invalidPath + "\"");
         } catch (ParseException pe) {
             assertTrue(pe.getMessage().contains("File path is invalid:"));
             assertTrue(pe.getMessage().contains(invalidPathException.getReason()));

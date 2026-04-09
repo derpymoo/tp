@@ -24,15 +24,15 @@ public class ImportCommand extends Command {
     public static final String COMMAND_WORD = "import";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Imports address book data from a JSON file.\n"
-            + "Parameters: FILE_PATH (must be a .json file) [keep/POLICY]\n"
+            + "Parameters: \"FILE_PATH\" (must be a .json file) [keep/POLICY]\n"
             + "Behavior: Imports new data and merges with existing data (if any).\n"
             + "When existing data would conflict with imported data:\n"
             + "  - If keep/POLICY is omitted and data exists: ERROR (user must choose strategy)\n"
             + "  - keep/current: keep existing, skip conflicting imports\n"
             + "  - keep/incoming: replace conflicts with imported data\n"
-            + "Examples: " + COMMAND_WORD + " data/addressbook.json\n"
-            + "          " + COMMAND_WORD + " data/addressbook.json keep/current\n"
-            + "          " + COMMAND_WORD + " data/addressbook.json keep/incoming";
+            + "Examples: " + COMMAND_WORD + " \"data/addressbook.json\"\n"
+            + "          " + COMMAND_WORD + " \"data/addressbook.json\" keep/current\n"
+            + "          " + COMMAND_WORD + " \"data/addressbook.json\" keep/incoming";
 
     public static final String MESSAGE_SUCCESS = "Address book imported from: %s";
     public static final String MESSAGE_KEEP_CURRENT_SUCCESS =

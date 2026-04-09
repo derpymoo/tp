@@ -18,7 +18,7 @@ public class ExportCommand extends Command {
     public static final String COMMAND_WORD = "export";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Exports current data to the given JSON file path.\n"
-            + "Parameters: FILE_PATH\n"
+            + "Parameters: \"FILE_PATH\"\n"
             + "Example: " + COMMAND_WORD + " \"C:\\Users\\Josh\\Documents\\backup.json\"";
 
     public static final String MESSAGE_SUCCESS = "Exported current data to: %1$s";

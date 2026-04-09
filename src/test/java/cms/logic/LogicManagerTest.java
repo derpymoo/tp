@@ -601,7 +601,7 @@ public class LogicManagerTest {
 
     private String buildImportCommand(Path importPath, String keepOption) {
         String pathText = importPath.toAbsolutePath().normalize().toString();
-        String pathArg = pathText.contains(" ") ? "\"" + pathText + "\"" : pathText;
+        String pathArg = "\"" + pathText + "\"";
         String command = ImportCommand.COMMAND_WORD + " " + pathArg;
         if (keepOption != null) {
             command += " " + keepOption;

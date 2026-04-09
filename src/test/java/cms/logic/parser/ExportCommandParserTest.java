@@ -18,9 +18,15 @@ public class ExportCommandParserTest {
     private final ExportCommandParser parser = new ExportCommandParser();
 
     @Test
-    public void parse_validUnquotedPath_success() {
+    public void parse_validQuotedPath_success() {
         String path = "data/export.json";
-        assertParseSuccess(parser, path, new ExportCommand(Path.of(path)));
+        assertParseSuccess(parser, "\"" + path + "\"", new ExportCommand(Path.of(path)));
+    }
+
+    @Test
+    public void parse_unquotedPath_failure() {
+        assertParseFailure(parser, "data/export.json",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ExportCommand.MESSAGE_USAGE));
     }
 
     @Test
@@ -36,7 +42,7 @@ public class ExportCommandParserTest {
 
     @Test
     public void parse_invalidExtension_failure() {
-        assertParseFailure(parser, "data/export.txt", ExportCommandParser.MESSAGE_FILE_EXTENSION_REQUIRED);
+        assertParseFailure(parser, "\"data/export.txt\"", ExportCommandParser.MESSAGE_FILE_EXTENSION_REQUIRED);
     }
 
     @Test
@@ -63,7 +69,7 @@ public class ExportCommandParserTest {
         }
 
         try {
-            parser.parse(invalidPath);
+            parser.parse("\"" + invalidPath + "\"");
         } catch (ParseException pe) {
             assertTrue(pe.getMessage().contains("File path is invalid:"));
             assertTrue(pe.getMessage().contains(invalidPathException.getReason()));

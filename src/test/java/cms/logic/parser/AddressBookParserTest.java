@@ -95,7 +95,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_export() throws Exception {
         String path = "data/export.json";
-        ExportCommand command = (ExportCommand) parser.parseCommand(ExportCommand.COMMAND_WORD + " " + path);
+        ExportCommand command = (ExportCommand) parser.parseCommand(ExportCommand.COMMAND_WORD + " \"" + path + "\"");
         assertEquals(new ExportCommand(java.nio.file.Path.of(path)), command);
 
         String quotedPathWithWhitespace = "C:/Users/Josh/My Documents/export.json";
@@ -107,15 +107,15 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_import() throws Exception {
         String path = "data/import.json";
-        ImportCommand command = (ImportCommand) parser.parseCommand(ImportCommand.COMMAND_WORD + " " + path);
+        ImportCommand command = (ImportCommand) parser.parseCommand(ImportCommand.COMMAND_WORD + " \"" + path + "\"");
         assertEquals(new ImportCommand(java.nio.file.Path.of(path)), command);
 
         ImportCommand keepIncomingCommand = (ImportCommand) parser.parseCommand(
-                ImportCommand.COMMAND_WORD + " " + path + " keep/incoming");
+            ImportCommand.COMMAND_WORD + " \"" + path + "\" keep/incoming");
         assertEquals(new ImportCommand(java.nio.file.Path.of(path), KeepPolicy.INCOMING), keepIncomingCommand);
 
         ImportCommand keepCurrentCommand = (ImportCommand) parser.parseCommand(
-                ImportCommand.COMMAND_WORD + " " + path + " keep/current");
+            ImportCommand.COMMAND_WORD + " \"" + path + "\" keep/current");
         assertEquals(new ImportCommand(java.nio.file.Path.of(path), KeepPolicy.CURRENT), keepCurrentCommand);
 
         String quotedPathWithWhitespace = "C:/Users/Josh/My Documents/import.json";

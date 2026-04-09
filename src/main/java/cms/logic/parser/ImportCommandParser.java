@@ -24,7 +24,7 @@ public class ImportCommandParser implements Parser<ImportCommand> {
             + "Format: " + ImportCommand.MESSAGE_USAGE;
 
     private static final Pattern PATH_AND_OPTION_PATTERN = Pattern.compile(
-            "^\\s*(\"(?:[^\"\\\\]|\\\\.)*\"|\\S+)(?:\\s+(\\S+))?\\s*$");
+            "^\\s*(\"(?:[^\"\\\\]|\\\\.)*\")(?:\\s+(\\S+))?\\s*$");
 
     @Override
     public ImportCommand parse(String args) throws ParseException {
@@ -36,7 +36,7 @@ public class ImportCommandParser implements Parser<ImportCommand> {
         String rawPathToken = matcher.group(1);
         String rawKeepToken = matcher.group(2);
 
-        String pathString = removeMatchingSurroundingQuotes(rawPathToken);
+        String pathString = extractQuotedPath(rawPathToken);
         if (pathString == null) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ImportCommand.MESSAGE_USAGE));
         }
@@ -71,7 +71,7 @@ public class ImportCommandParser implements Parser<ImportCommand> {
         throw new ParseException(MESSAGE_INVALID_KEEP);
     }
 
-    private String removeMatchingSurroundingQuotes(String input) {
+    private String extractQuotedPath(String input) {
         boolean startsWithQuote = input.startsWith("\"");
         boolean endsWithQuote = input.endsWith("\"");
 

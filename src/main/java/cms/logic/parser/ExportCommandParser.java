@@ -25,7 +25,7 @@ public class ExportCommandParser implements Parser<ExportCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ExportCommand.MESSAGE_USAGE));
         }
 
-        String pathString = removeMatchingSurroundingQuotes(trimmedArgs);
+        String pathString = extractQuotedPath(trimmedArgs);
         if (pathString == null) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ExportCommand.MESSAGE_USAGE));
         }
@@ -44,7 +44,7 @@ public class ExportCommandParser implements Parser<ExportCommand> {
         return new ExportCommand(exportFilePath);
     }
 
-    private String removeMatchingSurroundingQuotes(String input) {
+    private String extractQuotedPath(String input) {
         boolean startsWithQuote = input.startsWith("\"");
         boolean endsWithQuote = input.endsWith("\"");
 
@@ -60,6 +60,6 @@ public class ExportCommandParser implements Parser<ExportCommand> {
             return input.substring(1, input.length() - 1);
         }
 
-        return input;
+        return null;
     }
 }
