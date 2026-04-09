@@ -456,8 +456,8 @@ testers are expected to do more *exploratory* testing.
    1. Test case: `delete 1 3`<br>
       Expected: The first and third shown contacts are deleted in one command.
 
-   1. Test case: `delete m/A0123456X`<br>
-      Expected: The person with NUS Matric `A0123456X` is deleted.
+   1. Test case: `delete m/A0123456J`<br>
+      Expected: The person with NUS Matric `A0123456J` is deleted.
 
    1. Incorrect delete command to try: `delete m/A9999999Z`<br>
       Expected: Error messages are shown describing the invalid command format or invalid target person(s).

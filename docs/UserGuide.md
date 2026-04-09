@@ -57,10 +57,10 @@ The Help Window is a separate window opened by the `help` command (or `F1`), and
 Action | Format
 --------|------------------
 **List** | `list`
-**Add** | `add n/NAME m/NUS_MATRIC [role/ROLE] soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`<br><br>e.g. `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
+**Add** | `add n/NAME m/NUS_MATRIC [role/ROLE] soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`<br><br>e.g. `add n/John Doe m/A0234567X role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
 **Edit** | `edit INDEX [n/NAME] [m/NUS_MATRIC] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`<br><br>e.g. `edit 2 p/98765432 e/johndoe@example.com`
 **Delete** | `delete INDEX`<br>`delete INDEX [MORE_INDEXES]...`<br>`delete m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `delete 1 3 5`
-**Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `find n/jane n/eunice m/A0123456B`
+**Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `find n/jane n/eunice m/A0123456J`
 **Tag** | `tag add n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add n/1 2 tag/friend tutor`
 **Filter** | `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]`<br><br>e.g. `filter tag/friends t/01`
 **Sort** | `sort tg`<br>`sort name`<br><br>e.g. `sort tg`
@@ -88,7 +88,7 @@ Action | Format
 * `...` means the field can be repeated.
 * Parameters can be in any order.
 * For commands without parameters (`list`, `mask`, `unmask`, `exit`), extra text does not block execution and is reported as ignored.
-* e.g. `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/mentor`
+* e.g. `add n/John Doe m/A0234567X role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/mentor`
 </div>
 
 ### Listing all student and tutor records : `list`
@@ -118,9 +118,9 @@ Adds a student or tutor record to CMS.
 * If `role/` is omitted, the role defaults to `student`.
 
 **Examples:**
-* `add n/David Tan m/A0211111C role/student soc/david1 gh/davidtan99 e/david@u.nus.edu p/97654321 t/05`
-* `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/python-experienced`
-* `add n/Jane Lim m/A0123456B soc/janelim gh/jane-lim e/jane@u.nus.edu p/81234567 t/03`
+* `add n/David Tan m/A0211111L role/student soc/david1 gh/davidtan99 e/david@u.nus.edu p/97654321 t/05`
+* `add n/John Doe m/A0234567X role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/python-experienced`
+* `add n/Jane Lim m/A0123456J soc/janelim gh/jane-lim e/jane@u.nus.edu p/81234567 t/03`
 
 **Expected result:**
 * The new person appears in the Person List Panel.
@@ -145,7 +145,7 @@ Edits an existing student or tutor record in CMS.
 **Examples:**
 * `edit 1 p/91234567 e/johndoe@example.com`
 * `edit 2 n/Betsy Crower tag/`
-* `edit 3 m/A0654321B role/student soc/betsy3 gh/betsycrowe t/07`
+* `edit 3 m/A0654321J role/student soc/betsy3 gh/betsycrowe t/07`
 
 **Expected result:**
 * The selected person's record is updated in CMS.
@@ -169,8 +169,8 @@ Deletes one or more persons by displayed index, or by NUS Matric.
 **Examples:**
 * `delete 2`
 * `delete 1 3 5`
-* `delete m/A0234567B`
-* `delete m/A0234567B A0345678C`
+* `delete m/A0234567X`
+* `delete m/A0234567X A0345678L`
 
 **Expected result:**
 * Matching person(s) are removed from the Person List Panel.
@@ -198,9 +198,9 @@ Finds persons by name, NUS Matric, or any supported field.
 * `find a/jane`
 * `find n/jane n/eunice`
 * `find n/jane eunice`
-* `find n/jane n/eunice m/A0123456B m/A1234567C`
-* `find m/A0123456B A1234567C`
-* `find m/A0123456B m/A1234567C`
+* `find n/jane n/eunice m/A0123456J m/A1234567X`
+* `find m/A0123456J A1234567X`
+* `find m/A0123456J m/A1234567X`
 
 **Expected result:**
 * The Person List Panel updates to show matching persons.
@@ -226,9 +226,9 @@ Adds or removes one or more tags from one or more persons.
 
 **Examples:**
 * `tag add n/1 2 tag/friend tutor`
-* `tag add m/A1234567B A2345678C tag/mentor`
+* `tag add m/A1234567X A2345678L tag/mentor`
 * `tag delete n/3 tag/friend`
-* `tag delete m/A1234567B tag/mentor`
+* `tag delete m/A1234567X tag/mentor`
 
 **Expected result:**
 * The selected persons' tags are updated.
@@ -437,7 +437,7 @@ Use this section as a quick checklist when adding or editing command examples an
 * Must be `A` + 7 digits + uppercase letter (e.g. `A0234567X`) or `U` + 6 digits + uppercase letter (e.g. `U023456W`).
 * Must be unique in CMS.
 * Case sensitivity: case-insensitive input (stored in uppercase).
-* Valid: `m/A0234567B`
+* Valid: `m/A0234567X`
 * Invalid: `m/B0234567B`
 
 <a id="field-role"></a>
@@ -518,7 +518,7 @@ Use this section as a quick checklist when adding or editing command examples an
 
 **INDEX**: A 1-based position of a person in the currently displayed list.
 
-**NUS Matric**: Identifier given by NUS in format `A` + 7 digits + a letter,(`A0234567B`) or `U` + 6 digits + a letter (e.g., `U023456W`).
+**NUS Matric**: Identifier given by NUS in format `A` + 7 digits + a letter,(`A0234567X`) or `U` + 6 digits + a letter (e.g., `U023456W`).
 
 **SoC username**: School of Computing account username stored in the `soc/` field.
 
