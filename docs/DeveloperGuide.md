@@ -155,7 +155,7 @@ This section describes the current CMS implementation at a high level. The comma
 
 ### Masking sensitive fields
 
-#### Implementation
+**Implementation**
 
 The masking feature lets course coordinators hide sensitive fields in the UI without changing the underlying `Person` data.
 Instead of rewriting stored records, CMS keeps a single masking preference in `UserPrefs` and routes it through the `Model` interface.
@@ -189,6 +189,48 @@ Because the masking state is stored in `UserPrefs`, it is restored on startup an
   * Pros: Keeps the feature local to presentation code.
   * Cons: The list panel and detail panel would need separate coordination, and the preference would not naturally persist across restarts.
 
+### Import and export features
+
+**Implementation**
+
+The import and export features let course coordinators move CMS data between the in-memory model and external JSON files without bypassing the existing storage and validation pipeline.
+Instead of introducing a separate file format or duplicate serialization path, CMS reuses the storage layer so that manual command input and imported data are validated consistently.
+
+The `import` and `export` commands work as follows:
+
+1. `LogicManager` receives the user input and forwards it to `AddressBookParser`.
+2. `AddressBookParser` creates either `ImportCommandParser` or `ExportCommandParser`.
+3. `ImportCommandParser` or `ExportCommandParser` validates that the file path is wrapped in double quotes and ends with `.json`.
+4. For `import`, `ImportCommandParser` also extracts the optional keep policy token (`keep/current` or `keep/incoming`), and `ImportCommand#execute` rejects the command with usage guidance if current data is non-empty and no keep policy is given.
+5. `ImportCommand#execute(Model, Storage)` asks the storage layer to read and deserialize the target JSON file into model-compatible records.
+6. Imported persons are merged into the model according to the selected keep policy, with conflicts resolved in favor of either the current record or the incoming record.
+7. `ExportCommand#execute(Model, Storage)` asks the storage layer to serialize the current model state and write it to the target JSON file.
+
+Import reports invalid file paths, unsupported file extensions, invalid JSON content, and malformed records as command errors.
+Export reports invalid file paths, unsupported file extensions, and write failures as command errors.
+Existing files are overwritten during export.
+
+### NUS matriculation number validation
+
+**Implementation**
+
+NUS matriculation number validation ensures that CMS accepts only canonical NUS-style identifiers with valid check digits, preventing malformed or mistyped identifiers from entering the model.
+Instead of scattering validation rules across parsers and storage classes, CMS centralises the logic in `NusMatric` so that all entry points enforce the same format and checksum rules.
+
+Validation through command parsing works as follows:
+
+1. A command parser such as `AddCommandParser`, `EditCommandParser`, `DeleteCommandParser`, `FindCommandParser`, or `TagCommandParser` delegates matric parsing to `ParserUtil#parseNusMatric(...)` or `ParserUtil#parseNusMatrics(...)`.
+2. `ParserUtil` trims the raw input and calls `NusMatric#getValidationErrorMessage(...)`.
+3. `NusMatric` canonicalises the input by trimming surrounding whitespace and converting it to uppercase.
+4. `NusMatric` validates the canonical form against the accepted patterns `A#######X` and `U######X`, where `#` is a digit and `X` is a letter.
+5. If the format is valid, `NusMatric` computes the expected check digit using the numeric portion of the matric number, prefix-specific weights, modulo 13, and a fixed check-digit lookup table.
+6. If the computed check digit matches the provided trailing letter, `ParserUtil` constructs a `NusMatric` object; otherwise, parsing fails with a checksum-specific error message.
+
+Validation during JSON import follows a separate entry path.
+`JsonAdaptedPerson#toModelType()` calls `NusMatric#getValidationErrorMessage(...)` before constructing the imported `NusMatric` object, so imported records and interactive command input follow the same format, canonicalisation, and checksum rules.
+
+Because validation is performed before model objects are created, malformed or checksum-invalid matric numbers are rejected early and never enter the address book state.
+The implementation also canonicalises accepted values into uppercase form, which ensures consistent storage, comparison, and duplicate detection.
 
 --------------------------------------------------------------------------------------------------------------------
 
