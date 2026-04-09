@@ -500,24 +500,24 @@ testers are expected to do more *exploratory* testing.
 
 1. Export current data
 
-   1. Test case: `export data/manual-test-export.json`<br>
+   1. Test case: `export "data/manual-test-export.json"`<br>
       Expected: Command succeeds and creates/overwrites `data/manual-test-export.json`.
 
-   1. Incorrect command to try: `export data/manual-test-export.txt`<br>
+   1. Incorrect command to try: `export "data/manual-test-export.txt"`<br>
       Expected: Command is rejected because file path must end with `.json`.
 
 1. Import data with and without keep policy
 
    1. Prerequisites: Use the exported file from the previous test.
 
-   1. Test case: `import data/manual-test-export.json` (when current data is non-empty)<br>
+   1. Test case: `import "data/manual-test-export.json"` (when current data is non-empty)<br>
       Expected: Command is rejected and asks for `keep/current` or `keep/incoming`.
 
-   1. Test case: `import data/manual-test-export.json keep/current`<br>
+   1. Test case: `import "data/manual-test-export.json" keep/current`<br>
       Expected: Command succeeds and keeps existing records where conflicts occur.
 
-   1. Test case: `import data/manual-test-export.json keep/incoming`<br>
+   1. Test case: `import "data/manual-test-export.json" keep/incoming`<br>
       Expected: Command succeeds and incoming records replace existing conflicting records.
 
-   1. Incorrect command to try: `import data/manual-test-export.txt`<br>
+   1. Incorrect command to try: `import "data/manual-test-export.txt"`<br>
       Expected: Command is rejected because file path must end with `.json`.
