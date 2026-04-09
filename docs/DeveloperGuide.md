@@ -266,54 +266,29 @@ Given below are the requirements of Course Management System.
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                     | So that …​                                                        |
-| -------- | --------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `* * *`  | new user              | access a command summary or help guide                     | recall the command syntax without leaving the app                      |
-| `* * *`  | course coordinator    | add a new student or tutor to the system                   | I can populate the course roster for the new semester                  |
-| `* * *`  | course coordinator    | view a list of all users                                   | I can get an overview of the entire cohort and staff                   |
-| `* * *`  | course coordinator    | delete a user from the system                              | students who drop the course do not clutter the database               |
-| `* *`    | course coordinator    | bulk import student data from external files (CSV/Excel)    | I don't have to manually type in 500 student records                   |
-| `* *`    | course coordinator    | manage over 500 student records                             | the system remains usable for the entire CS2103T cohort                |
-| `* *`    | course coordinator    | edit an existing user's details (address/contact/tag)       | the contact information and tagging remain accurate throughout the semester |
-| `* *`    | course coordinator    | filter for students who are not assigned to a group         | I can ensure no student is left behind before tutorials start          |
-| `* *`    | course coordinator    | assign students to specific tutorial groups                 | the teams are balanced and logistics are settled                       |
-| `* *`    | course coordinator    | create new tutor groups                                     | I can allocate resources for the incoming cohort                       |
-| `* *`    | course coordinator    | view a summary of a student's progress                      | I can identify who is falling behind                                   |
-| `* *`    | course coordinator    | automatically flag students who have late submissions        | I can apply penalties or offer assistance without manually checking timestamps |
-| `* *`    | course coordinator    | mask sensitive student data (like emails/phones)            | I can limit the amount of information shared to others (without violating privacy) |
-| `* *`    | course coordinator    | receive validation warnings when entering student data       | I do not accidentally save invalid email formats or duplicate IDs      |
-| `* *`    | course coordinator    | view and add course details                                  | all necessary administrative information is central to the system      |
-| `* *`    | course coordinator    | edit existing course details                                 | I can update website links or venue changes immediately                |
-| `* *`    | course coordinator    | delete a course or its specific details                      | I can remove obsolete data from previous years                         |
-| `* *`    | busy coordinator      | set system reminders for upcoming deadlines                  | I can send announcements to students on time                           |
-| `* *`    | course coordinator    | view the overall completion status of an assessment           | I know how much of the cohort has submitted their work                 |
-| `* *`    | power user            | create short aliases for long commands                        | I can execute complex tasks with just a few keystrokes                 |
-| `* *`    | fast typist           | utilize auto-completion for commands and names                | I can input data faster and reduce spelling errors                     |
-| `* *`    | course coordinator    | edit multiple records simultaneously (batch edit)             | I don't waste time making the same change to 50 different students one by one |
-| `* *`    | course coordinator    | view a log of recent data changes                             | I can track what modifications I or the tutors have made               |
-| `* *`    | course coordinator    | search for any name or course instantly                       | I can find specific records without scrolling through long lists       |
-| `* *`    | course coordinator    | sort lists by name or tag                                     | the data is presented in the most useful order for my current task     |
-| `* *`    | course coordinator    | see specific - actionable error messages                       | I can fix my input immediately without guessing what went wrong        |
-| `* *`    | course coordinator    | export the current roster                                     | I can upload the data to the official university grading system        |
-| `* *`    | course coordinator    | save the current state of the database to a specific file      | I have a portable copy of the data                                     |
-| `* *`    | course coordinator    | choose how to handle duplicate entries during import           | I can update existing records without creating clones                  |
-| `* *`    | course coordinator    | trigger emails to a filtered list of students                  | I can send targeted announcements quickly                              |
-| `* *`    | course coordinator    | access a command summary or help guide                         | I can refresh my memory on syntax without leaving the app              |
-| `* *`    | course coordinator    | access a settings menu                                         | I can configure the application behavior to my liking                  |
-| `* *`    | late-night user       | toggle between dark and light modes                            | I can reduce eye strain                                                |
-| `* *`    | course coordinator    | adjust the text size                                           | the interface remains readable on different monitors                   |
-| `* *`    | course coordinator    | experience instant feedback (<100ms) even under load           | my fast workflow is not interrupted by loading screens                 |
-| `*`      | course coordinator    | view a specific user's profile                                 | I can quickly access their contact details, SOC ID and GitHub ID when needed |
-| `*`      | course coordinator    | initialize a new course container                               | I can begin setting up a new iteration of CS2103T                      |
-| `*`      | course coordinator    | add new assessment items                                       | the grading structure is defined for the semester                      |
-| `*`      | course coordinator    | set deadlines for assessments                                  | the system can track lateness automatically                            |
-| `*`      | keyboard-first user   | use custom keybindings for common actions                      | I can navigate the app without slowing down to use the mouse           |
-| `*`      | fast working user     | undo my last command                                           | I can instantly rectify mistakes without re-entering data              |
-| `*`      | power user            | use SQL-like syntax to query the data                          | I can perform complex filtering operations that standard buttons don't support |
-| `*`      | course coordinator    | generate a formatted PDF/Text report                           | I can share course statistics with the faculty                         |
-| `*`      | course coordinator    | load data from a specific file                                 | I can switch between different semesters or backup versions            |
-| `*`      | course coordinator    | configure automatic backups                                    | I do not lose critical course data in the event of a crash             |
-| `*`      | course coordinator    | apply different visual themes                                  | the environment feels personalized and pleasant to use                 |
+| Priority | As a ... | I want to ... | So that ... |
+| -------- | -------- | ------------- | ----------- |
+| `* * *`  | new user | access an in-app command summary or help guide | I can recall command syntax without leaving the app |
+| `* * *`  | course coordinator | add a new student or tutor record | I can populate the course roster quickly |
+| `* * *`  | course coordinator | view all stored persons in one list | I can get an overview of the cohort and tutor team |
+| `* * *`  | course coordinator | edit an existing person's details | I can keep contact, tutorial group, and tagging information accurate |
+| `* * *`  | course coordinator | delete one or more persons by displayed index or NUS Matric | I can remove withdrawn or obsolete records efficiently |
+| `* * *`  | course coordinator | search for persons by name, NUS Matric, or other supported fields | I can find specific records quickly in a large dataset |
+| `* * *`  | course coordinator | receive clear validation errors for invalid inputs | I can correct mistakes immediately and preserve data quality |
+| `* * *`  | course coordinator | prevent duplicate identifiers such as NUS Matric, SoC username, GitHub username, and email | I can keep each record unique and trustworthy |
+| `* *`    | course coordinator | add tags to one or more persons | I can mark mentors, tutors, or other useful groupings quickly |
+| `* *`    | course coordinator | remove tags from one or more persons | I can keep person categorisation up to date |
+| `* *`    | course coordinator | filter persons by tutorial group and tags | I can focus on the subset of records relevant to the current task |
+| `* *`    | course coordinator | sort the displayed records by name or tutorial group | I can review the roster in a useful order |
+| `* *`    | course coordinator | import records from a JSON file | I can load an existing roster without retyping every entry |
+| `* *`    | course coordinator | choose whether to keep current or incoming records during import conflicts | I can control how imported data merges with existing data |
+| `* *`    | course coordinator | export the current roster to a JSON file | I can create a portable backup or share the data with other systems |
+| `* *`    | course coordinator | mask sensitive fields in the UI | I can reduce unnecessary exposure of private information during demonstrations or shared viewing |
+| `* *`    | course coordinator | clear all data when starting over | I can reset the system safely for a new dataset or test run |
+| `* *`    | keyboard-first user | perform common record-management tasks entirely through commands | I can work faster than with a mouse-driven workflow |
+| `*`      | course coordinator | preserve masked or unmasked display preferences across sessions | I do not have to reapply my preferred privacy view each time I reopen the app |
+| `*`      | course coordinator | use displayed indexes for batch actions such as delete and tag | I can update multiple visible records with short commands |
+| `*`      | course coordinator | import and export data using explicit file paths | I can manage backups and move data between environments when needed |
 
 ### Use cases
 
@@ -564,3 +539,4 @@ testers are expected to do more *exploratory* testing.
 
    1. Incorrect command to try: `import "data/manual-test-export.txt"`<br>
       Expected: Command is rejected because file path must end with `.json`.
+
