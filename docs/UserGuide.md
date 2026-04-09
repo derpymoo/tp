@@ -64,8 +64,8 @@ Action | Format
 **Tag** | `tag add n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add n/1 2 tag/friend tutor`
 **Filter** | `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]`<br><br>e.g. `filter tag/friends t/01`
 **Sort** | `sort tg`<br>`sort name`<br><br>e.g. `sort tg`
-**Import** | `import FILE_PATH [keep/current|keep/incoming]`<br><br>e.g. `import data/addressbook.json keep/current`
-**Export** | `export FILE_PATH`<br><br>e.g. `export "C:\\Users\\Josh\\Documents\\backup.json"`
+**Import** | `import "FILE_PATH" [keep/current|keep/incoming]`<br><br>e.g. `import "data/addressbook.json" keep/current`
+**Export** | `export "FILE_PATH"`<br><br>e.g. `export "C:\\Users\\Josh\\Documents\\backup.json"`
 **Mask** | `mask`
 **Unmask** | `unmask`
 **Help** | `help [COMMAND]`
@@ -280,19 +280,20 @@ Sorts all persons by name or tutorial group.
 
 Imports records from a `.json` file into CMS.
 
-**Format:** `import FILE_PATH [keep/current|keep/incoming]`
+**Format:** `import "FILE_PATH" [keep/current|keep/incoming]`
 
 **Constraints:**
-* `FILE_PATH` must point to a `.json` file.
-* File paths with spaces are allowed, including quoted paths.
+* `FILE_PATH` must be enclosed in double quotes and point to a `.json` file.
+* File paths with spaces are allowed.
+* Use a simple file name made of letters, numbers, hyphens, or underscores only; avoid special characters such as `#`, `%`, `?`, `:`, `*`, `<`, `>`, `|`, or `/` in the file name.
 * Platform path separators such as `/` and `\` are accepted.
 * If CMS already contains data, a keep policy is required.
 * The keep policy must be either `keep/current` or `keep/incoming`.
 
 **Examples:**
-* `import data/addressbook.json`
-* `import data/addressbook.json keep/current`
-* `import data/addressbook.json keep/incoming`
+* `import "data/addressbook.json"`
+* `import "data/addressbook.json" keep/current`
+* `import "data/addressbook.json" keep/incoming`
 
 **Expected result:**
 * Records from the file are imported into CMS.
@@ -303,15 +304,16 @@ Imports records from a `.json` file into CMS.
 
 Exports current CMS data to a `.json` file.
 
-**Format:** `export FILE_PATH`
+**Format:** `export "FILE_PATH"`
 
 **Constraints:**
-* `FILE_PATH` must end with `.json`.
-* File paths with spaces are allowed, including quoted paths.
+* `FILE_PATH` must be enclosed in double quotes and end with `.json`.
+* File paths with spaces are allowed.
+* Use a simple file name made of letters, numbers, hyphens, or underscores only; avoid special characters such as `#`, `%`, `?`, `:`, `*`, `<`, `>`, `|`, or `/` in the file name.
 * Platform path separators such as `/` and `\` are accepted.
 
 **Examples:**
-* `export data/backup.json`
+* `export "data/backup.json"`
 * `export "C:/Users/Test/My Documents/backup.json"`
 
 **Expected result:**
