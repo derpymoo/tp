@@ -153,7 +153,6 @@ Classes used by multiple components are in the `cms.commons` package.
 
 This section describes the current CMS implementation at a high level. The command flow, component responsibilities, and diagrams above reflect the existing architecture and supported command-based workflow.
 
-<<<<<<< mask-developer-guide
 ### Masking sensitive fields
 
 #### Implementation
@@ -190,63 +189,6 @@ Because the masking state is stored in `UserPrefs`, it is restored on startup an
   * Pros: Keeps the feature local to presentation code.
   * Cons: The list panel and detail panel would need separate coordination, and the preference would not naturally persist across restarts.
 
-=======
-### Find feature
-
-The `find` feature is implemented by [`FindCommandParser`](../src/main/java/cms/logic/parser/FindCommandParser.java)
-and [`FindCommand`](../src/main/java/cms/logic/commands/FindCommand.java).
-
-When the user enters a `find` command, `FindCommandParser` tokenizes the input using the supported prefixes
-`a/`, `n/`, and `m/`. The parser rejects inputs without at least one supported prefix, inputs with stray preamble
-text, and prefixes that are present but contain only whitespace.
-
-After validation, the parser constructs up to three predicates:
-
-* `AllFieldsContainsKeywordsPredicate` for `a/`
-* `NameContainsKeywordsPredicate` for `n/`
-* `NusMatricContainsKeywordsPredicate` for `m/`
-
-These predicates are wrapped in `CombinedFindPredicate`, which combines them with OR semantics. This means a person is
-shown if they match any active prefix group. `FindCommand` then passes the combined predicate to
-`Model#updateFilteredPersonList(...)`, so the filtered list shown by the UI updates automatically without mutating the
-underlying address book data.
-
-### Sort feature
-
-The `sort` feature is implemented by [`SortCommandParser`](../src/main/java/cms/logic/parser/SortCommandParser.java)
-and [`SortCommand`](../src/main/java/cms/logic/commands/SortCommand.java).
-
-`SortCommandParser` normalizes the user input to lowercase before validating it, so the accepted sort keys are
-case-insensitive. The current implementation supports two sort modes only:
-
-* `name`, which sorts persons alphabetically by name
-* `tg`, which sorts persons by tutorial group
-
-Once parsed, `SortCommand` delegates the actual reordering to the model through either
-`Model#sortPersonsByName()` or `Model#sortPersonsByTutorialGroup()`. Unlike `find` and `filter`, sorting changes the
-order of the stored person list rather than only replacing the filtered view.
-
-### Tag feature
-
-The `tag` feature is implemented by [`TagCommandParser`](../src/main/java/cms/logic/parser/TagCommandParser.java)
-and [`TagCommand`](../src/main/java/cms/logic/commands/TagCommand.java).
-
-`TagCommandParser` first extracts the action word, which must be either `add` or `delete`. It then tokenizes the
-remaining input using `n/`, `m/`, and `tag/`. Exactly one targeting mode must be present:
-
-* `n/` for one or more indexes from the current displayed list
-* `m/` for one or more NUS Matrics from the full address book
-
-The parser also splits repeated whitespace-separated values inside the same prefixed argument, so commands such as
-`tag add n/1 2 tag/friend tutor` are accepted. Repeated tags are deduplicated during parsing before the command is
-constructed.
-
-During execution, `TagCommand` resolves the target persons, skips repeated indexes or repeated NUS Matrics, and then
-updates each matching `Person` by creating a replacement `Person` object with the revised tag set. This preserves the
-immutability assumptions used by the model layer. For `add`, tags are merged into the existing set. For `delete`, only
-the requested tags are removed. If no effective change occurs, the command returns a no-op message instead of silently
-reporting success.
->>>>>>> master
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Documentation, logging, testing, configuration, dev-ops**
