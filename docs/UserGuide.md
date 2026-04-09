@@ -59,7 +59,7 @@ Action | Format
 **List** | `list`
 **Add** | `add n/NAME m/NUS_MATRIC [role/ROLE] soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`<br><br>e.g. `add n/John Doe m/A0234567B role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
 **Edit** | `edit INDEX [n/NAME] [m/NUS_MATRIC] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`<br><br>e.g. `edit 2 p/98765432 e/johndoe@example.com`
-**Delete** | `delete INDEX`<br>`delete INDEX [MORE_INDEXES]...`<br>`delete m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `delete 1 3 5`
+**Delete** | `delete id/INDEX [MORE_INDEXES]...`<br>`delete m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `delete id/1 3 5`
 **Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `find n/jane n/eunice m/A0123456B`
 **Tag** | `tag add id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add id/1 2 tag/friend tutor`
 **Filter** | `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]`<br><br>e.g. `filter tag/friends t/01`
@@ -157,18 +157,18 @@ Edits an existing student or tutor record in CMS.
 Deletes one or more persons by displayed index, or by NUS Matric.
 
 **Format:**
-* `delete INDEX`
-* `delete INDEX [MORE_INDEXES]...`
+* `delete id/INDEX [MORE_INDEXES]...`
 * `delete m/NUS_MATRIC [MORE_NUS_MATRICS]...`
 
 **Constraints:**
 * Use either displayed indexes or NUS Matrics, not both in the same command.
+* `id/` is required for index-based deletion.
 * Each index must refer to the current displayed list and be a positive integer.
 * Each NUS Matric must be valid.
 
 **Examples:**
-* `delete 2`
-* `delete 1 3 5`
+* `delete id/2`
+* `delete id/1 3 5`
 * `delete m/A0234567B`
 * `delete m/A0234567B A0345678C`
 

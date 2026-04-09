@@ -1,5 +1,8 @@
 package cms.logic.parser;
 
+import static cms.logic.parser.CliSyntax.PREFIX_ID;
+import static cms.logic.parser.CliSyntax.PREFIX_MATRIC;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,12 +26,23 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
     public DeleteCommand parse(String args) throws ParseException {
         try {
             String trimmedArgs = args.trim();
-            if (trimmedArgs.startsWith("m/")) {
-                List<NusMatric> nusMatrics = ParserUtil.parseNusMatrics(parseNusMatricTokens(trimmedArgs));
+
+            ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(" " + trimmedArgs, PREFIX_ID, PREFIX_MATRIC);
+            boolean hasIndexTargets = !argMultimap.getAllValues(PREFIX_ID).isEmpty();
+            boolean hasNusMatricTargets = !argMultimap.getAllValues(PREFIX_MATRIC).isEmpty();
+
+            if (trimmedArgs.isEmpty()
+                    || !argMultimap.getPreamble().isEmpty()
+                    || hasIndexTargets == hasNusMatricTargets) {
+                throw new ParseException(DeleteCommand.MESSAGE_USAGE);
+            }
+
+            if (hasNusMatricTargets) {
+                List<NusMatric> nusMatrics = ParserUtil.parseNusMatrics(parseNusMatricTokens(argMultimap));
                 return DeleteCommand.byNusMatrics(nusMatrics);
             }
 
-            List<Index> indexes = ParserUtil.parseIndexes(trimmedArgs);
+            List<Index> indexes = ParserUtil.parseIndexes(String.join(" ", argMultimap.getAllValues(PREFIX_ID)));
             return new DeleteCommand(indexes);
         } catch (ParseException pe) {
             throw new ParseException(
@@ -36,15 +50,14 @@ public class DeleteCommandParser implements Parser<DeleteCommand> {
         }
     }
 
-    private List<String> parseNusMatricTokens(String trimmedArgs) throws ParseException {
-        String nusMatricArgs = trimmedArgs.substring(2).trim();
-        if (nusMatricArgs.isEmpty()) {
+    private List<String> parseNusMatricTokens(ArgumentMultimap argMultimap) throws ParseException {
+        List<String> nusMatricValues = argMultimap.getAllValues(PREFIX_MATRIC);
+        if (nusMatricValues.isEmpty()) {
             throw new ParseException(NusMatric.MESSAGE_FORMAT_CONSTRAINTS);
         }
 
-        String[] tokens = nusMatricArgs.split("\\s+(?:m/\\s*)?|\\s*m/\\s*");
-
-        return List.of(tokens).stream()
+        return nusMatricValues.stream()
+                .flatMap(value -> List.of(value.trim().split("\\s+")).stream())
                 .filter(token -> !token.isBlank())
                 .collect(Collectors.toList());
     }
