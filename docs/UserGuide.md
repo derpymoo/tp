@@ -276,6 +276,14 @@ Sorts all persons by name or tutorial group.
 **Expected result:**
 * Persons are reordered based on the selected sort key.
 
+#### File Path Requirements
+
+For both `import` and `export` commands:
+* File paths must be enclosed in double quotes.
+* File paths with spaces are allowed.
+* Use a simple file name made of letters, numbers, hyphens, or underscores only; avoid special characters such as `#`, `%`, `?`, `:`, `*`, `<`, `>`, `|`, or `/` in the file name.
+* Platform path separators such as `/` and `\` are accepted.
+
 ### Importing records from a JSON file : `import`
 
 Imports records from a `.json` file into CMS.
@@ -283,10 +291,7 @@ Imports records from a `.json` file into CMS.
 **Format:** `import "FILE_PATH" [keep/current|keep/incoming]`
 
 **Constraints:**
-* `FILE_PATH` must be enclosed in double quotes and point to a `.json` file.
-* File paths with spaces are allowed.
-* Use a simple file name made of letters, numbers, hyphens, or underscores only; avoid special characters such as `#`, `%`, `?`, `:`, `*`, `<`, `>`, `|`, or `/` in the file name.
-* Platform path separators such as `/` and `\` are accepted.
+* `FILE_PATH` must point to a `.json` file (see [File Path Requirements](#file-path-requirements) above).
 * If CMS already contains data, a keep policy is required.
 * The keep policy must be either `keep/current` or `keep/incoming`.
 
@@ -307,10 +312,7 @@ Exports current CMS data to a `.json` file.
 **Format:** `export "FILE_PATH"`
 
 **Constraints:**
-* `FILE_PATH` must be enclosed in double quotes and end with `.json`.
-* File paths with spaces are allowed.
-* Use a simple file name made of letters, numbers, hyphens, or underscores only; avoid special characters such as `#`, `%`, `?`, `:`, `*`, `<`, `>`, `|`, or `/` in the file name.
-* Platform path separators such as `/` and `\` are accepted.
+* `FILE_PATH` must end with `.json` (see [File Path Requirements](#file-path-requirements) above).
 
 **Examples:**
 * `export "data/backup.json"`
