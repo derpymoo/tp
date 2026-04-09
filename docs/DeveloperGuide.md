@@ -454,6 +454,21 @@ testers are expected to do more *exploratory* testing.
    1. Test case: `unmask`<br>
       Expected: Sensitive fields are shown again.
 
+### Clearing all records
+
+1. Clearing the address book with confirmation
+
+   1. Prerequisites: CMS contains at least one person.
+
+   1. Test case: `clear`<br>
+      Expected: No records are deleted. CMS shows a reminder to run `clear confirm/yes`.
+
+   1. Test case: `clear confirm/yes`<br>
+      Expected: All records are deleted and the shown list becomes empty.
+
+   1. Incorrect command to try: `clear foo`<br>
+      Expected: Command is rejected with usage guidance.
+
 ### Exporting and importing JSON data
 
 1. Export current data
