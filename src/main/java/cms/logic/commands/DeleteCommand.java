@@ -29,8 +29,8 @@ public class DeleteCommand extends Command {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Deletes one or more persons by their displayed index or NUS Matric.\n"
-            + "Parameters: INDEX [MORE_INDEXES]... or m/NUS_MATRIC [MORE_NUS_MATRICS]...\n"
-            + "Examples: " + COMMAND_WORD + " 1, " + COMMAND_WORD + " 1 2 3, "
+            + "Parameters: id/INDEX [MORE_INDEXES]... or m/NUS_MATRIC [MORE_NUS_MATRICS]...\n"
+            + "Examples: " + COMMAND_WORD + " id/1, " + COMMAND_WORD + " id/1 2 3, "
             + COMMAND_WORD + " m/A1234567X, " + COMMAND_WORD + " m/A1234567X A2345678L";
 
     public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";

@@ -7,10 +7,15 @@ import static cms.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static cms.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static cms.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static cms.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import cms.logic.commands.DeleteCommand;
 import cms.model.person.NusMatric;
@@ -28,8 +33,8 @@ public class DeleteCommandParserTest {
 
     @Test
     public void parse_validArgs_returnsDeleteCommand() {
-        assertParseSuccess(parser, "1", new DeleteCommand(INDEX_FIRST_PERSON));
-        assertParseSuccess(parser, "1 2", new DeleteCommand(List.of(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON)));
+        assertParseSuccess(parser, "id/1", new DeleteCommand(INDEX_FIRST_PERSON));
+        assertParseSuccess(parser, "id/1 2", new DeleteCommand(List.of(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON)));
         assertParseSuccess(parser, "m/" + VALID_NUSMATRIC_AMY,
                 DeleteCommand.byNusMatric(new NusMatric(VALID_NUSMATRIC_AMY)));
         assertParseSuccess(parser, "m/ " + VALID_NUSMATRIC_AMY,
@@ -54,13 +59,32 @@ public class DeleteCommandParserTest {
     @Test
     public void parse_invalidArgs_throwsParseException() {
         assertParseFailure(parser, "a", String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "1", String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "1 2", String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         assertParseFailure(parser, "   ",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "id/   ",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         assertParseFailure(parser, "m/   ",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         assertParseFailure(parser, "m/" + VALID_NUSMATRIC_AMY + " 1",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "id/1 m/" + VALID_NUSMATRIC_AMY,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
         assertParseFailure(parser, "1 m/" + VALID_NUSMATRIC_AMY,
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parseNusMatricTokens_noMatricValues_throwsParseException() throws Exception {
+        Method parseNusMatricTokens =
+                DeleteCommandParser.class.getDeclaredMethod("parseNusMatricTokens", ArgumentMultimap.class);
+        parseNusMatricTokens.setAccessible(true);
+        Executable parseWithoutMatricValues = () -> parseNusMatricTokens.invoke(parser, new ArgumentMultimap());
+
+        InvocationTargetException exception =
+                assertThrows(InvocationTargetException.class, parseWithoutMatricValues);
+
+        assertEquals(NusMatric.MESSAGE_FORMAT_CONSTRAINTS, exception.getCause().getMessage());
     }
 }

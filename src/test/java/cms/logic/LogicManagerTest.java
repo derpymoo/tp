@@ -86,7 +86,7 @@ public class LogicManagerTest {
 
     @Test
     public void execute_commandExecutionError_throwsCommandException() {
-        String deleteCommand = "delete 9";
+        String deleteCommand = "delete id/9";
         assertCommandException(deleteCommand);
     }
 
@@ -180,7 +180,7 @@ public class LogicManagerTest {
         expectedModel.setPerson(firstPerson, updatedFirstPerson);
         expectedModel.setPerson(secondPerson, updatedSecondPerson);
 
-        String commandText = TagCommand.COMMAND_WORD + " add n/1 2 tag/tag1 tag2";
+        String commandText = TagCommand.COMMAND_WORD + " add id/1 2 tag/tag1 tag2";
         String expectedMessage = "tag1, tag2 has been added to "
             + "1, Tag Logic Alpha, A1888881W; 2, Tag Logic Beta, A1888882U";
 

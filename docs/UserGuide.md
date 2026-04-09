@@ -59,9 +59,9 @@ Action | Format
 **List** | `list`
 **Add** | `add n/NAME m/NUS_MATRIC [role/ROLE] soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`<br><br>e.g. `add n/John Doe m/A0234567X role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
 **Edit** | `edit INDEX [n/NAME] [m/NUS_MATRIC] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`<br><br>e.g. `edit 2 p/98765432 e/johndoe@example.com`
-**Delete** | `delete INDEX`<br>`delete INDEX [MORE_INDEXES]...`<br>`delete m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `delete 1 3 5`
-**Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `find n/jane n/eunice m/A0123456J`
-**Tag** | `tag add n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add n/1 2 tag/friend tutor`
+**Delete** | `delete id/INDEX [MORE_INDEXES]...`<br>`delete m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `delete id/1 3 5`
+**Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `find n/jane n/eunice m/A0123456B`
+**Tag** | `tag add id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add id/1 2 tag/friend tutor`
 **Filter** | `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]`<br><br>e.g. `filter tag/friends t/01`
 **Sort** | `sort tg`<br>`sort name`<br><br>e.g. `sort tg`
 **Import** | `import "FILE_PATH" [keep/current|keep/incoming]`<br><br>e.g. `import "data/addressbook.json" keep/current`
@@ -157,18 +157,18 @@ Edits an existing student or tutor record in CMS.
 Deletes one or more persons by displayed index, or by NUS Matric.
 
 **Format:**
-* `delete INDEX`
-* `delete INDEX [MORE_INDEXES]...`
+* `delete id/INDEX [MORE_INDEXES]...`
 * `delete m/NUS_MATRIC [MORE_NUS_MATRICS]...`
 
 **Constraints:**
 * Use either displayed indexes or NUS Matrics, not both in the same command.
+* `id/` is required for index-based deletion.
 * Each index must refer to the current displayed list and be a positive integer.
 * Each NUS Matric must be valid.
 
 **Examples:**
-* `delete 2`
-* `delete 1 3 5`
+* `delete id/2`
+* `delete id/1 3 5`
 * `delete m/A0234567X`
 * `delete m/A0234567X A0345678L`
 
@@ -211,23 +211,23 @@ Finds persons by name, NUS Matric, or any supported field.
 Adds or removes one or more tags from one or more persons.
 
 **Format:**
-* `tag add n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`
+* `tag add id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`
 * `tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`
-* `tag delete n/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`
+* `tag delete id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`
 * `tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`
 
 **Constraints:**
 * The action must be either `add` or `delete`.
-* Target persons must be specified by either displayed indexes (`n/`) or NUS Matrics (`m/`), not both.
+* Target persons must be specified by either displayed indexes (`id/`) or NUS Matrics (`m/`), not both.
 * Each index must refer to the current displayed list and be a positive integer.
 * At least one target person and one tag must be provided.
 * Tag values must satisfy the rules for [`tag/TAG`](#field-tag).
 * Repeated tags in the same command are ignored.
 
 **Examples:**
-* `tag add n/1 2 tag/friend tutor`
+* `tag add id/1 2 tag/friend tutor`
 * `tag add m/A1234567X A2345678L tag/mentor`
-* `tag delete n/3 tag/friend`
+* `tag delete id/3 tag/friend`
 * `tag delete m/A1234567X tag/mentor`
 
 **Expected result:**

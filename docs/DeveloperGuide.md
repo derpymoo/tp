@@ -56,7 +56,7 @@ The bulk of the app's work is done by the following four components:
 
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
+The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete id/1`.
 
 <img src="images/ArchitectureSequenceDiagram.png" width="574" />
 
@@ -96,9 +96,9 @@ Here's a (partial) class diagram of the `Logic` component:
 
 <img src="images/LogicClassDiagram.png" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
+The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete id/1")` API call as an example.
 
-![Interactions Inside the Logic Component for the `delete 1` Command](images/DeleteSequenceDiagram.png)
+![Interactions Inside the Logic Component for the `delete id/1` Command](images/DeleteSequenceDiagram.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline continues till the end of diagram.
 </div>
@@ -188,6 +188,7 @@ Because the masking state is stored in `UserPrefs`, it is restored on startup an
 * **Alternative 2:** Store the masking state only inside UI classes.
   * Pros: Keeps the feature local to presentation code.
   * Cons: The list panel and detail panel would need separate coordination, and the preference would not naturally persist across restarts.
+
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -395,7 +396,7 @@ testers are expected to do more *exploratory* testing.
 
    1. Prerequisites: List all persons using the `list` command. Multiple persons in the list.
 
-   1. Test case: `delete 1 3`<br>
+   1. Test case: `delete id/1 3`<br>
       Expected: The first and third shown contacts are deleted in one command.
 
    1. Test case: `delete m/A0123456J`<br>
@@ -434,13 +435,13 @@ testers are expected to do more *exploratory* testing.
 
    1. Prerequisites: `list` has at least two persons.
 
-   1. Test case: `tag add n/1 2 tag/mentor`<br>
+   1. Test case: `tag add id/1 2 tag/mentor`<br>
       Expected: Tag `mentor` is added to both target persons.
 
-   1. Test case: `tag delete n/1 tag/mentor`<br>
+   1. Test case: `tag delete id/1 tag/mentor`<br>
       Expected: Tag `mentor` is removed from person 1.
 
-   1. Incorrect command to try: `tag add n/1 m/A0234501W tag/mentor`<br>
+   1. Incorrect command to try: `tag add id/1 m/A0234501W tag/mentor`<br>
       Expected: Command is rejected because index and matric targeting cannot be mixed.
 
 ### Filtering persons

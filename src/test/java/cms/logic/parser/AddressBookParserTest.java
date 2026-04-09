@@ -72,7 +72,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_delete() throws Exception {
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
-                DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
+                DeleteCommand.COMMAND_WORD + " id/" + INDEX_FIRST_PERSON.getOneBased());
         assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), command);
     }
 
@@ -200,7 +200,7 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_tag() throws Exception {
         assertEquals(new TagCommand(TagCommand.Action.ADD, List.of(INDEX_FIRST_PERSON), List.of(new Tag("friend"))),
-                parser.parseCommand(TagCommand.COMMAND_WORD + " add n/" + INDEX_FIRST_PERSON.getOneBased()
+                parser.parseCommand(TagCommand.COMMAND_WORD + " add id/" + INDEX_FIRST_PERSON.getOneBased()
                         + " tag/friend"));
     }
 
