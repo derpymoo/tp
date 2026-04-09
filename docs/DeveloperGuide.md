@@ -153,6 +153,44 @@ Classes used by multiple components are in the `cms.commons` package.
 
 This section describes the current CMS implementation at a high level. The command flow, component responsibilities, and diagrams above reflect the existing architecture and supported command-based workflow.
 
+<<<<<<< mask-developer-guide
+### Masking sensitive fields
+
+#### Implementation
+
+The masking feature lets course coordinators hide sensitive fields in the UI without changing the underlying `Person` data.
+Instead of rewriting stored records, CMS keeps a single masking preference in `UserPrefs` and routes it through the `Model` interface.
+
+The `mask` command works as follows:
+
+1. `LogicManager` receives the user input and forwards it to `AddressBookParser`.
+2. `AddressBookParser` creates `MaskCommandParser`, which returns a `MaskCommand`.
+3. `MaskCommand#execute(Model)` calls `Model#setMasked(true)`.
+4. `ModelManager` updates the `isMasked` flag stored in `UserPrefs`.
+5. After command execution succeeds, `MainWindow#refreshPersonListPanel(...)` rebuilds the list and detail panels using `logic.isMasked()`.
+6. `PersonCard` and `PersonDetailPanel` use `MaskingUtil` to render masked values while the underlying `Person` objects remain unchanged.
+
+The following sequence diagram shows the flow for `mask` and `unmask`:
+
+![MaskUnmaskSequenceDiagram](images/MaskUnmaskSequenceDiagram.png)
+
+`unmask` follows the same flow, except that `UnmaskCommand#execute(Model)` calls `Model#setMasked(false)`.
+
+Because the masking state is stored in `UserPrefs`, it is restored on startup and saved when preferences are written on normal shutdown.
+
+#### Design considerations
+
+**Aspect: Where to store masking state**
+
+* **Alternative 1 (current choice):** Store the masking flag in `UserPrefs` and expose it through `Model`.
+  * Pros: Keeps a single source of truth for both commands and UI, and allows the preference to persist across sessions.
+  * Cons: Since masking does not modify any `Person` objects, the UI must explicitly refresh after the command to repaint masked values.
+
+* **Alternative 2:** Store the masking state only inside UI classes.
+  * Pros: Keeps the feature local to presentation code.
+  * Cons: The list panel and detail panel would need separate coordination, and the preference would not naturally persist across restarts.
+
+=======
 ### Find feature
 
 The `find` feature is implemented by [`FindCommandParser`](../src/main/java/cms/logic/parser/FindCommandParser.java)
@@ -208,6 +246,7 @@ updates each matching `Person` by creating a replacement `Person` object with th
 immutability assumptions used by the model layer. For `add`, tags are merged into the existing set. For `delete`, only
 the requested tags are removed. If no effective change occurs, the command returns a no-op message instead of silently
 reporting success.
+>>>>>>> master
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Documentation, logging, testing, configuration, dev-ops**
@@ -499,6 +538,21 @@ testers are expected to do more *exploratory* testing.
 
    1. Test case: `unmask`<br>
       Expected: Sensitive fields are shown again.
+
+### Clearing all records
+
+1. Clearing the address book with confirmation
+
+   1. Prerequisites: CMS contains at least one person.
+
+   1. Test case: `clear`<br>
+      Expected: No records are deleted. CMS shows a reminder to run `clear confirm/yes`.
+
+   1. Test case: `clear confirm/yes`<br>
+      Expected: All records are deleted and the shown list becomes empty.
+
+   1. Incorrect command to try: `clear foo`<br>
+      Expected: Command is rejected with usage guidance.
 
 ### Exporting and importing JSON data
 

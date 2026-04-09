@@ -5,7 +5,9 @@ skinparam ArrowFontStyle plain
 box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":MaskCommandParser" as MaskCommandParser LOGIC_COLOR
 participant ":MaskCommand" as MaskCommand LOGIC_COLOR
+participant ":UnmaskCommandParser" as UnmaskCommandParser LOGIC_COLOR
 participant ":UnmaskCommand" as UnmaskCommand LOGIC_COLOR
 participant "r:CommandResult" as CommandResult LOGIC_COLOR
 end box
@@ -19,6 +21,10 @@ activate LogicManager
 
 LogicManager -> AddressBookParser : parseCommand("mask")
 activate AddressBookParser
+AddressBookParser -> MaskCommandParser : parse("")
+activate MaskCommandParser
+MaskCommandParser --> AddressBookParser : MaskCommand
+deactivate MaskCommandParser
 AddressBookParser --> LogicManager : MaskCommand
 deactivate AddressBookParser
 
@@ -45,6 +51,10 @@ activate LogicManager
 
 LogicManager -> AddressBookParser : parseCommand("unmask")
 activate AddressBookParser
+AddressBookParser -> UnmaskCommandParser : parse("")
+activate UnmaskCommandParser
+UnmaskCommandParser --> AddressBookParser : UnmaskCommand
+deactivate UnmaskCommandParser
 AddressBookParser --> LogicManager : UnmaskCommand
 deactivate AddressBookParser
 
