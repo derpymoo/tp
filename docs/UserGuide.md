@@ -22,17 +22,17 @@ Managing large cohorts with point-and-click workflows is slow, repetitive, and p
 1. Copy the downloaded jar into that folder.
 
 1. Open a terminal, `cd` into that folder, and run `java -jar cms.jar`.
-   A GUI similar to the below should appear in a few seconds. Note how the app contains sample data.
+   A GUI similar to the image below should appear in a few seconds. Note how the app contains sample data.
    ![Ui](images/Ui.png)
 
-1. Type the command in the command box and press Enter to execute it.
-   Typing `help` and pressing Enter opens the help window.
+1. Type the command in the command box and press `Enter` to execute it.
+   Typing `help` and pressing `Enter` opens the help window.
    Refer to [Command summary](#command-summary) for a quick list of available commands and formats.
 
-1. CMS stores data under the home folder in `data/CMS.json`.
+1. CMS stores data under the home folder in `data/cms.json`.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
-To transfer your data to another computer, install CMS there and overwrite the empty `data/CMS.json` file it creates with your existing `data/CMS.json`.
+To transfer your data to another computer, install CMS there and overwrite the empty `data/cms.json` file it creates with your existing `data/cms.json`.
 </div>
 
 --------------------------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ Action | Format
 **Add** | `add n/NAME m/NUS_MATRIC [role/ROLE] soc/SOC_USERNAME gh/GITHUB_USERNAME e/EMAIL p/PHONE t/TUTORIAL_GROUP [tag/TAG]...`<br><br>e.g. `add n/John Doe m/A0234567X role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01`
 **Edit** | `edit INDEX [n/NAME] [m/NUS_MATRIC] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`<br><br>e.g. `edit 2 p/98765432 e/johndoe@example.com`
 **Delete** | `delete id/INDEX [MORE_INDEXES]...`<br>`delete m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `delete id/1 3 5`
-**Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `find n/jane n/eunice m/A0123456B`
+**Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `find n/jane n/eunice m/A0123456J`
 **Tag** | `tag add id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add id/1 2 tag/friend tutor`
 **Filter** | `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]`<br><br>e.g. `filter tag/friends t/01`
 **Sort** | `sort tg`<br>`sort name`<br><br>e.g. `sort tg`
@@ -126,7 +126,9 @@ Adds a student or tutor record to CMS.
 * The new person appears in the Person List Panel.
 * The Result Display confirms the added person.
 
-**Note:** Use the [Fields and accepted formats](#fields-and-accepted-formats) section as a checklist before submitting the command.
+<div markdown="span" class="alert alert-info">:information_source: **Note:**
+Use the [Fields and accepted formats](#fields-and-accepted-formats) section as a checklist before submitting the command.
+</div>
 
 ### Editing a student / tutor : `edit`
 
@@ -416,10 +418,10 @@ CMS saves data automatically after commands that modify data.
 
 ### Editing the data file
 
-CMS data is stored in `[CMS home folder]/data/CMS.json`.
+CMS data is stored in `[CMS home folder]/data/cms.json`.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
-Invalid edits can cause CMS to reset your data file on next launch. Back up `CMS.json` before editing manually.
+Invalid edits can cause CMS to reset your data file on next launch. Back up `cms.json` before editing manually.
 </div>
 
 --------------------------------------------------------------------------------------------------------------------
@@ -441,6 +443,7 @@ Use this section as a quick checklist when adding or editing command examples an
 <a id="field-nus-matric"></a>
 **`m/NUS_MATRIC`**
 * Must be `A` + 7 digits + uppercase letter (e.g. `A0234567X`) or `U` + 6 digits + uppercase letter (e.g. `U023456W`).
+* Must satisfy checksum validation, not just format.
 * Must be unique in CMS.
 * Case sensitivity: case-insensitive input (stored in uppercase).
 * Valid: `m/A0234567X`
@@ -455,12 +458,13 @@ Use this section as a quick checklist when adding or editing command examples an
 
 <a id="field-soc-username"></a>
 **`soc/SOC_USERNAME`**
-* Either a SoC-style username or a valid NUS Matric format.
+* Either a SoC-style username or a valid checksum-validated NUS Matric.
 * SoC-style username rules:
   * 5 to 8 characters.
   * Lowercase letters, digits, and hyphens only.
   * Cannot start or end with a hyphen.
   * No spaces.
+* If `soc/SOC_USERNAME` itself is in valid NUS Matric format, it must match `m/NUS_MATRIC` for that same person.
 * Must be unique in CMS.
 * Case sensitivity: case-insensitive input (stored in lowercase).
 * Valid: `soc/john1`
@@ -524,7 +528,7 @@ Use this section as a quick checklist when adding or editing command examples an
 
 **INDEX**: A 1-based position of a person in the currently displayed list.
 
-**NUS Matric**: Identifier given by NUS in format `A` + 7 digits + a letter,(`A0234567X`) or `U` + 6 digits + a letter (e.g., `U023456W`).
+**NUS Matric**: Identifier given by NUS in checksum-validated format `A` + 7 digits + a letter (e.g., `A0234567X`) or `U` + 6 digits + a letter (e.g., `U023456W`).
 
 **SoC username**: School of Computing account username stored in the `soc/` field.
 
@@ -546,13 +550,13 @@ Use this section as a quick checklist when adding or editing command examples an
 ## FAQ
 
 **Q**: How do I transfer my data to another computer?<br>
-**A**: Install CMS on the other computer, launch once, then replace the new `data/CMS.json` with your old one.
+**A**: Install CMS on the other computer, launch once, then replace the new `data/cms.json` with your old one.
 
 **Q**: Where are my preferences saved?<br>
 **A**: Preferences are saved in `preferences.json` in your CMS working directory.
 
 **Q**: Can I undo `delete` or `clear`?<br>
-**A**: No. There is currently no undo feature, so keep backups of `data/CMS.json` if needed.
+**A**: No. There is currently no undo feature, so keep backups of `data/cms.json` if needed.
 
 **Q**: Why is my `find` command not returning results?<br>
 **A**: Check your prefixes and input format (`a/`, `n/`, `m/`), and verify that full-word matching rules are met for name searches.
