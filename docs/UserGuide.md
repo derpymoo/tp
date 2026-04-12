@@ -377,9 +377,7 @@ Opens the Help Window with command guidance and a User Guide link.
 
 Requests confirmation before deleting **all** records from CMS.
 
-**Format:**
-* `clear`
-* `clear confirm/yes`
+**Format:** `clear [confirm/yes]`
 
 **Constraints:**
 * The command accepts only no argument or the exact confirmation token `confirm/yes`.
