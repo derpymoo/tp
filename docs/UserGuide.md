@@ -269,7 +269,7 @@ Sorts all persons by name or tutorial group.
 * `sort name`
 * `sort tg`
 
-**Constraints:** The sort key must be either `name` or `tg`.
+**Constraints:** The sort key must be either `name` or `tg`. (case-insensitive)
 
 **Examples:**
 * `sort NAME`
