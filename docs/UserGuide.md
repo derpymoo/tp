@@ -79,14 +79,14 @@ Action | Format
 
 **:information_source: Notes about command format:**<br>
 
-* A command has a command word plus fields.
-* Command word: `add`, `edit`, `find`, ...
+* A command must begin with a command word followed by fields if required.
+* Examples of command word: `add`, `edit`, `find`, ...
 * Prefixes identify each field, e.g. `n/`, `m/`, `e/`.
 * `/` is reserved for prefixes and cannot appear in any field value.
-* Words in `UPPER_CASE` are values to provide.
+* Words in `UPPER_CASE` are values to be provided.
 * Items in square brackets are optional.
 * `...` means the field can be repeated.
-* Parameters can be in any order.
+* Parameters may appear in any order.
 * For commands without parameters (`list`, `mask`, `unmask`, `exit`), extra text does not block execution and is reported as ignored.
 * e.g. `add n/John Doe m/A0234567X role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/mentor`
 </div>

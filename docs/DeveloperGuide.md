@@ -229,8 +229,44 @@ Validation through command parsing works as follows:
 Validation during JSON import follows a separate entry path.
 `JsonAdaptedPerson#toModelType()` calls `NusMatric#getValidationErrorMessage(...)` before constructing the imported `NusMatric` object, so imported records and interactive command input follow the same format, canonicalisation, and checksum rules.
 
-Because validation is performed before model objects are created, malformed or checksum-invalid matric numbers are rejected early and never enter the address book state.
-The implementation also canonicalises accepted values into uppercase form, which ensures consistent storage, comparison, and duplicate detection.
+Because validation is performed before model objects are created, malformed or checksum-invalid matric numbers are rejected early and never enter the address book state. The implementation also canonicalises accepted values into uppercase form, which ensures consistent storage, comparison, and duplicate detection.
+
+#### NUS matric checksum algorithm
+
+Constants used in `NusMatric`:
+
+| Item | Value |
+| --- | --- |
+| Check-digit table (index `0..12`) | `YXWURNMLJHEAB` |
+| Weights for `A` prefix | `[1, 1, 1, 1, 1, 1]` |
+| Weights for `U` prefix | `[0, 1, 3, 1, 2, 7]` |
+
+Input handling:
+
+| Format | Digits used for checksum |
+| --- | --- |
+| `A#######X` | last 6 digits (drop the first numeric digit) |
+| `U######X` | all 6 digits |
+
+Computation:
+
+1. Standardise the input by trimming whitespaces and uppercasing it.
+2. Select weights based on prefix (`A` or `U`).
+3. Compute weighted sum over 6 digits: `sum = Σ(weights[i] * digit[i])`, for `i = 0..5`.
+4. Compute index: `index = sum mod 13`.
+5. Expected check letter: `CHECK_DIGIT_TABLE[index]`.
+6. Validation passes only if expected letter equals the trailing input letter.
+
+Worked example (`U023456W`):
+
+* Digits: `0 2 3 4 5 6`
+* Weights: `0 1 3 1 2 7`
+* Sum: `0*0 + 1*2 + 3*3 + 1*4 + 2*5 + 7*6 = 67`
+* Table index `67 mod 13 = 2` in `YXWURNMLJHEAB` is `W`
+* Check letter matches input suffix `W`, so the matric is valid.
+
+Reference source: [NUS Matriculation Number Check Digit Algorithm](http://interrobeng.com/2014/01/19/nus-matriculation-number-check-digit-algorithm/).
+
 
 --------------------------------------------------------------------------------------------------------------------
 
