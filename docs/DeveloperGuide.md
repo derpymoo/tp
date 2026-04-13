@@ -422,7 +422,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, MacOS
+* **Mainstream OS**: Windows, Linux, MacOS
 * **Tutorial group**: A tutor-led subgroup of students for administrative and teaching allocation purposes.
 * **Sensitive student data**: Private fields such as phone numbers that may need masking.
 
