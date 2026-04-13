@@ -820,7 +820,7 @@ testers are expected to do more *exploratory* testing.
    1. Incorrect command to try: `import "data/manual-test-export.txt"`<br>
       Expected: Command is rejected because file path must end with `.json`.
 
-## Planned Enhancements
+## **Apendix: Planned Enhancements**
 
 **Team size: 5**
 
