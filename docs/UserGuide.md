@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-Managing large cohorts with point-and-click workflows is slow, repetitive, and prone to mistakes, especially when student and tutor records must stay consistent. Course Management System (CMS) is built for NUS course coordinators who need speed and accuracy: a command-driven workflow with built-in validation and uniqueness checks that helps you complete routine record tasks in seconds with confidence.
+Are you spending too much time switching between spreadsheets, portals, and notes just to keep course records up to date? Course Management System (CMS) is designed for NUS SoC course coordinators who manage high-volume student and tutor data each term. If you are a fast typist, CMS helps you filter, update, and organize records quickly through straightforward commands, backed by a clean visual interface. No advanced technical background is required beyond basic computer skills.
 
 * Table of Contents
 {:toc}
@@ -39,7 +39,7 @@ To transfer your data to another computer, install CMS there and overwrite the e
 
 ## User interface overview
 
-![UI overview](images/Ui.png)
+![UI overview](images/SampleUi.png)
 
 CMS uses a single main window with four working areas:
 
@@ -61,11 +61,11 @@ Action | Format
 **Edit** | `edit INDEX [n/NAME] [m/NUS_MATRIC] [role/ROLE] [soc/SOC_USERNAME] [gh/GITHUB_USERNAME] [e/EMAIL] [p/PHONE] [t/TUTORIAL_GROUP] [tag/TAG]...`<br><br>e.g. `edit 2 p/98765432 e/johndoe@example.com`
 **Delete** | `delete id/INDEX [MORE_INDEXES]...`<br>`delete m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `delete id/1 3 5`
 **Find** | `find a/KEYWORD [MORE_KEYWORDS]...`<br>`find n/KEYWORD [MORE_NAME_KEYWORDS]...`<br>`find m/NUS_MATRIC [MORE_NUS_MATRICS]...`<br><br>e.g. `find n/jane n/eunice m/A0123456J`
-**Tag** | `tag add id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>e.g. `tag add id/1 2 tag/friend tutor`
+**Tag** | `tag add id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag add m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br>`tag delete id/INDEX [MORE_INDEXES]... tag/TAG [MORE_TAGS]...`<br>`tag delete m/NUS_MATRIC [MORE_NUS_MATRICS]... tag/TAG [MORE_TAGS]...`<br><br>Use lowercase `add` or `delete` only.<br><br>e.g. `tag add id/1 2 tag/friend tutor`
 **Filter** | `filter [tag/TAG]... [t/TUTORIAL_GROUP_NUMBER]`<br><br>e.g. `filter tag/friends t/01`
 **Sort** | `sort tg`<br>`sort name`<br><br>e.g. `sort tg`
 **Import** | `import "FILE_PATH" [keep/current|keep/incoming]`<br><br>e.g. `import "data/addressbook.json" keep/current`
-**Export** | `export "FILE_PATH"`<br><br>e.g. `export "C:\\Users\\Josh\\Documents\\backup.json"`
+**Export** | `export "FILE_PATH"`<br><br>e.g. `export "data/backup.json"`
 **Mask** | `mask`
 **Unmask** | `unmask`
 **Help** | `help [COMMAND]`
@@ -79,14 +79,14 @@ Action | Format
 
 **:information_source: Notes about command format:**<br>
 
-* A command has a command word plus fields.
-* Command word: `add`, `edit`, `find`, ...
+* A command must begin with a command word followed by fields if required.
+* Examples of command word: `add`, `edit`, `find`, ...
 * Prefixes identify each field, e.g. `n/`, `m/`, `e/`.
 * `/` is reserved for prefixes and cannot appear in any field value.
-* Words in `UPPER_CASE` are values to provide.
+* Words in `UPPER_CASE` are values to be provided.
 * Items in square brackets are optional.
 * `...` means the field can be repeated.
-* Parameters can be in any order.
+* Parameters may appear in any order.
 * For commands without parameters (`list`, `mask`, `unmask`, `exit`), extra text does not block execution and is reported as ignored.
 * e.g. `add n/John Doe m/A0234567X role/tutor soc/johndoe gh/johndoe e/johndoe@u.nus.edu p/91234567 t/01 tag/mentor`
 </div>
@@ -167,6 +167,7 @@ Deletes one or more persons by displayed index, or by NUS Matric.
 * `id/` is required for index-based deletion.
 * Each index must refer to the current displayed list and be a positive integer.
 * Each NUS Matric must be valid.
+* Bulk deletion is all-or-nothing. If any provided index or NUS Matric is invalid, CMS does not delete any person from that command.
 
 **Examples:**
 * `delete id/2`
@@ -175,8 +176,9 @@ Deletes one or more persons by displayed index, or by NUS Matric.
 * `delete m/A0234567X A0345678L`
 
 **Expected result:**
-* Matching person(s) are removed from the Person List Panel.
-* The Result Display confirms which person(s) were deleted.
+* If all provided targets are valid, the matching person(s) are removed from the Person List Panel.
+* If any provided target is invalid, no person is deleted and CMS shows an error message.
+* The Result Display confirms which person(s) were deleted only when the command succeeds.
 
 ### Finding students / tutors : `find`
 
@@ -220,6 +222,7 @@ Adds or removes one or more tags from one or more persons.
 
 **Constraints:**
 * The action must be either `add` or `delete`.
+* The action is case-sensitive and must be lowercase. For example, `tag ADD ...` and `tag Delete ...` are invalid.
 * Target persons must be specified by either displayed indexes (`id/`) or NUS Matrics (`m/`), not both.
 * Each index must refer to the current displayed list and be a positive integer.
 * At least one target person and one tag must be provided.
@@ -235,6 +238,10 @@ Adds or removes one or more tags from one or more persons.
 **Expected result:**
 * The selected persons' tags are updated.
 * The Result Display confirms the tag operation.
+* If `tag delete` does not find any of the specified tags on the targeted persons, no changes are made and the Result Display shows `No specified tags were removed from the targeted persons.`
+
+Example: if person `id/3` has no `python` tag, running `tag delete id/3 tag/python` shows
+`No specified tags were removed from the targeted persons.`
 
 ### Filtering students / tutors : `filter`
 
@@ -269,7 +276,7 @@ Sorts all persons by name or tutorial group.
 * `sort name`
 * `sort tg`
 
-**Constraints:** The sort key must be either `name` or `tg`.
+**Constraints:** The sort key must be either `name` or `tg`. (case-insensitive)
 
 **Examples:**
 * `sort NAME`
@@ -282,11 +289,23 @@ Sorts all persons by name or tutorial group.
 
 For both `import` and `export` commands:
 * File paths must be enclosed in double quotes.
-* File paths with spaces are allowed.
-* Use a simple file name made of letters, numbers, hyphens, or underscores only.
-* Do not include double quotes (`"`) in file names.
-* Avoid special characters such as `#`, `%`, `?`, `:`, `*`, `<`, `>`, `|`, or `/` in the file name.
+* File paths may be relative or absolute.
+* File names and folder names may contain spaces.
 * Platform path separators such as `/` and `\` are accepted.
+* The file name must end with `.json`.
+* Do not include double quotes (`"`) in the path.
+* Avoid characters that are invalid in file names on your operating system (allowed characters may differ by platform).
+
+**Valid examples:**
+* `export "data/backup.json"`
+* `export "data/My Backups/backup.json"`
+* `export "C:/Users/Test/Documents/backup.json"`
+
+**Invalid examples:**
+* `export data/backup.json`<br>
+   Missing the required double quotes.
+* `export "data/backup.txt"`<br>
+   The file name must end with `.json`.
 
 ### Importing records from a JSON file : `import`
 
@@ -320,7 +339,7 @@ Exports current CMS data to a `.json` file.
 
 **Examples:**
 * `export "data/backup.json"`
-* `export "C:/Users/Test/My Documents/backup.json"`
+* `export "data/My Backups/backup.json"`
 
 **Expected result:**
 * Current CMS data is written to the specified file.
@@ -328,7 +347,7 @@ Exports current CMS data to a `.json` file.
 
 ### Masking sensitive fields : `mask`
 
-Masks sensitive fields (NUS ID, SoC username, GitHub username, email, phone number) in the person list and detail panels.
+Masks sensitive fields (NUS Matric, SoC username, GitHub username, email, phone number) in the person list and detail panels.
 
 **Format:** `mask`
 
@@ -336,9 +355,11 @@ Masks sensitive fields (NUS ID, SoC username, GitHub username, email, phone numb
 
 **Example:** `mask`
 
+![Masked UI](images/MaskedUi.png)
+
 **Expected result:**
 * Sensitive fields are hidden until `unmask` is used.
-* Extra text after `mask` is reported as ignored.
+* Extra arguments after `mask` are ignored.
 
 ### Unmasking sensitive fields : `unmask`
 
@@ -352,7 +373,7 @@ Unmasks sensitive fields in the person list and detail panels.
 
 **Expected result:**
 * Sensitive fields are shown again.
-* Extra text after `unmask` is reported as ignored.
+* Extra arguments after `unmask` are ignored.
 
 ### Viewing help : `help`
 
@@ -375,11 +396,9 @@ Opens the Help Window with command guidance and a User Guide link.
 
 ### Purging all records : `clear`
 
-Deletes **all** records from CMS.
+Requests confirmation before deleting **all** records from CMS.
 
-**Format:**
-* `clear`
-* `clear confirm/yes`
+**Format:** `clear [confirm/yes]`
 
 **Constraints:**
 * The command accepts only no argument or the exact confirmation token `confirm/yes`.
@@ -390,9 +409,9 @@ Deletes **all** records from CMS.
 * `clear confirm/yes`
 
 **Expected result:**
-* All stored records are removed from CMS after confirmation.
-* The Person List Panel becomes empty.
-* The Result Display confirms that all records were cleared.
+* Entering `clear` does not delete any records and shows a confirmation prompt.
+* Entering `clear confirm/yes` deletes all stored records.
+* After confirmation, the Person List Panel becomes empty and the Result Display confirms that all records were cleared.
 
 <div markdown="span" class="alert alert-warning">:exclamation: **Caution:**
 This action cannot be undone from within CMS.
@@ -434,11 +453,12 @@ Use this section as a quick checklist when adding or editing command examples an
 **`n/NAME`**
 * 1 to 128 characters and must include at least one letter.
 * Allowed characters: letters, spaces, hyphens (`-`), apostrophes (`'`), and periods (`.`).
-* Cannot be blank.
-* Consecutive spaces are collapsed. E.g. `n/John   Doe` is treated as `n/John Doe`.
+* Consecutive spaces are collapsed. E.g. `n/John ​ ​ Doe` is treated as `n/John Doe`.
 * Case sensitivity: case-sensitive (stored as entered after space normalization).
 * Valid: `n/John Doe`
-* Invalid: `n/Ravi s/o Kumar`
+* Invalid:
+    * `n/Ravi s/o Kumar` due to `/` in `s/o`. Use `n/Ravi s-o Kumar` instead.
+    * `n/José` due to diacritics `é`. Use `n/Jose` instead.
 
 <a id="field-nus-matric"></a>
 **`m/NUS_MATRIC`**
@@ -491,7 +511,7 @@ Use this section as a quick checklist when adding or editing command examples an
 <a id="field-phone"></a>
 **`p/PHONE`**
 * Digits only.
-* At least 3 digits.
+* Between 3 and 15 digits.
 * Case sensitivity: not applicable (numeric only).
 * Valid: `p/91234567`
 * Invalid: `p/+6591234567`
@@ -518,19 +538,17 @@ Use this section as a quick checklist when adding or editing command examples an
 
 ## Glossary
 
-**CLI**: Command Line Interface used to control CMS by typing commands.
-
 **Command word**: The action keyword at the start of a command, e.g. `add`, `find`, `help`.
 
 **Field**: A value supplied with a prefix in a command, e.g. `n/John Doe`.
 
 **Prefix**: A marker that indicates what a field means, e.g. `n/`, `m/`, `e/`.
 
-**INDEX**: A 1-based position of a person in the currently displayed list.
+**Index**: A 1-based position of a person in the currently displayed list.
 
 **NUS Matric**: Identifier given by NUS in checksum-validated format `A` + 7 digits + a letter (e.g., `A0234567X`) or `U` + 6 digits + a letter (e.g., `U023456W`).
 
-**SoC username**: School of Computing account username stored in the `soc/` field.
+**SoC username**: SoC Unix account username stored in the `soc/` field.
 
 **Tutorial group**: Class/tutorial group number in the `t/` field.
 

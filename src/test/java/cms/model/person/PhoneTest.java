@@ -30,6 +30,7 @@ public class PhoneTest {
         assertFalse(Phone.isValidPhone("")); // empty string
         assertFalse(Phone.isValidPhone("-")); // hyphen
         assertFalse(Phone.isValidPhone("91")); // less than 3 numbers
+        assertFalse(Phone.isValidPhone("1234567890123456")); // more than 15 digits
         assertFalse(Phone.isValidPhone("phone")); // non-numeric
         assertFalse(Phone.isValidPhone("9011p041")); // alphabets within digits
         assertFalse(Phone.isValidPhone("9312 1534")); // spaces within digits
@@ -37,7 +38,7 @@ public class PhoneTest {
         // valid phone numbers
         assertTrue(Phone.isValidPhone("911")); // exactly 3 numbers
         assertTrue(Phone.isValidPhone("93121534"));
-        assertTrue(Phone.isValidPhone("124293842033123")); // long phone numbers
+        assertTrue(Phone.isValidPhone("123456789012345")); // exactly 15 digits
     }
 
     @Test
@@ -71,6 +72,7 @@ public class PhoneTest {
         assertDoesNotThrow(() -> new Phone("911"));
         assertDoesNotThrow(() -> new Phone("91234567"));
         assertDoesNotThrow(() -> new Phone("123456"));
+        assertDoesNotThrow(() -> new Phone("123456789012345")); // 15 digits
         assertDoesNotThrow(() -> new Phone(" 91234567 ")); // trims surrounding spaces
     }
 
@@ -82,6 +84,7 @@ public class PhoneTest {
         assertThrows(IllegalArgumentException.class, () -> new Phone("9123-4567")); // dash
         assertThrows(IllegalArgumentException.class, () -> new Phone("+6591234567")); // country code
         assertThrows(IllegalArgumentException.class, () -> new Phone("9123456a")); // letter
+        assertThrows(IllegalArgumentException.class, () -> new Phone("1234567890123456")); // too long
         assertThrows(IllegalArgumentException.class, () -> new Phone("")); // empty
     }
 

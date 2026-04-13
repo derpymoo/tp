@@ -13,12 +13,16 @@ import static cms.logic.commands.CommandTestUtil.VALID_SOCUSERNAME_AMY;
 import static cms.logic.commands.CommandTestUtil.VALID_SOCUSERNAME_BOB;
 import static cms.logic.commands.CommandTestUtil.VALID_TUTORIALGROUP_AMY;
 import static cms.logic.commands.CommandTestUtil.VALID_TUTORIALGROUP_BOB;
+import static cms.testutil.TypicalPersons.ALICE;
+import static cms.testutil.TypicalPersons.BENSON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Method;
 import java.nio.file.Path;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -101,12 +105,37 @@ public class ImportCommandTest {
 
         CommandResult result = importCommand.execute(model, storage);
 
-        assertEquals(String.format(ImportCommand.MESSAGE_KEEP_INCOMING_SUCCESS, path), result.getFeedbackToUser());
+        assertEquals(String.format(ImportCommand.MESSAGE_KEEP_INCOMING_SUCCESS
+                        + " (%d added, %d replaced, %d processed)", path, 0, 1, 1),
+                result.getFeedbackToUser());
         assertEquals(1, model.getFilteredPersonList().size());
         assertTrue(model.getFilteredPersonList().contains(incomingPerson));
         assertFalse(model.getFilteredPersonList().contains(existingPerson));
     }
+    @Test
+    public void buildMultipleConflictsMessage_skipsNonConflictingPersons() throws Exception {
+        ImportCommand importCommand = new ImportCommand(Path.of("data/first.json"), KeepPolicy.INCOMING);
+        Person incomingPerson = new PersonBuilder(BENSON).build();
+        Person nonConflictingPerson = new PersonBuilder(ALICE).build();
 
+        Method method = ImportCommand.class.getDeclaredMethod(
+                "buildMultipleConflictsMessage", Person.class, List.class);
+        method.setAccessible(true);
+
+        String message = (String) method.invoke(importCommand, incomingPerson, List.of(nonConflictingPerson));
+
+        assertTrue(message.contains("conflicts with multiple current persons (1)"));
+        assertFalse(message.contains("\n- "));
+    }
+
+    @Test
+    public void getters_returnConfiguredValues() {
+        Path path = Path.of("data/first.json");
+        ImportCommand importCommand = new ImportCommand(path, KeepPolicy.INCOMING);
+
+        assertEquals(path, importCommand.getImportFilePath());
+        assertEquals(KeepPolicy.INCOMING, importCommand.getKeepPolicy());
+    }
     @Test
     public void equals() {
         ImportCommand importFirstCommand = new ImportCommand(Path.of("data/first.json"),
@@ -126,3 +155,4 @@ public class ImportCommandTest {
         assertFalse(importFirstCommand.equals(null));
     }
 }
+

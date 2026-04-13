@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import cms.commons.exceptions.DataLoadingException;
+import cms.commons.exceptions.IllegalValueException;
 import cms.logic.commands.exceptions.CommandException;
 import cms.model.AddressBook;
 import cms.model.Model;
@@ -43,6 +44,8 @@ public class ImportCommand extends Command {
             "Import file is empty or not a valid Course Management System data file.";
     public static final String MESSAGE_INVALID_DATA =
             "Import file contains invalid Course Management System data.";
+    public static final String MESSAGE_INVALID_DATA_DETAILS_FORMAT =
+            "%s Details: %s";
     public static final String MESSAGE_STORAGE_CONTEXT_REQUIRED =
             "Import command requires storage context.";
     public static final String MESSAGE_KEEP_REQUIRED_NON_EMPTY = "Current data is non-empty. "
@@ -56,6 +59,10 @@ public class ImportCommand extends Command {
             "incoming '%s' conflicts with current '%s' by NUS Matric (%s)";
     public static final String MESSAGE_FIELD_CONFLICT_FORMAT =
             "incoming '%s' conflicts with current '%s' by %s (%s)";
+    public static final String MESSAGE_MULTIPLE_CONFLICTS_FORMAT =
+            "Import aborted: incoming '%s' conflicts with multiple current persons (%d). "
+            + "Please resolve conflicts manually before using keep/incoming.";
+    private static final String MESSAGE_MULTIPLE_CONFLICTS_DETAILS_HEADER = "\nConflicting entries:";
     private static final String MESSAGE_CONFLICT_PREVIEW_HEADER = "\nConflicting entries detected:";
     private static final int CONFLICT_PREVIEW_LIMIT = 5;
 
@@ -101,7 +108,7 @@ public class ImportCommand extends Command {
             importedAddressBook = storage.readAddressBook(importFilePath)
                     .orElseThrow(() -> new CommandException(MESSAGE_EMPTY_OR_INVALID_FILE));
         } catch (DataLoadingException dle) {
-            throw new CommandException(MESSAGE_INVALID_DATA, dle);
+            throw new CommandException(buildInvalidDataMessage(dle), dle);
         }
 
         boolean hasCurrentData = !model.getAddressBook().getPersonList().isEmpty();
@@ -117,15 +124,21 @@ public class ImportCommand extends Command {
         }
 
         AddressBook mergedAddressBook = new AddressBook(model.getAddressBook());
+        int overlapCount = 0;
         for (Person incomingPerson : importedAddressBook.getPersonList()) {
             List<Person> conflictingPersons = findConflictingPersons(mergedAddressBook, incomingPerson);
             if (conflictingPersons.isEmpty()) {
                 mergedAddressBook.addPerson(incomingPerson);
                 continue;
             }
+            overlapCount++;
 
             if (keepPolicy == KeepPolicy.CURRENT) {
                 continue;
+            }
+
+            if (conflictingPersons.size() > 1) {
+                throw new CommandException(buildMultipleConflictsMessage(incomingPerson, conflictingPersons));
             }
 
             for (Person conflictingPerson : conflictingPersons) {
@@ -138,9 +151,15 @@ public class ImportCommand extends Command {
         model.updateFilteredPersonList(Model.PREDICATE_SHOW_ALL_PERSONS);
 
         if (keepPolicy == KeepPolicy.CURRENT) {
-            return new CommandResult(String.format(MESSAGE_KEEP_CURRENT_SUCCESS, importFilePath));
+            return new CommandResult(String.format(MESSAGE_KEEP_CURRENT_SUCCESS
+                + " (%d added, %d skipped, %d processed)", importFilePath,
+                importedAddressBook.getPersonList().size() - overlapCount, overlapCount,
+                importedAddressBook.getPersonList().size()));
         }
-        return new CommandResult(String.format(MESSAGE_KEEP_INCOMING_SUCCESS, importFilePath));
+        return new CommandResult(String.format(MESSAGE_KEEP_INCOMING_SUCCESS
+            + " (%d added, %d replaced, %d processed)", importFilePath,
+            importedAddressBook.getPersonList().size() - overlapCount, overlapCount,
+            importedAddressBook.getPersonList().size()));
     }
 
     /**
@@ -207,6 +226,27 @@ public class ImportCommand extends Command {
         return String.format(MESSAGE_FIELD_CONFLICT_FORMAT,
                 incomingPerson.getName(), existingPerson.getName(),
                 fieldConflict.getFieldName(), fieldConflict.getFieldValue());
+    }
+
+    private String buildMultipleConflictsMessage(Person incomingPerson, List<Person> conflictingPersons) {
+        StringBuilder details = new StringBuilder(String.format(
+                MESSAGE_MULTIPLE_CONFLICTS_FORMAT, incomingPerson.getName(), conflictingPersons.size()));
+        details.append(MESSAGE_MULTIPLE_CONFLICTS_DETAILS_HEADER);
+        for (Person conflictingPerson : conflictingPersons) {
+            String conflictDescription = getConflictDescription(incomingPerson, conflictingPerson);
+            if (conflictDescription != null) {
+                details.append("\n- ").append(conflictDescription);
+            }
+        }
+        return details.toString();
+    }
+
+    private String buildInvalidDataMessage(DataLoadingException dataLoadingException) {
+        Throwable cause = dataLoadingException.getCause();
+        if (!(cause instanceof IllegalValueException) || cause.getMessage() == null || cause.getMessage().isEmpty()) {
+            return MESSAGE_INVALID_DATA;
+        }
+        return String.format(MESSAGE_INVALID_DATA_DETAILS_FORMAT, MESSAGE_INVALID_DATA, cause.getMessage());
     }
 
     public Path getImportFilePath() {

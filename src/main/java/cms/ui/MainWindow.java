@@ -21,6 +21,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -222,8 +223,15 @@ public class MainWindow extends UiPart<Stage> {
         primaryStage.setHeight(guiSettings.getWindowHeight());
         primaryStage.setWidth(guiSettings.getWindowWidth());
         if (guiSettings.getWindowCoordinates() != null) {
-            primaryStage.setX(guiSettings.getWindowCoordinates().getX());
-            primaryStage.setY(guiSettings.getWindowCoordinates().getY());
+            double x = guiSettings.getWindowCoordinates().getX();
+            double y = guiSettings.getWindowCoordinates().getY();
+            boolean isOnScreen = Screen.getScreens().stream()
+                    .anyMatch(screen -> screen.getVisualBounds().contains(x, y));
+
+            if (isOnScreen) {
+                primaryStage.setX(x);
+                primaryStage.setY(y);
+            }
         }
     }
 

@@ -39,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import cms.commons.exceptions.DataLoadingException;
+import cms.commons.exceptions.IllegalValueException;
 import cms.logic.commands.AddCommand;
 import cms.logic.commands.CommandResult;
 import cms.logic.commands.ExportCommand;
@@ -309,6 +310,79 @@ public class LogicManagerTest {
     }
 
     @Test
+    public void executeImportCommandInvalidDataShowsDetailsForIllegalValue() {
+        Path prefPath = temporaryFolder.resolve("addressBook.json");
+
+        JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(prefPath) {
+            @Override
+            public Optional<ReadOnlyAddressBook> readAddressBook(Path filePath) throws DataLoadingException {
+                throw new DataLoadingException(new IllegalValueException("duplicate field in persons list"));
+            }
+        };
+
+        JsonUserPrefsStorage userPrefsStorage =
+                new JsonUserPrefsStorage(temporaryFolder.resolve("ExceptionUserPrefs.json"));
+        StorageManager storage = new StorageManager(addressBookStorage, userPrefsStorage);
+        logic = new LogicManager(model, storage);
+
+        Path importPath = temporaryFolder.resolve("imports").resolve("invalid.json");
+        String importCommand = ImportCommand.COMMAND_WORD + " \"" + importPath + "\"";
+
+        CommandException thrownException = org.junit.jupiter.api.Assertions.assertThrows(
+                CommandException.class, () -> logic.execute(importCommand));
+        assertTrue(thrownException.getMessage().contains(ImportCommand.MESSAGE_INVALID_DATA));
+        assertTrue(thrownException.getMessage().contains("duplicate field in persons list"));
+    }
+
+    @Test
+    public void executeImportCommandInvalidDataWithEmptyIllegalValueMessageShowsGenericMessage() {
+        Path prefPath = temporaryFolder.resolve("addressBook.json");
+
+        JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(prefPath) {
+            @Override
+            public Optional<ReadOnlyAddressBook> readAddressBook(Path filePath) throws DataLoadingException {
+                throw new DataLoadingException(new IllegalValueException(""));
+            }
+        };
+
+        JsonUserPrefsStorage userPrefsStorage =
+                new JsonUserPrefsStorage(temporaryFolder.resolve("ExceptionUserPrefs.json"));
+        StorageManager storage = new StorageManager(addressBookStorage, userPrefsStorage);
+        logic = new LogicManager(model, storage);
+
+        Path importPath = temporaryFolder.resolve("imports").resolve("invalid.json");
+        String importCommand = ImportCommand.COMMAND_WORD + " \"" + importPath + "\"";
+
+        CommandException thrownException = org.junit.jupiter.api.Assertions.assertThrows(
+                CommandException.class, () -> logic.execute(importCommand));
+        assertEquals(ImportCommand.MESSAGE_INVALID_DATA, thrownException.getMessage());
+    }
+
+    @Test
+    public void executeImportCommandInvalidDataWithNullIllegalValueMessageShowsGenericMessage() {
+        Path prefPath = temporaryFolder.resolve("addressBook.json");
+
+        JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(prefPath) {
+            @Override
+            public Optional<ReadOnlyAddressBook> readAddressBook(Path filePath) throws DataLoadingException {
+                throw new DataLoadingException(new IllegalValueException(null));
+            }
+        };
+
+        JsonUserPrefsStorage userPrefsStorage =
+                new JsonUserPrefsStorage(temporaryFolder.resolve("ExceptionUserPrefs.json"));
+        StorageManager storage = new StorageManager(addressBookStorage, userPrefsStorage);
+        logic = new LogicManager(model, storage);
+
+        Path importPath = temporaryFolder.resolve("imports").resolve("invalid.json");
+        String importCommand = ImportCommand.COMMAND_WORD + " \"" + importPath + "\"";
+
+        CommandException thrownException = org.junit.jupiter.api.Assertions.assertThrows(
+                CommandException.class, () -> logic.execute(importCommand));
+        assertEquals(ImportCommand.MESSAGE_INVALID_DATA, thrownException.getMessage());
+    }
+
+    @Test
     public void execute_importCommandWithCurrentDataAndNoKeep_throwsCommandException() throws Exception {
         logic.execute(AddCommand.COMMAND_WORD + NAME_DESC_AMY + NUSMATRIC_DESC_AMY + ROLE_DESC_AMY
                 + SOCUSERNAME_DESC_AMY + GITHUBUSERNAME_DESC_AMY + PHONE_DESC_AMY
@@ -440,7 +514,8 @@ public class LogicManagerTest {
         String importCommand = buildImportCommand(normalizedImportPath, "keep/current");
         CommandResult result = logic.execute(importCommand);
 
-        assertEquals(String.format(ImportCommand.MESSAGE_KEEP_CURRENT_SUCCESS, normalizedImportPath),
+        assertEquals(String.format(ImportCommand.MESSAGE_KEEP_CURRENT_SUCCESS
+                        + " (%d added, %d skipped, %d processed)", normalizedImportPath, 1, 1, 2),
             result.getFeedbackToUser());
         assertEquals(2, model.getFilteredPersonList().size());
         assertTrue(model.getFilteredPersonList().contains(expectedCurrentPerson));
@@ -472,11 +547,39 @@ public class LogicManagerTest {
         String importCommand = buildImportCommand(normalizedImportPath, "keep/incoming");
         CommandResult result = logic.execute(importCommand);
 
-        assertEquals(String.format(ImportCommand.MESSAGE_KEEP_INCOMING_SUCCESS, normalizedImportPath),
+        assertEquals(String.format(ImportCommand.MESSAGE_KEEP_INCOMING_SUCCESS
+                + " (%d added, %d replaced, %d processed)", normalizedImportPath, 1, 1, 2),
                 result.getFeedbackToUser());
         assertEquals(2, model.getFilteredPersonList().size());
         assertTrue(model.getFilteredPersonList().contains(conflictingIncomingPerson));
         assertTrue(model.getFilteredPersonList().contains(nonConflictingIncomingPerson));
+    }
+
+    @Test
+    public void executeImportKeepIncomingAmbiguousConflictThrowsCommandException()
+            throws Exception {
+        Person existingPersonOne = new PersonBuilder(ALICE).build();
+        Person existingPersonTwo = new PersonBuilder(BENSON).build();
+        model.addPerson(existingPersonOne);
+        model.addPerson(existingPersonTwo);
+
+        Person ambiguousIncomingPerson = new PersonBuilder(CARL)
+                .withEmail(existingPersonOne.getEmail().toString())
+                .withSocUsername(existingPersonTwo.getSocUsername().toString())
+                .build();
+        Path importPath = createImportFileWithSinglePerson(ambiguousIncomingPerson);
+        String importCommand = buildImportCommand(importPath.toAbsolutePath().normalize(), "keep/incoming");
+
+        CommandException thrownException = org.junit.jupiter.api.Assertions.assertThrows(
+                CommandException.class, () -> logic.execute(importCommand));
+        assertTrue(thrownException.getMessage().contains("conflicts with multiple current persons"));
+        assertTrue(thrownException.getMessage().contains(existingPersonOne.getName().toString()));
+        assertTrue(thrownException.getMessage().contains(existingPersonTwo.getName().toString()));
+        assertTrue(thrownException.getMessage().contains("by email"));
+        assertTrue(thrownException.getMessage().contains("by SOC username"));
+        assertTrue(model.getFilteredPersonList().contains(existingPersonOne));
+        assertTrue(model.getFilteredPersonList().contains(existingPersonTwo));
+        assertEquals(2, model.getFilteredPersonList().size());
     }
 
     @Test

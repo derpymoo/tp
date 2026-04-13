@@ -55,6 +55,7 @@ public class EditCommandParserTest {
 
     private static final String MESSAGE_INVALID_FORMAT =
             String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE);
+    private static final String MESSAGE_UNSUPPORTED_PREFIX = "Unsupported prefix for edit command: %1$s";
 
     private EditCommandParser parser = new EditCommandParser();
 
@@ -82,7 +83,7 @@ public class EditCommandParserTest {
         assertParseFailure(parser, "1 some random string", MESSAGE_INVALID_FORMAT);
 
         // invalid prefix being parsed as preamble
-        assertParseFailure(parser, "1 i/ string", MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "1 i/ string", String.format(MESSAGE_UNSUPPORTED_PREFIX, "i/"));
     }
 
     @Test

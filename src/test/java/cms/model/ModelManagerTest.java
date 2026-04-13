@@ -98,6 +98,15 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void addPerson_preservesActiveFilter() {
+        modelManager.updateFilteredPersonList(person -> false);
+
+        modelManager.addPerson(ALICE);
+
+        assertTrue(modelManager.getFilteredPersonList().isEmpty());
+    }
+
+    @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
     }
