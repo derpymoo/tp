@@ -295,7 +295,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 (For all use cases below, the **System** is the `Course Management System` and the **Actor** is the `course coordinator`, unless specified otherwise)
 
-**Use case: Add a student or tutor**
+Use case IDs follow the format `UC##` for stable cross-referencing.
+
+**UC01: Add a student or tutor**
 
 **MSS**
 
@@ -321,7 +323,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 1.
 
-**Use case: Edit a person's details**
+**UC02: Edit a person's details**
 
 **MSS**
 
@@ -353,7 +355,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 3.
 
-**Use case: Delete one or more persons**
+**UC03: Delete one or more persons**
 
 **MSS**
 
@@ -381,7 +383,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 3.
 
-**Use case: Find persons**
+**UC04: Find persons**
 
 **MSS**
 
@@ -406,7 +408,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: Add or remove tags from persons**
+**UC05: Add or remove tags from persons**
 
 **MSS**
 
@@ -432,7 +434,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 1.
 
-**Use case: Filter persons**
+**UC06: Filter persons**
 
 **MSS**
 
@@ -457,7 +459,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: Sort persons**
+**UC07: Sort persons**
 
 **MSS**
 
@@ -476,7 +478,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 1.
 
-**Use case: Import records from JSON**
+**UC08: Import records from JSON**
 
 **MSS**
 
@@ -508,7 +510,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 1.
 
-**Use case: Export records to JSON**
+**UC09: Export records to JSON**
 
 **MSS**
 
@@ -533,7 +535,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: Mask or unmask sensitive fields**
+**UC10: Mask or unmask sensitive fields**
 
 **MSS**
 
@@ -551,7 +553,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case resumes at step 2.
 
-**Use case: Clear all records**
+**UC11: Clear all records**
 
 **MSS**
 
@@ -570,7 +572,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
       Use case ends.
 
-**Use case: View command help**
+**UC12: View command help**
 
 **MSS**
 
@@ -781,4 +783,3 @@ testers are expected to do more *exploratory* testing.
 
    1. Incorrect command to try: `import "data/manual-test-export.txt"`<br>
       Expected: Command is rejected because file path must end with `.json`.
-
