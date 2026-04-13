@@ -285,27 +285,6 @@ Sorts all persons by name or tutorial group.
 **Expected result:**
 * Persons are reordered based on the selected sort key.
 
-### File Path Requirements
-
-For both `import` and `export` commands:
-* File paths must be enclosed in double quotes.
-* File paths may be relative or absolute.
-* File names and folder names may contain spaces.
-* Platform path separators such as `/` and `\` are accepted.
-* The file name must end with `.json`.
-* Avoid characters that are invalid in file names on your operating system (allowed characters may differ by platform).
-
-**Valid examples:**
-* `export "data/backup.json"`
-* `export "data/My Backups/backup.json"`
-* `export "C:/Users/Test/Documents/backup.json"`
-
-**Invalid examples:**
-* `export data/backup.json`<br>
-   Missing the required double quotes.
-* `export "data/backup.txt"`<br>
-   The file name must end with `.json`.
-
 ### Importing records from a JSON file : `import`
 
 Imports records from a `.json` file into CMS.
@@ -313,9 +292,14 @@ Imports records from a `.json` file into CMS.
 **Format:** `import "FILE_PATH" [keep/current|keep/incoming]`
 
 **Constraints:**
-* `FILE_PATH` must point to a `.json` file (see [File Path Requirements](#file-path-requirements) above).
+* `FILE_PATH` must satisfy the [FILE_PATH](#field-file-path) rules in the fields reference.
 * If CMS already contains data, a keep policy is required.
 * The keep policy must be either `keep/current` or `keep/incoming`.
+
+**Keep policy**
+* `keep/current` keeps the existing CMS record entry when imported data entry conflicts with it.
+* `keep/incoming` replaces the existing CMS record entry with the imported record entry when they conflict.
+* If CMS is empty, the keep policy does not matter because there is nothing to merge.
 
 **Examples:**
 * `import "data/addressbook.json"`
@@ -334,7 +318,7 @@ Exports current CMS data to a `.json` file.
 **Format:** `export "FILE_PATH"`
 
 **Constraints:**
-* `FILE_PATH` must end with `.json` (see [File Path Requirements](#file-path-requirements) above).
+* `FILE_PATH` must satisfy the [FILE_PATH](#field-file-path) rules in the fields reference.
 
 **Examples:**
 * `export "data/backup.json"`
@@ -532,6 +516,27 @@ Use this section as a quick checklist when adding or editing command examples an
 * Case sensitivity: case-insensitive input (stored in lowercase).
 * Valid: `tag/python`
 * Invalid: `tag/-help`
+
+<a id="field-file-path"></a>
+**`FILE_PATH`**
+* Used by `import` and `export`.
+* Must be enclosed in double quotes.
+* May be relative or absolute.
+* File names and folder names may contain spaces.
+* Path separators such as `/` and `\` are accepted.
+* Must end with `.json`.
+* Avoid characters that are invalid in file names on your operating system, since allowed characters may differ by platform.
+
+**Valid examples:**
+* `export "data/backup.json"`
+* `export "data/My Backups/backup.json"`
+* `export "C:/Users/Test/Documents/backup.json"`
+
+**Invalid examples:**
+* `export data/backup.json`<br>
+   Missing the required double quotes.
+* `export "data/backup.txt"`<br>
+   The file name must end with `.json`.
 
 --------------------------------------------------------------------------------------------------------------------
 
