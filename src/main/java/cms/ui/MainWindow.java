@@ -200,7 +200,9 @@ public class MainWindow extends UiPart<Stage> {
             personListPanel.selectPerson(personToRestore);
         }
 
-        personDetailPanel.showPerson(personListPanel.selectedPersonProperty().get(), isMasked, !filteredPersons.isEmpty());
+        personDetailPanel.showPerson(personListPanel.selectedPersonProperty().get(),
+                isMasked,
+                !filteredPersons.isEmpty());
 
         personListPanelPlaceholder.getChildren().setAll(personListPanel.getRoot());
     }
