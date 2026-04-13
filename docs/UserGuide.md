@@ -575,6 +575,7 @@ Use this section as a quick checklist when adding or editing command examples an
 6. **Make import feedback more specific for duplicates**: The current import feedback does not clearly distinguish between successfully imported entries and entries skipped due to duplication. We plan to make the existing import message explicitly report unique and duplicate records.
 7. **Improve `tag delete` feedback after filtered-list operations**: The current success message may show an index that does not match the filtered list index used by the user. We plan to make `tag delete` feedback use the filtered-list index consistently, or omit the index when it may be misleading.
 8. **Improve large dataset rendering**: The current UI may not scale smoothly when handling large amounts of data. We plan to improve the existing rendering approach to support larger datasets more efficiently through proper pagination or dynamic rendering.
+9. **Improve empty-list state feedback**: When the displayed list is empty, some UI guidance and command results remain too generic. We plan to replace empty-state prompts such as `Select a person from the list to view their full profile.` with messaging that reflects the empty list, and make commands such as `sort` and `find` return feedback that explicitly states when there are no persons currently available or no displayed persons to act on.
 
 --------------------------------------------------------------------------------------------------------------------
 
